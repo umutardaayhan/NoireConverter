@@ -33,9 +33,10 @@
 1. **Clone the repository:**
 
     git clone https://github.com/umutardaayhan/NoireConverter.git
+   
     cd NoireConverter
 
-2. **Install Python dependencies:**
+3. **Install Python dependencies:**
 
     pip install -r requirements.txt
 
@@ -84,9 +85,10 @@ Run the application via terminal:
 1. **Projeyi bilgisayarınıza klonlayın:**
 
     git clone https://github.com/umutardaayhan/NoireConverter.git
+   
     cd NoireConverter
 
-2. **Gerekli kütüphaneleri yükleyin:**
+3. **Gerekli kütüphaneleri yükleyin:**
 
     pip install -r requirements.txt
 

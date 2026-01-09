@@ -1,3 +1,5 @@
 customtkinter
 tkinterdnd2
 Pillow
+docx2pdf
+comtypes

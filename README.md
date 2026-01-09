@@ -1,4 +1,4 @@
-# Noire Converter v1.1 🌑
+# Noire Converter v1.2 🌑
 
 [![Python](https://img.shields.io/badge/Python-3.x-blue?style=flat&logo=python)](https://www.python.org/)
 [![Platform](https://img.shields.io/badge/Platform-Windows-0078D6?style=flat&logo=windows)](https://www.microsoft.com/windows)
@@ -21,10 +21,10 @@
 ### 🌟 Features
 
 * **Converter:** Convert between Image (.webp, .png, .jpg, .ico) and Audio (.mp3, .wav) formats instantly.
+* **Doc Station (v1.2):** Convert Word/PowerPoint to PDF, or PDF/PowerPoint to Word documents. *(Requires MS Office)*.
 * **Resizer:** High-quality image resizing using the Lanczos algorithm.
 * **Optimizer:** Compress assets by up to 80% without visible quality loss (Ideal for Unity/Godot/Web).
 * **GIF Studio:** Create optimized GIFs from videos. Includes a **Visual Crop Editor** to trim and crop specific areas easily.
-* **UX Improvements (v1.1):** Renamed "Output Setting" to **"Render Quality"** with added tooltips to clearly explain resolution options.
 * **Drag & Drop:** Support for dragging files and folders directly into the UI.
 * **Dual Language:** Switch between English and Turkish interface instantly.
 
@@ -32,11 +32,10 @@
 
 1. **Clone the repository:**
 
-    git clone https://github.com/umutardaayhan/NoireConverter.git
-   
+    git clone [https://github.com/umutardaayhan/NoireConverter.git](https://github.com/umutardaayhan/NoireConverter.git)
     cd NoireConverter
 
-3. **Install Python dependencies:**
+2. **Install Python dependencies:**
 
     pip install -r requirements.txt
 
@@ -73,10 +72,10 @@ Run the application via terminal:
 ### 🌟 Özellikler
 
 * **Dönüştürücü (Converter):** Resim (.webp, .png, .jpg, .ico) ve Ses (.mp3, .wav) formatları arasında hızlı dönüşüm.
+* **Doc İstasyonu (v1.2):** Word/PPT dosyalarını PDF'e, PDF/PPT dosyalarını Word'e çevirin. *(MS Office gerektirir)*.
 * **Boyutlandırıcı (Resizer):** Resimleri kalite kaybını minimize ederek (Lanczos algoritması) yeniden boyutlandırın.
 * **Optimizer:** Web ve Oyun projeleri (Unity/Godot assetleri) için dosya boyutunu %80'e kadar sıkıştırır.
 * **GIF Studio:** Videoları kırpın (Crop), süresini ayarlayın (Trim) ve optimize edilmiş GIF'lere dönüştürün. **Görsel Kırpma Editörü** dahildir.
-* **Arayüz Güncellemesi (v1.1):** "Çıktı Ayarı" etiketi **"Render Kalitesi"** olarak güncellendi ve seçenekler için açıklayıcı ipuçları (tooltip) eklendi.
 * **Drag & Drop:** Dosyaları veya klasörleri sürükleyip bırakarak listeye ekleyin.
 * **Çoklu Dil Desteği:** Tek tuşla Türkçe ve İngilizce arasında geçiş yapın.
 
@@ -84,11 +83,10 @@ Run the application via terminal:
 
 1. **Projeyi bilgisayarınıza klonlayın:**
 
-    git clone https://github.com/umutardaayhan/NoireConverter.git
-   
+    git clone [https://github.com/umutardaayhan/NoireConverter.git](https://github.com/umutardaayhan/NoireConverter.git)
     cd NoireConverter
 
-3. **Gerekli kütüphaneleri yükleyin:**
+2. **Gerekli kütüphaneleri yükleyin:**
 
     pip install -r requirements.txt
 

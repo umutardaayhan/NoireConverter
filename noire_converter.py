@@ -8,19 +8,17 @@ import tkinter as tk
 from tkinterdnd2 import DND_FILES, TkinterDnD
 from tkinter import filedialog, messagebox
 from PIL import Image, ImageTk
-
-# --- OFFICE OTOMASYONU ---
 import comtypes.client
 
-# --- DİL PAKETİ (v1.2 Final) ---
+# --- DİL PAKETİ (v1.3) ---
 LANG = {
     "en": {
-        "title": "Noire Converter v1.2",
+        "title": "Noire Converter v1.3",
         "drop_title": "DROP MEDIA",
         "drop_sub": "Files/Folders",
         "chk_img": "Img", "chk_aud": "Aud", "chk_vid": "Vid", "chk_doc": "Doc",
         "tab_convert": "Convert", "tab_resize": "Resize", "tab_opt": "Optimizer",
-        "tab_gif": "GIF Studio", "tab_doc": "Doc Station",
+        "tab_gif": "GIF Studio", "tab_doc": "Doc Station", "tab_tools": "Renamer",
         "lbl_target_img": "Target Image Format",
         "lbl_target_aud": "Target Audio Format",
         "lbl_target_doc": "Conversion Mode",
@@ -35,6 +33,9 @@ LANG = {
         "lbl_gif_out": "3. Out:",
         "lbl_fps": "FPS",
         "lbl_doc_info": "ℹ️ Word/PPT -> PDF | PDF/PPT -> Word\nRequires Microsoft Office.",
+        "lbl_tools_find": "Find Text:",
+        "lbl_tools_rep": "Replace With:",
+        "lbl_tools_info": "ℹ️ Replaces text in filenames. Leave 'Replace With' empty to delete text.",
         "sw_source": "Source Folder",
         "btn_browse": "Browse",
         "lbl_queue": "QUEUE",
@@ -49,13 +50,12 @@ LANG = {
 1. RESIZE MODES
 ---------------------------
 • Custom: Enter specific Width x Height.
-• Presets (/2, x2...): Select multiple boxes to generate
-  multiple versions of the same image at once.
+• Presets (/2, x2...): Select multiple boxes.
 
-2. GIF STUDIO & CROP
+2. GIF STUDIO
 ---------------------------
-• Crop Editor: Takes a snapshot from the FIRST SELECTED video.
-• Duration: Leave blank to convert the whole video.
+• Crop Editor: Takes a snapshot from video.
+• Duration: Leave blank for full video.
 
 3. DOC STATION
 ---------------------------
@@ -64,15 +64,22 @@ LANG = {
 • PDF -> Word (DOCX)
 • Requires MS Office installed on PC.
 
-4. FFmpeg SETUP
+4. RENAMER
 ---------------------------
-• 'ffmpeg.exe' must be in the same folder as this app."""
+• Find Text: Text to remove (e.g. _1500x1500).
+• Replace With: Leave empty to delete.
+
+5. SETUP
+---------------------------
+• 'ffmpeg.exe' must be in the same folder."""
     },
     "tr": {
-        "title": "Noire Converter v1.2",
+        "title": "Noire Converter v1.3",
         "drop_title": "MEDYA SÜRÜKLE",
         "drop_sub": "Dosya/Klasör",
         "chk_img": "Img", "chk_aud": "Aud", "chk_vid": "Vid", "chk_doc": "Doc",
+        "tab_convert": "Dönüştür", "tab_resize": "Boyutlandır", "tab_opt": "Optimize",
+        "tab_gif": "GIF Stüdyo", "tab_doc": "Doc İstasyonu", "tab_tools": "Adlandır",
         "lbl_target_img": "Hedef Resim Formatı",
         "lbl_target_aud": "Hedef Ses Formatı",
         "lbl_target_doc": "Dönüştürme Modu",
@@ -87,6 +94,9 @@ LANG = {
         "lbl_gif_out": "3. Çıktı:",
         "lbl_fps": "Kare/Sn",
         "lbl_doc_info": "ℹ️ Word/PPT -> PDF | PDF/PPT -> Word\nBilgisayarda MS Office yüklü olmalıdır.",
+        "lbl_tools_find": "Bulunacak Metin:",
+        "lbl_tools_rep": "Yeni Metin:",
+        "lbl_tools_info": "ℹ️ Dosya adındaki metni değiştirir. Silmek için 'Yeni Metin'i boş bırakın.",
         "sw_source": "Kaynak Klasör",
         "btn_browse": "Seç...",
         "lbl_queue": "KUYRUK",
@@ -101,14 +111,12 @@ LANG = {
 1. BOYUTLANDIRMA MODLARI
 ---------------------------
 • Özel: Belirli bir Genişlik x Yükseklik girin.
-• Hazır Ayarlar (/2, x2...): Birden fazla kutucuğu
-  seçerek aynı resmin farklı boyutlarını tek seferde
-  oluşturabilirsiniz.
+• Hazır Ayarlar (/2, x2...): Çoklu seçim yapılabilir.
 
-2. GIF STÜDYO & KIRPMA
+2. GIF STÜDYO
 ---------------------------
-• Kırpma Editörü: SEÇİLİ olan ilk videodan örnek alır.
-• Süre: Boş bırakırsanız videonun tamamı işlenir.
+• Kırpma Editörü: Videodan örnek resim alır.
+• Süre: Boş bırakılırsa tamamını işler.
 
 3. DOC İSTASYONU
 ---------------------------
@@ -117,10 +125,14 @@ LANG = {
 • PDF -> Word (DOCX)
 • MS Office yüklü olmalıdır.
 
-4. FFmpeg KURULUMU
+4. ADLANDIRICI
 ---------------------------
-• 'ffmpeg.exe' dosyası bu uygulamanın hemen yanında
-  (aynı klasörde) bulunmak zorundadır."""
+• Bulunacak Metin: Silinecek ek (örn: _1500x1500).
+• Yeni Metin: Silmek için boş bırakın.
+
+5. KURULUM
+---------------------------
+• 'ffmpeg.exe' aynı klasörde olmalıdır."""
     }
 }
 
@@ -304,9 +316,9 @@ class NoireConverterApp(ctk.CTk, TkinterDnD.DnDWrapper):
     def __init__(self):
         super().__init__()
         self.TkdndVersion = TkinterDnD._require(self)
-        ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID('com.noire.converter.v1_2')
+        ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID('com.noire.converter.v1_3')
         self.current_lang = "en"
-        self.title("Noire Converter v1.2")
+        self.title("Noire Converter v1.3")
         self.geometry("1100x700") 
         self.resizable(False, False)
         self.configure(fg_color=COLOR_BG)
@@ -346,7 +358,7 @@ class NoireConverterApp(ctk.CTk, TkinterDnD.DnDWrapper):
         self.header_frame.pack(anchor="w", fill="x", pady=(0, 15))
         ctk.CTkLabel(self.header_frame, text="NOIRE", font=FONT_HEADER, text_color=COLOR_ACCENT).pack(side="left")
         ctk.CTkLabel(self.header_frame, text=" CONVERTER", font=FONT_HEADER, text_color="white").pack(side="left")
-        ctk.CTkLabel(self.header_frame, text=" // v1.2", font=("Roboto", 12), text_color=COLOR_TEXT_DIM).pack(side="left", padx=(5,0), pady=(10,0))
+        ctk.CTkLabel(self.header_frame, text=" // v1.3", font=("Roboto", 12), text_color=COLOR_TEXT_DIM).pack(side="left", padx=(5,0), pady=(10,0))
         
         btn_box = ctk.CTkFrame(self.header_frame, fg_color="transparent")
         btn_box.pack(side="right")
@@ -355,7 +367,6 @@ class NoireConverterApp(ctk.CTk, TkinterDnD.DnDWrapper):
         self.btn_help = ctk.CTkButton(btn_box, text="?", width=30, height=25, fg_color="#333", command=self.open_help_window)
         self.btn_help.pack(side="left")
         
-        # --- UI AYARI: DropFrame Yüksekliği Arttırıldı (200px) ---
         self.drop_frame = ctk.CTkFrame(self.left_col, height=200, corner_radius=12, fg_color=COLOR_FRAME, border_width=2, border_color="#2a2a2a")
         self.drop_frame.pack(fill="x", pady=(0, 15))
         self.drop_frame.pack_propagate(False)
@@ -365,24 +376,19 @@ class NoireConverterApp(ctk.CTk, TkinterDnD.DnDWrapper):
         self.lbl_drop_sub = ctk.CTkLabel(self.drop_frame, text="", text_color=COLOR_TEXT_DIM, font=("Roboto", 10))
         self.lbl_drop_sub.place(relx=0.5, rely=0.40, anchor="center")
         
-        # --- 2x2 GRID ---
         self.filter_box = ctk.CTkFrame(self.drop_frame, fg_color="transparent")
         self.filter_box.place(relx=0.55, rely=0.65, anchor="center")
         chk_style = {"checkbox_width":16, "checkbox_height":16, "font":("Roboto",11,"bold"), "fg_color":COLOR_ACCENT, "hover_color":COLOR_ACCENT_HOVER}
         
         self.chk_img = ctk.CTkCheckBox(self.filter_box, text="Img", variable=self.filter_img_var, **chk_style)
         self.chk_img.grid(row=0, column=0, padx=15, pady=3, sticky="w")
-        
         self.chk_aud = ctk.CTkCheckBox(self.filter_box, text="Aud", variable=self.filter_audio_var, **chk_style)
         self.chk_aud.grid(row=0, column=1, padx=15, pady=3, sticky="w")
-        
         self.chk_vid = ctk.CTkCheckBox(self.filter_box, text="Vid", variable=self.filter_video_var, **chk_style)
         self.chk_vid.grid(row=1, column=0, padx=15, pady=3, sticky="w")
-        
         self.chk_doc = ctk.CTkCheckBox(self.filter_box, text="Doc", variable=self.filter_doc_var, **chk_style)
         self.chk_doc.grid(row=1, column=1, padx=15, pady=3, sticky="w")
 
-        # --- UI AYARI: TabView Yüksekliği 270px (Alttaki Bar görünsün diye) ---
         self.tab_view = ctk.CTkTabview(self.left_col, height=270, fg_color=COLOR_FRAME, segmented_button_fg_color="#111", segmented_button_selected_color=COLOR_ACCENT, segmented_button_selected_hover_color=COLOR_ACCENT_HOVER, segmented_button_unselected_color=COLOR_FRAME, text_color="white")
         self.tab_view.pack(fill="x", pady=(0, 15))
         self.tab_convert = self.tab_view.add("Convert")
@@ -390,6 +396,7 @@ class NoireConverterApp(ctk.CTk, TkinterDnD.DnDWrapper):
         self.tab_opt = self.tab_view.add("Optimizer")
         self.tab_gif = self.tab_view.add("GIF Studio")
         self.tab_docs = self.tab_view.add("Doc Station")
+        self.tab_tools = self.tab_view.add("Renamer") # YENİ SEKME
 
         seg_style = {"fg_color": "#111", "selected_color": "#333", "text_color": "#fff", "height": 30}
         entry_style = {"height": 35, "fg_color": "#111", "border_color": "#333", "justify": "center"}
@@ -474,19 +481,32 @@ class NoireConverterApp(ctk.CTk, TkinterDnD.DnDWrapper):
         self.seg_fps.set("15")
         self.seg_fps.pack(side="right", padx=10)
 
-        # --- DOC STATION (SADELEŞTİRİLMİŞ) ---
+        # --- DOC STATION ---
         self.lbl_target_doc = ctk.CTkLabel(self.tab_docs, text="", font=("Roboto", 11, "bold"), text_color=COLOR_TEXT_DIM)
         self.lbl_target_doc.pack(anchor="w", pady=(15, 5))
-        
-        # SADECE: TO PDF ve TO WORD
         self.doc_option = ctk.CTkSegmentedButton(self.tab_docs, values=["TO PDF", "TO WORD"], **seg_style)
         self.doc_option.set("TO PDF")
         self.doc_option.pack(fill="x", pady=(0, 20))
-        
         self.lbl_doc_info = ctk.CTkLabel(self.tab_docs, text="", font=("Roboto", 12), text_color="gray", justify="left")
         self.lbl_doc_info.pack(pady=20, padx=20)
 
-        # --- ALT PANEL (PATH) ---
+        # --- RENAMER TAB  ---
+        self.lbl_tools_find = ctk.CTkLabel(self.tab_tools, text="", font=("Roboto", 11, "bold"), text_color=COLOR_TEXT_DIM)
+        self.lbl_tools_find.pack(anchor="w", pady=(15, 5))
+        
+        self.entry_ren_find = ctk.CTkEntry(self.tab_tools, placeholder_text="_1500x1500", **entry_style)
+        self.entry_ren_find.pack(fill="x", pady=(0, 10))
+        
+        self.lbl_tools_rep = ctk.CTkLabel(self.tab_tools, text="", font=("Roboto", 11, "bold"), text_color=COLOR_TEXT_DIM)
+        self.lbl_tools_rep.pack(anchor="w", pady=(5, 5))
+        
+        self.entry_ren_rep = ctk.CTkEntry(self.tab_tools, placeholder_text="", **entry_style)
+        self.entry_ren_rep.pack(fill="x", pady=(0, 20))
+        
+        self.lbl_tools_info = ctk.CTkLabel(self.tab_tools, text="", font=("Roboto", 12), text_color="gray", justify="left")
+        self.lbl_tools_info.pack(pady=20, padx=20)
+
+        # --- ALT PANEL ---
         self.path_frame = ctk.CTkFrame(self.left_col, fg_color=COLOR_FRAME, corner_radius=8, height=45)
         self.path_frame.pack(fill="x", side="bottom")
         self.path_frame.pack_propagate(False)
@@ -536,7 +556,7 @@ class NoireConverterApp(ctk.CTk, TkinterDnD.DnDWrapper):
         ctk.CTkLabel(help_win, text=LANG[self.current_lang]["guide_title"], font=FONT_HEADER, text_color=COLOR_ACCENT).pack(pady=20)
         tb = ctk.CTkTextbox(help_win, width=460, height=400, fg_color=COLOR_FRAME, font=("Consolas", 12))
         tb.pack(pady=10)
-        tb.insert("0.0", LANG[self.current_lang]["guide_text"])
+        tb.insert("1.0", LANG[self.current_lang]["guide_text"])
         tb.configure(state="disabled")
 
     def update_ui_text(self):
@@ -548,9 +568,6 @@ class NoireConverterApp(ctk.CTk, TkinterDnD.DnDWrapper):
         self.chk_aud.configure(text=T["chk_aud"])
         self.chk_vid.configure(text=T["chk_vid"])
         self.chk_doc.configure(text=T["chk_doc"])
-        
-        # --- TAB İSİMLERİNİ DEĞİŞTİRMİYORUZ (BOŞ EKRAN SORUNUNU ÇÖZER) ---
-        
         self.lbl_target_img.configure(text=T["lbl_target_img"])
         self.lbl_target_aud.configure(text=T["lbl_target_aud"])
         self.lbl_target_doc.configure(text=T["lbl_target_doc"])
@@ -569,6 +586,9 @@ class NoireConverterApp(ctk.CTk, TkinterDnD.DnDWrapper):
         self.lbl_gif_out.configure(text=T["lbl_gif_out"])
         self.lbl_fps.configure(text=T["lbl_fps"])
         self.lbl_doc_info.configure(text=T["lbl_doc_info"])
+        self.lbl_tools_find.configure(text=T["lbl_tools_find"])
+        self.lbl_tools_rep.configure(text=T["lbl_tools_rep"])
+        self.lbl_tools_info.configure(text=T["lbl_tools_info"])
         self.switch_source.configure(text=T["sw_source"])
         self.btn_browse.configure(text=T["btn_browse"])
         self.lbl_queue.configure(text=T["lbl_queue"])
@@ -744,6 +764,7 @@ class NoireConverterApp(ctk.CTk, TkinterDnD.DnDWrapper):
         elif tab in ["Optimizer", "Optimize Et"]: threading.Thread(target=self.process_optimize).start()
         elif tab in ["GIF Studio", "GIF Stüdyo"]: threading.Thread(target=self.process_gif).start()
         elif tab in ["Doc Station", "Doc İstasyonu"]: threading.Thread(target=self.process_documents).start()
+        elif tab in ["Renamer", "Adlandır"]: threading.Thread(target=self.process_rename).start()
         else: threading.Thread(target=self.process_convert).start()
 
     # --- PROCESSORS ---
@@ -861,7 +882,7 @@ class NoireConverterApp(ctk.CTk, TkinterDnD.DnDWrapper):
             except: self.log(f"Err: {name}", "error")
         self.finish_process()
 
-    # --- DOC STATION (REFINED) ---
+    # --- DOC STATION ---
     def process_documents(self):
         try:
             comtypes.CoInitialize()
@@ -951,7 +972,7 @@ class NoireConverterApp(ctk.CTk, TkinterDnD.DnDWrapper):
                             out = os.path.join(save_dir, f"{name}.docx")
                             doc.SaveAs(out, FileFormat=wdFormatDocumentDefault)
                             doc.Close()
-                            os.remove(temp_rtf) # Geçici dosyayı sil
+                            os.remove(temp_rtf)
                             self.log(f"PPT->DOC: {name}", "success")
                         else:
                             self.log(f"Err: PPT Export Fail", "error")
@@ -967,6 +988,43 @@ class NoireConverterApp(ctk.CTk, TkinterDnD.DnDWrapper):
         if ppt_app: 
             try: ppt_app.Quit()
             except: pass
+            
+        self.finish_process()
+
+    # --- RENAMER PROCESSOR ---
+    def process_rename(self):
+        find_text = self.entry_ren_find.get()
+        rep_text = self.entry_ren_rep.get()
+        
+        if not find_text:
+            messagebox.showwarning("!", "Please enter text to find.")
+            self.finish_process()
+            return
+
+        cnt = 0
+        for item in self.file_items:
+            if not item['var'].get(): continue
+            
+            old_path = item['path']
+            folder = os.path.dirname(old_path)
+            old_name = os.path.basename(old_path)
+            
+            if find_text in old_name:
+                new_name = old_name.replace(find_text, rep_text)
+                new_path = os.path.join(folder, new_name)
+                
+                try:
+                    os.rename(old_path, new_path)
+                    # UI güncellemesi
+                    item['path'] = new_path 
+                    item['widget'].configure(text=f" {new_name}")
+                    self.log(f"Renamed: {new_name}", "success")
+                    cnt += 1
+                except Exception as e:
+                    self.log(f"Err Rename: {old_name}", "error")
+        
+        if cnt == 0:
+            self.log("No files matched the text.", "info")
             
         self.finish_process()
 

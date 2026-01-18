@@ -1,4 +1,4 @@
-# Noire Converter v1.2 🌑
+# Noire Converter v1.3 🌑
 
 [![Python](https://img.shields.io/badge/Python-3.x-blue?style=flat&logo=python)](https://www.python.org/)
 [![Platform](https://img.shields.io/badge/Platform-Windows-0078D6?style=flat&logo=windows)](https://www.microsoft.com/windows)
@@ -21,7 +21,8 @@
 ### 🌟 Features
 
 * **Converter:** Convert between Image (.webp, .png, .jpg, .ico) and Audio (.mp3, .wav) formats instantly.
-* **Doc Station (v1.2):** Convert Word/PowerPoint to PDF, or PDF/PowerPoint to Word documents. *(Requires MS Office)*.
+* **Doc Station:** Convert Word/PowerPoint to PDF, or PDF/PowerPoint to Word documents. *(Requires MS Office)*.
+* **Renamer (v1.3):** Batch rename files by finding and replacing text. Perfect for cleaning asset tags (e.g., removing `_1500x1500` suffixes).
 * **Resizer:** High-quality image resizing using the Lanczos algorithm.
 * **Optimizer:** Compress assets by up to 80% without visible quality loss (Ideal for Unity/Godot/Web).
 * **GIF Studio:** Create optimized GIFs from videos. Includes a **Visual Crop Editor** to trim and crop specific areas easily.
@@ -31,14 +32,14 @@
 ### 🛠️ Installation
 
 1. **Clone the repository:**
-
-    git clone [https://github.com/umutardaayhan/NoireConverter.git](https://github.com/umutardaayhan/NoireConverter.git)
+```
+    git clone https://github.com/umutardaayhan/NoireConverter.git
     cd NoireConverter
-
+```
 2. **Install Python dependencies:**
-
+```
     pip install -r requirements.txt
-
+```
 ### ⚠️ IMPORTANT: FFmpeg Setup
 This application requires the **FFmpeg engine** to process video and audio files. Since it is a large binary file, it is not included in this repository.
 
@@ -72,7 +73,8 @@ Run the application via terminal:
 ### 🌟 Özellikler
 
 * **Dönüştürücü (Converter):** Resim (.webp, .png, .jpg, .ico) ve Ses (.mp3, .wav) formatları arasında hızlı dönüşüm.
-* **Doc İstasyonu (v1.2):** Word/PPT dosyalarını PDF'e, PDF/PPT dosyalarını Word'e çevirin. *(MS Office gerektirir)*.
+* **Doc İstasyonu:** Word/PPT dosyalarını PDF'e, PDF/PPT dosyalarını Word'e çevirin. *(MS Office gerektirir)*.
+* **Adlandırıcı (Renamer - v1.3):** Dosya isimlerindeki belirli metinleri topluca bulun ve değiştirin. Asset temizliği (örn: `_kopya` yazılarını silmek) için idealdir.
 * **Boyutlandırıcı (Resizer):** Resimleri kalite kaybını minimize ederek (Lanczos algoritması) yeniden boyutlandırın.
 * **Optimizer:** Web ve Oyun projeleri (Unity/Godot assetleri) için dosya boyutunu %80'e kadar sıkıştırır.
 * **GIF Studio:** Videoları kırpın (Crop), süresini ayarlayın (Trim) ve optimize edilmiş GIF'lere dönüştürün. **Görsel Kırpma Editörü** dahildir.
@@ -82,14 +84,14 @@ Run the application via terminal:
 ### 🛠️ Kurulum
 
 1. **Projeyi bilgisayarınıza klonlayın:**
-
-    git clone [https://github.com/umutardaayhan/NoireConverter.git](https://github.com/umutardaayhan/NoireConverter.git)
+```
+    git clone https://github.com/umutardaayhan/NoireConverter.git
     cd NoireConverter
-
+```
 2. **Gerekli kütüphaneleri yükleyin:**
-
+```
     pip install -r requirements.txt
-
+```
 ### ⚠️ Önemli: FFmpeg Kurulumu
 Bu uygulama video ve ses işlemleri için **FFmpeg** motorunu kullanır. Dosya boyutu büyük olduğu için bu depoya dahil edilmemiştir, manuel eklenmelidir.
 

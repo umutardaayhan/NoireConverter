@@ -13,12 +13,13 @@ import comtypes.client
 # --- DİL PAKETİ (v1.3) ---
 LANG = {
     "en": {
-        "title": "Noire Converter v1.3",
+        "title": "Noire Converter v1.4",
         "drop_title": "DROP MEDIA",
         "drop_sub": "Files/Folders",
         "chk_img": "Img", "chk_aud": "Aud", "chk_vid": "Vid", "chk_doc": "Doc",
         "tab_convert": "Convert", "tab_resize": "Resize", "tab_opt": "Optimizer",
         "tab_gif": "GIF Studio", "tab_doc": "Doc Station", "tab_tools": "Renamer",
+        "tab_tree": "Tree View",
         "lbl_target_img": "Target Image Format",
         "lbl_target_aud": "Target Audio Format",
         "lbl_target_doc": "Conversion Mode",
@@ -36,6 +37,11 @@ LANG = {
         "lbl_tools_find": "Find Text:",
         "lbl_tools_rep": "Replace With:",
         "lbl_tools_info": "ℹ️ Replaces text in filenames. Leave 'Replace With' empty to delete text.",
+        "lbl_tree_select": "Select Folder:",
+        "lbl_tree_preview": "Preview:",
+        "lbl_tree_info": "ℹ️ Exports the folder structure as a text file with tree view.",
+        "btn_tree_browse": "Browse Folder",
+        "btn_tree_export": "Export Tree",
         "sw_source": "Source Folder",
         "btn_browse": "Browse",
         "lbl_queue": "QUEUE",
@@ -74,12 +80,13 @@ LANG = {
 • 'ffmpeg.exe' must be in the same folder."""
     },
     "tr": {
-        "title": "Noire Converter v1.3",
+        "title": "Noire Converter v1.4",
         "drop_title": "MEDYA SÜRÜKLE",
         "drop_sub": "Dosya/Klasör",
         "chk_img": "Img", "chk_aud": "Aud", "chk_vid": "Vid", "chk_doc": "Doc",
         "tab_convert": "Dönüştür", "tab_resize": "Boyutlandır", "tab_opt": "Optimize",
         "tab_gif": "GIF Stüdyo", "tab_doc": "Doc İstasyonu", "tab_tools": "Adlandır",
+        "tab_tree": "Ağaç Görünümü",
         "lbl_target_img": "Hedef Resim Formatı",
         "lbl_target_aud": "Hedef Ses Formatı",
         "lbl_target_doc": "Dönüştürme Modu",
@@ -97,6 +104,11 @@ LANG = {
         "lbl_tools_find": "Bulunacak Metin:",
         "lbl_tools_rep": "Yeni Metin:",
         "lbl_tools_info": "ℹ️ Dosya adındaki metni değiştirir. Silmek için 'Yeni Metin'i boş bırakın.",
+        "lbl_tree_select": "Klasör Seç:",
+        "lbl_tree_preview": "Önizleme:",
+        "lbl_tree_info": "ℹ️ Klasör yapısını ağaç görünümünde text dosyasına aktarır.",
+        "btn_tree_browse": "Klasör Seç",
+        "btn_tree_export": "Ağacı Dışa Aktar",
         "sw_source": "Kaynak Klasör",
         "btn_browse": "Seç...",
         "lbl_queue": "KUYRUK",
@@ -318,8 +330,8 @@ class NoireConverterApp(ctk.CTk, TkinterDnD.DnDWrapper):
         self.TkdndVersion = TkinterDnD._require(self)
         ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID('com.noire.converter.v1_3')
         self.current_lang = "en"
-        self.title("Noire Converter v1.3")
-        self.geometry("1100x700") 
+        self.title("Noire Converter v1.4")
+        self.geometry("1180x700") 
         self.resizable(False, False)
         self.configure(fg_color=COLOR_BG)
         icon_file_path = resource_path("App.ico")
@@ -350,7 +362,7 @@ class NoireConverterApp(ctk.CTk, TkinterDnD.DnDWrapper):
     def create_ui(self):
         self.main_container = ctk.CTkFrame(self, fg_color="transparent")
         self.main_container.pack(fill="both", expand=True, padx=20, pady=20)
-        self.left_col = ctk.CTkFrame(self.main_container, fg_color="transparent", width=420)
+        self.left_col = ctk.CTkFrame(self.main_container, fg_color="transparent", width=500)
         self.left_col.pack(side="left", fill="y", padx=(0, 20))
         self.left_col.pack_propagate(False) 
         
@@ -358,7 +370,7 @@ class NoireConverterApp(ctk.CTk, TkinterDnD.DnDWrapper):
         self.header_frame.pack(anchor="w", fill="x", pady=(0, 15))
         ctk.CTkLabel(self.header_frame, text="NOIRE", font=FONT_HEADER, text_color=COLOR_ACCENT).pack(side="left")
         ctk.CTkLabel(self.header_frame, text=" CONVERTER", font=FONT_HEADER, text_color="white").pack(side="left")
-        ctk.CTkLabel(self.header_frame, text=" // v1.3", font=("Roboto", 12), text_color=COLOR_TEXT_DIM).pack(side="left", padx=(5,0), pady=(10,0))
+        ctk.CTkLabel(self.header_frame, text=" // v1.4", font=("Roboto", 12), text_color=COLOR_TEXT_DIM).pack(side="left", padx=(5,0), pady=(10,0))
         
         btn_box = ctk.CTkFrame(self.header_frame, fg_color="transparent")
         btn_box.pack(side="right")
@@ -389,7 +401,7 @@ class NoireConverterApp(ctk.CTk, TkinterDnD.DnDWrapper):
         self.chk_doc = ctk.CTkCheckBox(self.filter_box, text="Doc", variable=self.filter_doc_var, **chk_style)
         self.chk_doc.grid(row=1, column=1, padx=15, pady=3, sticky="w")
 
-        self.tab_view = ctk.CTkTabview(self.left_col, height=270, fg_color=COLOR_FRAME, segmented_button_fg_color="#111", segmented_button_selected_color=COLOR_ACCENT, segmented_button_selected_hover_color=COLOR_ACCENT_HOVER, segmented_button_unselected_color=COLOR_FRAME, text_color="white")
+        self.tab_view = ctk.CTkTabview(self.left_col, height=280, fg_color=COLOR_FRAME, segmented_button_fg_color="#111", segmented_button_selected_color=COLOR_ACCENT, segmented_button_selected_hover_color=COLOR_ACCENT_HOVER, segmented_button_unselected_color=COLOR_FRAME, text_color="white")
         self.tab_view.pack(fill="x", pady=(0, 15))
         self.tab_convert = self.tab_view.add("Convert")
         self.tab_resize = self.tab_view.add("Resize")
@@ -397,6 +409,7 @@ class NoireConverterApp(ctk.CTk, TkinterDnD.DnDWrapper):
         self.tab_gif = self.tab_view.add("GIF Studio")
         self.tab_docs = self.tab_view.add("Doc Station")
         self.tab_tools = self.tab_view.add("Renamer") # YENİ SEKME
+        self.tab_tree = self.tab_view.add("Tree View") # TREE EXPORTER SEKME
 
         seg_style = {"fg_color": "#111", "selected_color": "#333", "text_color": "#fff", "height": 30}
         entry_style = {"height": 35, "fg_color": "#111", "border_color": "#333", "justify": "center"}
@@ -506,6 +519,31 @@ class NoireConverterApp(ctk.CTk, TkinterDnD.DnDWrapper):
         self.lbl_tools_info = ctk.CTkLabel(self.tab_tools, text="", font=("Roboto", 12), text_color="gray", justify="left")
         self.lbl_tools_info.pack(pady=20, padx=20)
 
+        # --- TREE VIEW TAB ---
+        self.lbl_tree_select = ctk.CTkLabel(self.tab_tree, text="", font=("Roboto", 11, "bold"), text_color=COLOR_TEXT_DIM)
+        self.lbl_tree_select.pack(anchor="w", pady=(10, 5))
+        
+        tree_btn_frame = ctk.CTkFrame(self.tab_tree, fg_color="transparent")
+        tree_btn_frame.pack(fill="x", pady=(0, 10))
+        
+        self.btn_tree_browse = ctk.CTkButton(tree_btn_frame, text="", width=120, height=30, fg_color=COLOR_ACCENT, hover_color=COLOR_ACCENT_HOVER, text_color="black", font=("Roboto", 11, "bold"), command=self.select_tree_folder)
+        self.btn_tree_browse.pack(side="left", padx=(0, 10))
+        
+        self.lbl_tree_path = ctk.CTkLabel(tree_btn_frame, text="", font=("Roboto", 10), text_color=COLOR_TEXT_DIM)
+        self.lbl_tree_path.pack(side="left")
+        
+        self.lbl_tree_preview = ctk.CTkLabel(self.tab_tree, text="", font=("Roboto", 11, "bold"), text_color=COLOR_TEXT_DIM)
+        self.lbl_tree_preview.pack(anchor="w", pady=(5, 5))
+        
+        self.tree_preview_box = ctk.CTkTextbox(self.tab_tree, width=460, height=120, fg_color="#111", border_color="#333", border_width=1, font=("Consolas", 9))
+        self.tree_preview_box.pack(fill="both", expand=True, pady=(0, 10))
+        self.tree_preview_box.configure(state="disabled")
+        
+        self.lbl_tree_info = ctk.CTkLabel(self.tab_tree, text="", font=("Roboto", 11), text_color="gray", justify="left")
+        self.lbl_tree_info.pack(pady=5)
+        
+        self.tree_folder_path = ""
+
         # --- ALT PANEL ---
         self.path_frame = ctk.CTkFrame(self.left_col, fg_color=COLOR_FRAME, corner_radius=8, height=45)
         self.path_frame.pack(fill="x", side="bottom")
@@ -589,6 +627,10 @@ class NoireConverterApp(ctk.CTk, TkinterDnD.DnDWrapper):
         self.lbl_tools_find.configure(text=T["lbl_tools_find"])
         self.lbl_tools_rep.configure(text=T["lbl_tools_rep"])
         self.lbl_tools_info.configure(text=T["lbl_tools_info"])
+        self.lbl_tree_select.configure(text=T["lbl_tree_select"])
+        self.lbl_tree_preview.configure(text=T["lbl_tree_preview"])
+        self.lbl_tree_info.configure(text=T["lbl_tree_info"])
+        self.btn_tree_browse.configure(text=T["btn_tree_browse"])
         self.switch_source.configure(text=T["sw_source"])
         self.btn_browse.configure(text=T["btn_browse"])
         self.lbl_queue.configure(text=T["lbl_queue"])
@@ -662,6 +704,56 @@ class NoireConverterApp(ctk.CTk, TkinterDnD.DnDWrapper):
         if folder:
             self.output_folder = folder
             self.lbl_path.configure(text=f".../{os.path.basename(folder)}")
+
+    def select_tree_folder(self):
+        folder = filedialog.askdirectory()
+        if folder:
+            self.tree_folder_path = folder
+            folder_name = os.path.basename(folder)
+            self.lbl_tree_path.configure(text=folder_name)
+            self.generate_tree_preview(folder)
+
+    def generate_tree_preview(self, folder_path, max_items=50):
+        """Klasör ağacını oluştur ve önizleme kutusuna yaz"""
+        tree_lines = []
+        tree_lines.append(os.path.basename(folder_path) + "/")
+        
+        def add_tree_items(path, prefix="", is_last=True, count=[0]):
+            if count[0] >= max_items:
+                return
+            try:
+                items = sorted(os.listdir(path))
+                # Gizli dosyaları filtrele
+                items = [item for item in items if not item.startswith('.')]
+            except (PermissionError, OSError):
+                return
+            
+            for i, item in enumerate(items):
+                if count[0] >= max_items:
+                    return
+                is_last_item = (i == len(items) - 1)
+                item_path = os.path.join(path, item)
+                
+                # Ağaç karakterleri
+                connector = "└── " if is_last_item else "├── "
+                tree_lines.append(prefix + connector + item)
+                count[0] += 1
+                
+                if os.path.isdir(item_path):
+                    extension = "    " if is_last_item else "│   "
+                    add_tree_items(item_path, prefix + extension, is_last_item, count)
+        
+        add_tree_items(folder_path)
+        
+        if len(tree_lines) > max_items:
+            tree_lines.append("...")
+        
+        tree_text = "\n".join(tree_lines)
+        
+        self.tree_preview_box.configure(state="normal")
+        self.tree_preview_box.delete("1.0", "end")
+        self.tree_preview_box.insert("1.0", tree_text)
+        self.tree_preview_box.configure(state="disabled")
 
     def log(self, message, type="info"):
         color = COLOR_TEXT_DIM
@@ -765,6 +857,7 @@ class NoireConverterApp(ctk.CTk, TkinterDnD.DnDWrapper):
         elif tab in ["GIF Studio", "GIF Stüdyo"]: threading.Thread(target=self.process_gif).start()
         elif tab in ["Doc Station", "Doc İstasyonu"]: threading.Thread(target=self.process_documents).start()
         elif tab in ["Renamer", "Adlandır"]: threading.Thread(target=self.process_rename).start()
+        elif tab in ["Tree View", "Ağaç Görünümü"]: threading.Thread(target=self.process_tree_export).start()
         else: threading.Thread(target=self.process_convert).start()
 
     # --- PROCESSORS ---
@@ -1031,6 +1124,72 @@ class NoireConverterApp(ctk.CTk, TkinterDnD.DnDWrapper):
     def finish_process(self):
         self.log(LANG[self.current_lang]["status_done"], "success")
         self.btn_start.configure(state="normal", text=LANG[self.current_lang]["btn_start"])
+
+    def generate_full_tree(self, folder_path):
+        """Tam klasör ağacını text olarak döndür"""
+        tree_lines = []
+        folder_name = os.path.basename(folder_path)
+        tree_lines.append(folder_name + "/")
+        tree_lines.append("")
+        
+        def add_tree_items(path, prefix=""):
+            try:
+                items = sorted(os.listdir(path))
+                # Gizli dosyaları filtrele
+                items = [item for item in items if not item.startswith('.')]
+            except (PermissionError, OSError):
+                return
+            
+            for i, item in enumerate(items):
+                is_last = (i == len(items) - 1)
+                item_path = os.path.join(path, item)
+                
+                # Ağaç karakterleri
+                connector = "└── " if is_last else "├── "
+                tree_lines.append(prefix + connector + item)
+                
+                if os.path.isdir(item_path):
+                    extension = "    " if is_last else "│   "
+                    add_tree_items(item_path, prefix + extension)
+        
+        add_tree_items(folder_path)
+        return "\n".join(tree_lines)
+
+    def process_tree_export(self):
+        """Tree View'i text dosyasına kaydet"""
+        if not self.tree_folder_path:
+            messagebox.showwarning("!", "Please select a folder first." if self.current_lang == "en" else "Lütfen önce bir klasör seçin.")
+            self.finish_process()
+            return
+        
+        try:
+            # Tam ağacı oluştur
+            tree_content = self.generate_full_tree(self.tree_folder_path)
+            
+            # Kaydetme konumunu belirle
+            if self.use_source_var.get():
+                save_dir = os.path.dirname(self.tree_folder_path)
+            else:
+                save_dir = self.output_folder if self.output_folder else os.path.dirname(self.tree_folder_path)
+            
+            folder_name = os.path.basename(self.tree_folder_path)
+            output_file = os.path.join(save_dir, f"{folder_name}_tree.txt")
+            
+            # Text dosyasına kaydet
+            with open(output_file, 'w', encoding='utf-8') as f:
+                f.write(f"📁 {folder_name}\n")
+                f.write("=" * 50 + "\n\n")
+                f.write(tree_content)
+                f.write("\n\n")
+                f.write("=" * 50 + "\n")
+                f.write(f"Generated by Noire Converter v1.4\n")
+            
+            self.log(f"Tree exported: {folder_name}_tree.txt", "success")
+            
+        except Exception as e:
+            self.log(f"Tree export error: {str(e)[:30]}", "error")
+        
+        self.finish_process()
 
 if __name__ == "__main__":
     app = NoireConverterApp()

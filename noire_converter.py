@@ -9,11 +9,12 @@ from tkinterdnd2 import DND_FILES, TkinterDnD
 from tkinter import filedialog, messagebox
 from PIL import Image, ImageTk
 import comtypes.client
+from deep_translator import GoogleTranslator
+import json # Persistence
 
-# --- DİL PAKETİ (v1.3) ---
 LANG = {
     "en": {
-        "title": "Noire Converter v1.4",
+        "title": "Noire Converter v1.5",
         "drop_title": "DROP MEDIA",
         "drop_sub": "Files/Folders",
         "chk_img": "Img", "chk_aud": "Aud", "chk_vid": "Vid", "chk_doc": "Doc",
@@ -52,6 +53,28 @@ LANG = {
         "crop_tip": "Drag corners. Center to move.", "btn_apply": "APPLY",
         "plh_start": "Start", "plh_end": "End", "plh_w": "W", "plh_h": "H", "plh_x": "X", "plh_y": "Y",
         "guide_title": "USER MANUAL",
+        # --- TRANSLATION TAB ---
+        "tab_translate": "Translate",
+        "lbl_target_lang": "Target Language",
+        "lbl_source_lang": "Source Language",
+        "lbl_translate_mode": "Save Mode",
+        "opt_separate": "Separate File",
+        "opt_same": "Append to Same File",
+        "btn_translate": "TRANSLATE",
+        "lbl_translate_preview": "Preview:",
+        "lbl_translate_hint": "ℹ️ Supported: .txt, .srt, .json, .xml, .csv, .html",
+        "status_translating": "Translating...",
+        "msg_api_key_missing": "DeepL API Key is required!",
+        "msg_no_translatable": "No translatable files selected!",
+        "msg_trans_done": "Translation completed!",
+        "msg_trans_error": "Translation error: ",
+        "msg_select_trans_folder": "Select folder containing files to translate",
+        "btn_trans_folder": "Select Files",
+        "lbl_trans_folder": "Selected Folder:",
+        "lbl_trans_files": "Files to Translate:",
+        "msg_save_separate": "Save to separate file",
+        "msg_save_append": "Append to existing file",
+        "lbl_auto": "Auto",
         "guide_text": """
 1. RESIZE MODES
 ---------------------------
@@ -75,12 +98,18 @@ LANG = {
 • Find Text: Text to remove (e.g. _1500x1500).
 • Replace With: Leave empty to delete.
 
-5. SETUP
+5. TRANSLATE (New)
+---------------------------
+• Free Google Translate integration.
+• Auto-splits large files (>5000 chars).
+• Saves as separate files (e.g. file_tr.txt).
+
+6. SETUP
 ---------------------------
 • 'ffmpeg.exe' must be in the same folder."""
     },
     "tr": {
-        "title": "Noire Converter v1.4",
+        "title": "Noire Converter v1.5",
         "drop_title": "MEDYA SÜRÜKLE",
         "drop_sub": "Dosya/Klasör",
         "chk_img": "Img", "chk_aud": "Aud", "chk_vid": "Vid", "chk_doc": "Doc",
@@ -119,6 +148,28 @@ LANG = {
         "crop_tip": "Köşelerden boyutlandır. Ortadan taşı.", "btn_apply": "UYGULA",
         "plh_start": "Başla", "plh_end": "Bitir", "plh_w": "G", "plh_h": "Y", "plh_x": "X", "plh_y": "Y",
         "guide_title": "KULLANIM KILAVUZU",
+        # --- TRANSLATION TAB ---
+        "tab_translate": "Çeviri",
+        "lbl_target_lang": "Hedef Dil",
+        "lbl_source_lang": "Kaynak Dil",
+        "lbl_translate_mode": "Kaydetme Modu",
+        "opt_separate": "Ayrı Dosya",
+        "opt_same": "Aynı Dosyaya Ekle",
+        "btn_translate": "ÇEVİR",
+        "lbl_translate_preview": "Önizleme:",
+        "lbl_translate_hint": "ℹ️ Desteklenen: .txt, .srt, .json, .xml, .csv, .html",
+        "status_translating": "Çeviriliyor...",
+        "msg_api_key_missing": "DeepL API Anahtarı gerekli!",
+        "msg_no_translatable": "Çevrilebilir dosya seçilmedi!",
+        "msg_trans_done": "Çeviri tamamlandı!",
+        "msg_trans_error": "Çeviri hatası: ",
+        "msg_select_trans_folder": "Çevrilecek dosyaları içeren klasörü seçin",
+        "btn_trans_folder": "Dosya Seç",
+        "lbl_trans_folder": "Seçilen Klasör:",
+        "lbl_trans_files": "Çevrilecek Dosyalar:",
+        "msg_save_separate": "Ayrı dosya olarak kaydet",
+        "msg_save_append": "Mevcut dosyaya ekle",
+        "lbl_auto": "Otomatik",
         "guide_text": """
 1. BOYUTLANDIRMA MODLARI
 ---------------------------
@@ -142,7 +193,13 @@ LANG = {
 • Bulunacak Metin: Silinecek ek (örn: _1500x1500).
 • Yeni Metin: Silmek için boş bırakın.
 
-5. KURULUM
+5. ÇEVİRİ (Yeni)
+---------------------------
+• Ücretsiz Google Translate entegrasyonu.
+• Uzun metinleri otomatik böler.
+• Ayrı dosya olarak kaydeder (örn: dosya_tr.txt).
+
+6. KURULUM
 ---------------------------
 • 'ffmpeg.exe' aynı klasörde olmalıdır."""
     }
@@ -165,7 +222,8 @@ FONT_LOG = ("Consolas", 10)
 IMAGE_EXTS = ['.jpg', '.jpeg', '.png', '.webp', '.bmp', '.tiff', '.ico']
 AUDIO_EXTS = ['.mp3', '.wav', '.ogg', '.flac', '.m4a']
 VIDEO_EXTS = ['.mp4', '.avi', '.mkv', '.mov', '.flv', '.webm']
-DOC_EXTS   = ['.docx', '.doc', '.pptx', '.ppt', '.pdf']
+DOC_EXTS   = ['.docx', '.doc', '.pptx', '.ppt', '.pdf', '.txt', '.srt', '.json', '.xml', '.csv', '.html', '.htm', '.md', '.yaml', '.yml']
+TEXT_EXTS  = ['.txt', '.srt', '.json', '.xml', '.csv', '.html', '.htm', '.md', '.yaml', '.yml']
 
 def resource_path(relative_path):
     try:
@@ -341,7 +399,17 @@ class NoireConverterApp(ctk.CTk, TkinterDnD.DnDWrapper):
                 self.wm_iconbitmap(icon_file_path)
             except: pass
         self.file_items = []
-        self.output_folder = "" 
+        self.output_folder = ""
+        
+        # --- Translation Variables ---
+        self.translate_target_lang = ctk.StringVar(value="TR")
+        self.translate_source_lang = ctk.StringVar(value="auto")
+        self.translate_mode = ctk.StringVar(value="separate")  # "separate" veya "same"
+        self.translated_content = {}  # Dosya yolu -> çeviri içeriği
+        
+        # Persistence
+        self.config_file = os.path.join(os.path.dirname(os.path.abspath(__file__)), "config.json")
+        self.settings = self.load_config()
         
         self.filter_img_var = ctk.BooleanVar(value=True)
         self.filter_audio_var = ctk.BooleanVar(value=True)
@@ -401,15 +469,33 @@ class NoireConverterApp(ctk.CTk, TkinterDnD.DnDWrapper):
         self.chk_doc = ctk.CTkCheckBox(self.filter_box, text="Doc", variable=self.filter_doc_var, **chk_style)
         self.chk_doc.grid(row=1, column=1, padx=15, pady=3, sticky="w")
 
-        self.tab_view = ctk.CTkTabview(self.left_col, height=280, fg_color=COLOR_FRAME, segmented_button_fg_color="#111", segmented_button_selected_color=COLOR_ACCENT, segmented_button_selected_hover_color=COLOR_ACCENT_HOVER, segmented_button_unselected_color=COLOR_FRAME, text_color="white")
-        self.tab_view.pack(fill="x", pady=(0, 15))
-        self.tab_convert = self.tab_view.add("Convert")
-        self.tab_resize = self.tab_view.add("Resize")
-        self.tab_opt = self.tab_view.add("Optimizer")
-        self.tab_gif = self.tab_view.add("GIF Studio")
-        self.tab_docs = self.tab_view.add("Doc Station")
-        self.tab_tools = self.tab_view.add("Renamer") # YENİ SEKME
-        self.tab_tree = self.tab_view.add("Tree View") # TREE EXPORTER SEKME
+        # Custom Tab Container
+        self.tab_container = ctk.CTkFrame(self.left_col, height=280, fg_color=COLOR_FRAME)
+        self.tab_container.pack(fill="x", pady=(0, 15))
+        self.tab_container.pack_propagate(False)
+
+        # Tab Content Frames (Hidden by default)
+        self.frames = {}
+        for name in ["Convert", "Resize", "Optimizer", "GIF Studio", "Doc Station", "Renamer", "Tree View", "Translate"]:
+            f = ctk.CTkFrame(self.tab_container, fg_color="transparent")
+            f.grid(row=0, column=0, sticky="nsew")
+            self.frames[name] = f
+        
+        self.tab_container.grid_rowconfigure(0, weight=1)
+        self.tab_container.grid_columnconfigure(0, weight=1)
+        
+        # Shortcuts for cleaner code
+        self.tab_convert = self.frames["Convert"]
+        self.tab_resize = self.frames["Resize"]
+        self.tab_opt = self.frames["Optimizer"]
+        self.tab_gif = self.frames["GIF Studio"]
+        self.tab_docs = self.frames["Doc Station"]
+        self.tab_tools = self.frames["Renamer"]
+        self.tab_tree = self.frames["Tree View"]
+        self.tab_translate = self.frames["Translate"]
+
+        # Navigation Buttons (2 Rows)
+        self.setup_custom_tabs()
 
         seg_style = {"fg_color": "#111", "selected_color": "#333", "text_color": "#fff", "height": 30}
         entry_style = {"height": 35, "fg_color": "#111", "border_color": "#333", "justify": "center"}
@@ -535,7 +621,8 @@ class NoireConverterApp(ctk.CTk, TkinterDnD.DnDWrapper):
         self.lbl_tree_preview = ctk.CTkLabel(self.tab_tree, text="", font=("Roboto", 11, "bold"), text_color=COLOR_TEXT_DIM)
         self.lbl_tree_preview.pack(anchor="w", pady=(5, 5))
         
-        self.tree_preview_box = ctk.CTkTextbox(self.tab_tree, width=460, height=120, fg_color="#111", border_color="#333", border_width=1, font=("Consolas", 9))
+        # Reduced height for Tree View preview
+        self.tree_preview_box = ctk.CTkTextbox(self.tab_tree, width=460, height=80, fg_color="#111", border_color="#333", border_width=1, font=("Consolas", 9))
         self.tree_preview_box.pack(fill="both", expand=True, pady=(0, 10))
         self.tree_preview_box.configure(state="disabled")
         
@@ -543,6 +630,35 @@ class NoireConverterApp(ctk.CTk, TkinterDnD.DnDWrapper):
         self.lbl_tree_info.pack(pady=5)
         
         self.tree_folder_path = ""
+
+        # Reduced padding to raise UI
+        # Google Translate Mode (No API Key needed)
+        self.lbl_google_hint = ctk.CTkLabel(self.tab_translate, text="Google Translate Mode (Free/No Key)", font=("Roboto", 11, "bold"), text_color=COLOR_ACCENT)
+        self.lbl_google_hint.pack(anchor="w", pady=(5, 5))
+        
+        lang_frame = ctk.CTkFrame(self.tab_translate, fg_color="transparent")
+        lang_frame.pack(fill="x", pady=(0, 5))
+        
+        self.lbl_target_lang = ctk.CTkLabel(lang_frame, text="", font=("Roboto", 11, "bold"), text_color=COLOR_TEXT_DIM)
+        self.lbl_target_lang.pack(side="left", padx=(0, 10))
+        
+        # DeepL target language codes
+        deepl_langs = ["TR", "EN", "DE", "FR", "ES", "IT", "PT", "RU", "JA", "KO", "ZH", "NL", "PL", "CS", "EL", "HU", "RO", "SV", "DA", "FI"]
+        combo_style = {"fg_color": "#111", "text_color": "#fff", "height": 30, "dropdown_fg_color": "#222", "button_color": COLOR_ACCENT, "button_hover_color": COLOR_ACCENT_HOVER}
+        self.combo_target_lang = ctk.CTkComboBox(lang_frame, values=deepl_langs, variable=self.translate_target_lang, **combo_style)
+        self.combo_target_lang.pack(side="left", padx=(0, 20))
+        
+        self.combo_target_lang.pack(side="left", padx=(0, 20))
+        
+        # Source Folder Button
+        self.lbl_translate_preview = ctk.CTkLabel(self.tab_translate, text="", font=("Roboto", 11, "bold"), text_color=COLOR_TEXT_DIM)
+        self.lbl_translate_preview.pack(anchor="w", pady=(5, 0))
+        
+        self.btn_trans_add_folder = ctk.CTkButton(self.tab_translate, text="", width=200, height=35, fg_color=COLOR_ACCENT, hover_color=COLOR_ACCENT_HOVER, text_color="black", font=("Roboto", 11, "bold"), command=self.select_translate_source_folder)
+        self.btn_trans_add_folder.pack(pady=(0, 5))
+        
+        self.lbl_translate_hint = ctk.CTkLabel(self.tab_translate, text="", font=("Roboto", 11), text_color="gray", justify="left")
+        self.lbl_translate_hint.pack(pady=5)
 
         # --- ALT PANEL ---
         self.path_frame = ctk.CTkFrame(self.left_col, fg_color=COLOR_FRAME, corner_radius=8, height=45)
@@ -647,6 +763,82 @@ class NoireConverterApp(ctk.CTk, TkinterDnD.DnDWrapper):
         self.entry_crop_h.configure(placeholder_text=T["plh_h"])
         self.entry_crop_x.configure(placeholder_text=T["plh_x"])
         self.entry_crop_y.configure(placeholder_text=T["plh_y"])
+        
+        # Translation tab UI
+        self.lbl_target_lang.configure(text=T["lbl_target_lang"])
+
+        # Source Folder Button UI Text Update
+        self.lbl_translate_preview.configure(text="Add From Folder:" if self.current_lang == "en" else "Klasörden Ekle:")
+        self.btn_trans_add_folder.configure(text="Select Folder" if self.current_lang == "en" else "Klasör Seç")
+        
+        self.lbl_translate_hint.configure(text=T["lbl_translate_hint"])
+
+    def setup_custom_tabs(self):
+        nav_frame = ctk.CTkFrame(self.left_col, fg_color="transparent")
+        nav_frame.pack(fill="x", pady=(0, 10), before=self.tab_container)
+        
+        # Row 1
+        row1 = ctk.CTkFrame(nav_frame, fg_color="transparent")
+        row1.pack(fill="x", pady=(0, 2))
+        # Row 2
+        row2 = ctk.CTkFrame(nav_frame, fg_color="transparent")
+        row2.pack(fill="x")
+        
+        self.tab_btns = {}
+        
+        # Tabs Struct: Name, Display, Row_Frame
+        tabs_def = [
+            ("Convert", "Convert", row1),
+            ("Resize", "Resize", row1),
+            ("Optimizer", "Optimizer", row1),
+            ("GIF Studio", "GIF Studio", row1),
+            ("Doc Station", "Doc Station", row2),
+            ("Renamer", "Renamer", row2),
+            ("Tree View", "Tree View", row2),
+            ("Translate", "Translate", row2)
+        ]
+        
+        for name, label, parent in tabs_def:
+            btn = ctk.CTkButton(parent, text=label, width=110, height=30, fg_color="#222", hover_color="#333", border_width=1, border_color="#333", corner_radius=6, command=lambda n=name: self.select_tab(n))
+            btn.pack(side="left", padx=2, fill="x", expand=True)
+            self.tab_btns[name] = btn
+            
+        self.current_tab_name = "Convert"
+        self.select_tab("Convert")
+
+    def select_tab(self, name):
+        self.current_tab_name = name
+        
+        # Reset styles
+        for n, btn in self.tab_btns.items():
+            btn.configure(fg_color="#222", text_color="#aaa", border_color="#333")
+            
+        # Set active style
+        self.tab_btns[name].configure(fg_color=COLOR_ACCENT, text_color="black", border_color=COLOR_ACCENT)
+        self.frames[name].tkraise()
+        
+        # If Translate tab, do nothing special for now
+        if name == "Translate":
+            pass
+
+    def select_translate_source_folder(self):
+        folder = filedialog.askdirectory()
+        if not folder: return
+        
+        self.log(f"Scanning: {os.path.basename(folder)}", "info")
+        threading.Thread(target=self.scan_and_add_files_translate, args=(folder,)).start()
+
+    def scan_and_add_files_translate(self, folder):
+        files = []
+        try:
+            for f in os.listdir(folder):
+                full_path = os.path.join(folder, f)
+                if os.path.isfile(full_path):
+                     files.append(full_path)
+        except: pass
+        
+        if files:
+            self.scan_and_add_files(files)
 
     def open_visual_cropper(self):
         target_video = None
@@ -850,7 +1042,7 @@ class NoireConverterApp(ctk.CTk, TkinterDnD.DnDWrapper):
             return
 
         self.btn_start.configure(state="disabled", text=LANG[self.current_lang]["status_processing"])
-        tab = self.tab_view.get()
+        tab = self.current_tab_name
         
         if tab in ["Resize", "Boyutlandır"]: threading.Thread(target=self.process_resize).start()
         elif tab in ["Optimizer", "Optimize Et"]: threading.Thread(target=self.process_optimize).start()
@@ -858,6 +1050,7 @@ class NoireConverterApp(ctk.CTk, TkinterDnD.DnDWrapper):
         elif tab in ["Doc Station", "Doc İstasyonu"]: threading.Thread(target=self.process_documents).start()
         elif tab in ["Renamer", "Adlandır"]: threading.Thread(target=self.process_rename).start()
         elif tab in ["Tree View", "Ağaç Görünümü"]: threading.Thread(target=self.process_tree_export).start()
+        elif tab == "Translate": threading.Thread(target=self.process_translation).start()
         else: threading.Thread(target=self.process_convert).start()
 
     # --- PROCESSORS ---
@@ -1182,7 +1375,7 @@ class NoireConverterApp(ctk.CTk, TkinterDnD.DnDWrapper):
                 f.write(tree_content)
                 f.write("\n\n")
                 f.write("=" * 50 + "\n")
-                f.write(f"Generated by Noire Converter v1.4\n")
+                f.write(f"Generated by Noire Converter v1.5\n")
             
             self.log(f"Tree exported: {folder_name}_tree.txt", "success")
             
@@ -1190,6 +1383,158 @@ class NoireConverterApp(ctk.CTk, TkinterDnD.DnDWrapper):
             self.log(f"Tree export error: {str(e)[:30]}", "error")
         
         self.finish_process()
+
+    # --- TRANSLATION METHODS ---
+    def translate_large_text(self, text, target_lang):
+        """Splits text into chunks and translates them to avoid 5000 char limit."""
+        translator = GoogleTranslator(source='auto', target=target_lang)
+        MAX_CHUNK = 4500
+        
+        if len(text) < MAX_CHUNK:
+            return translator.translate(text)
+            
+        chunks = []
+        current_chunk = ""
+        
+        # Simple splitting by lines to preserve structure
+        lines = text.split('\n')
+        
+        for line in lines:
+            if len(line) > MAX_CHUNK:
+                # Line itself is too long, split by characters
+                while len(line) > 0:
+                    part = line[:MAX_CHUNK]
+                    line = line[MAX_CHUNK:]
+                    if len(current_chunk) + len(part) < MAX_CHUNK:
+                        current_chunk += part
+                    else:
+                        if current_chunk: chunks.append(translator.translate(current_chunk))
+                        current_chunk = part
+            elif len(current_chunk) + len(line) < MAX_CHUNK:
+                current_chunk += line + "\n"
+            else:
+                if current_chunk:
+                    chunks.append(translator.translate(current_chunk))
+                current_chunk = line + "\n"
+                
+        if current_chunk:
+             chunks.append(translator.translate(current_chunk))
+             
+        return "\n".join(chunks)
+
+    def process_translation(self):
+        """Main translation processing method using file_items from queue"""
+        # No API Key needed for Google Translate
+        
+        target_lang = self.translate_target_lang.get()
+        print(f"[DEBUG] User Selected Language: '{target_lang}'")
+        
+        # DeepL language code mapping
+        lang_map = {
+            "TR": "tr", "EN": "en", "DE": "de", "FR": "fr", "ES": "es",
+            "IT": "it", "PT": "pt", "RU": "ru", "JA": "ja", "KO": "ko",
+            "ZH": "zh", "NL": "nl", "PL": "pl", "CS": "cs", "EL": "el",
+            "HU": "hu", "RO": "ro", "SV": "sv", "DA": "da", "FI": "fi"
+        }
+        target_code = lang_map.get(target_lang, "tr")
+        
+        # Get selected files from queue
+        translate_files = [item['path'] for item in self.file_items if item['var'].get()]
+        
+        # Filtrele: Sadece text dosyaları
+        valid_files = []
+        for f in translate_files:
+            ext = os.path.splitext(f)[1].lower()
+            if ext in TEXT_EXTS:
+                valid_files.append(f)
+        
+        if not valid_files:
+            self.log("No text files to translate.", "info")
+            self.finish_process()
+            return
+
+        total = len(valid_files)
+        success_count = 0
+        
+        for i, file_path in enumerate(valid_files):
+            try:
+                file_name = os.path.basename(file_path)
+                ext = os.path.splitext(file_path)[1].lower()
+                
+                # UI Update
+                self.log(f"[{i+1}/{total}] Translating: {file_name}...", "info")
+                
+                # Read file content
+                content = ""
+                try:
+                    with open(file_path, 'r', encoding='utf-8') as f:
+                        content = f.read()
+                except:
+                    try:
+                        with open(file_path, 'r', encoding='latin-1') as f:
+                            content = f.read()
+                    except:
+                        self.log(f"Read Error: {file_name}", "error")
+                        continue
+                
+                if not content.strip():
+                    continue
+                
+                # Translate using Google Translate (with chunking)
+                try:
+                    print(f"[DEBUG] Translating {file_name} to {target_code} via Google...")
+                    translated = self.translate_large_text(content, target_code)
+                    if not translated:
+                         raise Exception("Empty translation result")
+                    print(f"[DEBUG] Translation success. Length: {len(translated)}")
+                except Exception as e:
+                    self.log(f"Google Error: {str(e)[:40]}...", "error")
+                    print(f"[DEBUG] Google Exception: {str(e)[:200]}") # Truncate log
+                    continue
+                
+                # Save translated file (Always Separate)
+                # Separate file: original_tr.txt, original_de.json, etc.
+                suffix = f"_{target_lang.lower()}"
+                new_name = os.path.splitext(file_name)[0] + suffix + ext
+                save_path = os.path.join(os.path.dirname(file_path), new_name)
+                    
+                # Write output
+                with open(save_path, 'w', encoding='utf-8') as f:
+                    f.write(translated)
+                self.log(f"[{i+1}/{total}] ✓ {file_name} -> {new_name}", "success")
+                
+                success_count += 1
+                
+                # Show preview of first file
+                if i == 0:
+                    self.text_translate_preview.configure(state="normal")
+                    self.text_translate_preview.delete("1.0", "end")
+                    preview_text = translated[:2000] + ("..." if len(translated) > 2000 else "")
+                    self.text_translate_preview.insert("1.0", f"[{file_name}]\n\n{preview_text}")
+                    self.text_translate_preview.configure(state="disabled")
+                    
+            except Exception as e:
+                self.log(f"[{i+1}/{total}] ✗ {os.path.basename(file_path)}: {str(e)[:20]}", "error")
+        
+        self.log(LANG[self.current_lang]["msg_trans_done"] + f" ({success_count}/{total})", "success")
+        self.finish_process()
+
+    def refresh_translate_source_list(self):
+        pass # Removed
+
+    def load_config(self):
+        try:
+            if os.path.exists(self.config_file):
+                with open(self.config_file, 'r', encoding='utf-8') as f:
+                    return json.load(f)
+        except: pass
+        return {}
+
+    def save_config(self):
+        try:
+            with open(self.config_file, 'w', encoding='utf-8') as f:
+                json.dump(self.settings, f)
+        except: pass
 
 if __name__ == "__main__":
     app = NoireConverterApp()

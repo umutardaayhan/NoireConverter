@@ -14,13 +14,14 @@ import json # Persistence
 
 LANG = {
     "en": {
-        "title": "Noire Converter v1.5",
+        "title": "Noire Converter v1.6",
         "drop_title": "DROP MEDIA",
         "drop_sub": "Files/Folders",
         "chk_img": "Img", "chk_aud": "Aud", "chk_vid": "Vid", "chk_doc": "Doc",
         "tab_convert": "Convert", "tab_resize": "Resize", "tab_opt": "Optimizer",
         "tab_gif": "GIF Studio", "tab_doc": "Doc Station", "tab_tools": "Renamer",
         "tab_tree": "Tree View",
+        "tab_text": "Text Extract",
         "lbl_target_img": "Target Image Format",
         "lbl_target_aud": "Target Audio Format",
         "lbl_target_doc": "Conversion Mode",
@@ -39,10 +40,18 @@ LANG = {
         "lbl_tools_rep": "Replace With:",
         "lbl_tools_info": "ℹ️ Replaces text in filenames. Leave 'Replace With' empty to delete text.",
         "lbl_tree_select": "Select Folder:",
+        "lbl_text_select": "Select Folder:",
         "lbl_tree_preview": "Preview:",
         "lbl_tree_info": "ℹ️ Exports the folder structure as a text file with tree view.",
+        "lbl_text_preview": "Preview:",
+        "lbl_text_info": "ℹ️ Extracts content from any file and saves as .txt.",
+        "lbl_text_title": "Text Extract",
+        "lbl_text_desc": "Save selected files content as .txt.",
+        "lbl_text_info_box": "• Drag files or use Browse Folder\n• Set save location with Source Folder\n• Press START to begin",
         "btn_tree_browse": "Browse Folder",
         "btn_tree_export": "Export Tree",
+        "btn_text_browse": "Browse Folder",
+        "btn_text_export": "Extract & Save",
         "sw_source": "Source Folder",
         "btn_browse": "Browse",
         "lbl_queue": "QUEUE",
@@ -109,13 +118,14 @@ LANG = {
 • 'ffmpeg.exe' must be in the same folder."""
     },
     "tr": {
-        "title": "Noire Converter v1.5",
+        "title": "Noire Converter v1.6",
         "drop_title": "MEDYA SÜRÜKLE",
         "drop_sub": "Dosya/Klasör",
         "chk_img": "Img", "chk_aud": "Aud", "chk_vid": "Vid", "chk_doc": "Doc",
         "tab_convert": "Dönüştür", "tab_resize": "Boyutlandır", "tab_opt": "Optimize",
         "tab_gif": "GIF Stüdyo", "tab_doc": "Doc İstasyonu", "tab_tools": "Adlandır",
         "tab_tree": "Ağaç Görünümü",
+        "tab_text": "Metin Çıkar",
         "lbl_target_img": "Hedef Resim Formatı",
         "lbl_target_aud": "Hedef Ses Formatı",
         "lbl_target_doc": "Dönüştürme Modu",
@@ -134,10 +144,18 @@ LANG = {
         "lbl_tools_rep": "Yeni Metin:",
         "lbl_tools_info": "ℹ️ Dosya adındaki metni değiştirir. Silmek için 'Yeni Metin'i boş bırakın.",
         "lbl_tree_select": "Klasör Seç:",
+        "lbl_text_select": "Klasör Seç:",
         "lbl_tree_preview": "Önizleme:",
         "lbl_tree_info": "ℹ️ Klasör yapısını ağaç görünümünde text dosyasına aktarır.",
         "btn_tree_browse": "Klasör Seç",
         "btn_tree_export": "Ağacı Dışa Aktar",
+        "btn_text_browse": "Klasör Seç",
+        "btn_text_export": "Çıkar ve Kaydet",
+        "lbl_text_preview": "Önizleme:",
+        "lbl_text_info": "ℹ️ Herhangi bir dosyanın içeriğini .txt olarak kaydeder.",
+        "lbl_text_title": "Text Extract",
+        "lbl_text_desc": "Seçili dosyaların içeriğini .txt olarak kaydet.",
+        "lbl_text_info_box": "• Dosyaları sürükle veya Browse Folder ile seç\n• Source Folder ile kaydetme konumunu belirle\n• START butonuna basarak işlemi başlat",
         "sw_source": "Kaynak Klasör",
         "btn_browse": "Seç...",
         "lbl_queue": "KUYRUK",
@@ -222,8 +240,8 @@ FONT_LOG = ("Consolas", 10)
 IMAGE_EXTS = ['.jpg', '.jpeg', '.png', '.webp', '.bmp', '.tiff', '.ico']
 AUDIO_EXTS = ['.mp3', '.wav', '.ogg', '.flac', '.m4a']
 VIDEO_EXTS = ['.mp4', '.avi', '.mkv', '.mov', '.flv', '.webm']
-DOC_EXTS   = ['.docx', '.doc', '.pptx', '.ppt', '.pdf', '.txt', '.srt', '.json', '.xml', '.csv', '.html', '.htm', '.md', '.yaml', '.yml']
-TEXT_EXTS  = ['.txt', '.srt', '.json', '.xml', '.csv', '.html', '.htm', '.md', '.yaml', '.yml']
+DOC_EXTS   = ['.docx', '.doc', '.pptx', '.ppt', '.pdf', '.txt', '.srt', '.json', '.xml', '.csv', '.html', '.htm', '.md', '.yaml', '.yml', '.py', '.js', '.ts', '.cs', '.java', '.c', '.cpp', '.h', '.hpp', '.go', '.rs', '.swift', '.kt', '.rb', '.php', '.pl', '.sh', '.bat', '.ps1', '.log', '.ini', '.cfg', '.conf', '.properties']
+TEXT_EXTS  = ['.txt', '.srt', '.json', '.xml', '.csv', '.html', '.htm', '.md', '.yaml', '.yml', '.py', '.js', '.ts', '.cs', '.java', '.c', '.cpp', '.h', '.hpp', '.go', '.rs', '.swift', '.kt', '.rb', '.php', '.pl', '.sh', '.bat', '.ps1', '.log', '.ini', '.cfg', '.conf', '.properties']
 
 def resource_path(relative_path):
     try:
@@ -388,8 +406,8 @@ class NoireConverterApp(ctk.CTk, TkinterDnD.DnDWrapper):
         self.TkdndVersion = TkinterDnD._require(self)
         ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID('com.noire.converter.v1_3')
         self.current_lang = "en"
-        self.title("Noire Converter v1.4")
-        self.geometry("1180x700") 
+        self.title("Noire Converter v1.6")
+        self.geometry("1180x800") 
         self.resizable(False, False)
         self.configure(fg_color=COLOR_BG)
         icon_file_path = resource_path("App.ico")
@@ -430,15 +448,16 @@ class NoireConverterApp(ctk.CTk, TkinterDnD.DnDWrapper):
     def create_ui(self):
         self.main_container = ctk.CTkFrame(self, fg_color="transparent")
         self.main_container.pack(fill="both", expand=True, padx=20, pady=20)
-        self.left_col = ctk.CTkFrame(self.main_container, fg_color="transparent", width=500)
-        self.left_col.pack(side="left", fill="y", padx=(0, 20))
-        self.left_col.pack_propagate(False) 
+        
+        # Sol paneli scrollable frame ile sarma
+        self.left_col = ctk.CTkScrollableFrame(self.main_container, fg_color="transparent", width=500, scrollbar_button_color="#333", scrollbar_button_hover_color="#444")
+        self.left_col.pack(side="left", fill="y", padx=(0, 20)) 
         
         self.header_frame = ctk.CTkFrame(self.left_col, fg_color="transparent")
         self.header_frame.pack(anchor="w", fill="x", pady=(0, 15))
         ctk.CTkLabel(self.header_frame, text="NOIRE", font=FONT_HEADER, text_color=COLOR_ACCENT).pack(side="left")
         ctk.CTkLabel(self.header_frame, text=" CONVERTER", font=FONT_HEADER, text_color="white").pack(side="left")
-        ctk.CTkLabel(self.header_frame, text=" // v1.4", font=("Roboto", 12), text_color=COLOR_TEXT_DIM).pack(side="left", padx=(5,0), pady=(10,0))
+        ctk.CTkLabel(self.header_frame, text=" // v1.5", font=("Roboto", 12), text_color=COLOR_TEXT_DIM).pack(side="left", padx=(5,0), pady=(10,0))
         
         btn_box = ctk.CTkFrame(self.header_frame, fg_color="transparent")
         btn_box.pack(side="right")
@@ -446,6 +465,9 @@ class NoireConverterApp(ctk.CTk, TkinterDnD.DnDWrapper):
         self.btn_lang.pack(side="left", padx=5)
         self.btn_help = ctk.CTkButton(btn_box, text="?", width=30, height=25, fg_color="#333", command=self.open_help_window)
         self.btn_help.pack(side="left")
+        
+        # Source Folder switch değişkeni
+        self.use_source_var = ctk.BooleanVar(value=True)
         
         self.drop_frame = ctk.CTkFrame(self.left_col, height=200, corner_radius=12, fg_color=COLOR_FRAME, border_width=2, border_color="#2a2a2a")
         self.drop_frame.pack(fill="x", pady=(0, 15))
@@ -468,6 +490,10 @@ class NoireConverterApp(ctk.CTk, TkinterDnD.DnDWrapper):
         self.chk_vid.grid(row=1, column=0, padx=15, pady=3, sticky="w")
         self.chk_doc = ctk.CTkCheckBox(self.filter_box, text="Doc", variable=self.filter_doc_var, **chk_style)
         self.chk_doc.grid(row=1, column=1, padx=15, pady=3, sticky="w")
+        
+        # Browse Folder Button for Drop Media
+        self.btn_drop_browse = ctk.CTkButton(self.drop_frame, text="Browse Folder", width=120, height=25, fg_color="#333", hover_color="#444", text_color="white", font=("Roboto", 10), command=self.browse_folder_for_queue)
+        self.btn_drop_browse.place(relx=0.5, rely=0.88, anchor="center")
 
         # Custom Tab Container
         self.tab_container = ctk.CTkFrame(self.left_col, height=280, fg_color=COLOR_FRAME)
@@ -476,7 +502,7 @@ class NoireConverterApp(ctk.CTk, TkinterDnD.DnDWrapper):
 
         # Tab Content Frames (Hidden by default)
         self.frames = {}
-        for name in ["Convert", "Resize", "Optimizer", "GIF Studio", "Doc Station", "Renamer", "Tree View", "Translate"]:
+        for name in ["Convert", "Resize", "Optimizer", "GIF Studio", "Doc Station", "Renamer", "Tree View", "Translate", "Text Extract"]:
             f = ctk.CTkFrame(self.tab_container, fg_color="transparent")
             f.grid(row=0, column=0, sticky="nsew")
             self.frames[name] = f
@@ -493,6 +519,7 @@ class NoireConverterApp(ctk.CTk, TkinterDnD.DnDWrapper):
         self.tab_tools = self.frames["Renamer"]
         self.tab_tree = self.frames["Tree View"]
         self.tab_translate = self.frames["Translate"]
+        self.tab_text = self.frames["Text Extract"]
 
         # Navigation Buttons (2 Rows)
         self.setup_custom_tabs()
@@ -631,6 +658,34 @@ class NoireConverterApp(ctk.CTk, TkinterDnD.DnDWrapper):
         
         self.tree_folder_path = ""
 
+        # --- TEXT EXTRACT TAB ---
+        # Bu sekme sağ paneldeki kuyruk ve Start butonu ile çalışır
+        self.lbl_text_title = ctk.CTkLabel(self.tab_text, text="Text Extract", font=("Roboto", 14, "bold"), text_color=COLOR_ACCENT)
+        self.lbl_text_title.pack(anchor="w", pady=(15, 10), padx=10)
+        
+        self.lbl_text_desc = ctk.CTkLabel(self.tab_text, text="", font=("Roboto", 11), text_color="gray", justify="left", anchor="w")
+        self.lbl_text_desc.pack(anchor="w", pady=(5, 10), padx=10, fill="x")
+        
+        # Info box
+        text_info_frame = ctk.CTkFrame(self.tab_text, fg_color=COLOR_FRAME, corner_radius=8)
+        text_info_frame.pack(fill="x", padx=10, pady=(10, 10))
+        
+        self.lbl_text_info = ctk.CTkLabel(text_info_frame, text="", font=("Roboto", 10), text_color="gray", justify="left")
+        self.lbl_text_info.pack(anchor="w", padx=10, pady=10)
+        
+        self.text_folder_path = ""
+        
+        # --- SOURCE FOLDER PANEL (Sol panelde) ---
+        self.path_frame = ctk.CTkFrame(self.left_col, fg_color=COLOR_FRAME, corner_radius=8, height=45)
+        self.path_frame.pack(fill="x", side="bottom", pady=(10, 0))
+        self.path_frame.pack_propagate(False)
+        self.switch_source = ctk.CTkSwitch(self.path_frame, text="", variable=self.use_source_var, command=self.toggle_path_selection, progress_color=COLOR_ACCENT, font=("Roboto", 12, "bold"))
+        self.switch_source.pack(side="left", padx=15)
+        self.btn_browse = ctk.CTkButton(self.path_frame, text="", width=60, height=24, fg_color="#333", state="disabled", command=self.select_output_folder)
+        self.btn_browse.pack(side="right", padx=10)
+        self.lbl_path = ctk.CTkLabel(self.path_frame, text="", font=("Roboto", 10), text_color=COLOR_TEXT_DIM)
+        self.lbl_path.pack(side="right", padx=5)
+
         # Reduced padding to raise UI
         # Google Translate Mode (No API Key needed)
         self.lbl_google_hint = ctk.CTkLabel(self.tab_translate, text="Google Translate Mode (Free/No Key)", font=("Roboto", 11, "bold"), text_color=COLOR_ACCENT)
@@ -660,24 +715,16 @@ class NoireConverterApp(ctk.CTk, TkinterDnD.DnDWrapper):
         self.lbl_translate_hint = ctk.CTkLabel(self.tab_translate, text="", font=("Roboto", 11), text_color="gray", justify="left")
         self.lbl_translate_hint.pack(pady=5)
 
-        # --- ALT PANEL ---
-        self.path_frame = ctk.CTkFrame(self.left_col, fg_color=COLOR_FRAME, corner_radius=8, height=45)
-        self.path_frame.pack(fill="x", side="bottom")
-        self.path_frame.pack_propagate(False)
-        self.use_source_var = ctk.BooleanVar(value=True)
-        self.switch_source = ctk.CTkSwitch(self.path_frame, text="", variable=self.use_source_var, command=self.toggle_path_selection, progress_color=COLOR_ACCENT, font=("Roboto", 12, "bold"))
-        self.switch_source.pack(side="left", padx=15)
-        self.btn_browse = ctk.CTkButton(self.path_frame, text="", width=60, height=24, fg_color="#333", state="disabled", command=self.select_output_folder)
-        self.btn_browse.pack(side="right", padx=10)
-        self.lbl_path = ctk.CTkLabel(self.path_frame, text="", font=("Roboto", 10), text_color=COLOR_TEXT_DIM)
-        self.lbl_path.pack(side="right", padx=5)
+        # --- ALT PANEL (Kaldırıldı - Sağ panele taşındı) ---
+        # (Eski path_frame buradaydı)
         
         self.right_col = ctk.CTkFrame(self.main_container, fg_color="transparent")
         self.right_col.pack(side="right", fill="both", expand=True)
         list_header = ctk.CTkFrame(self.right_col, fg_color="transparent")
         list_header.pack(fill="x", pady=(0, 10))
+        
         self.lbl_queue = ctk.CTkLabel(list_header, text="", font=("Roboto", 12, "bold"), text_color=COLOR_TEXT_DIM)
-        self.lbl_queue.pack(side="left")
+        self.lbl_queue.pack(side="left", padx=(0, 10))
         self.btn_clear = ctk.CTkButton(list_header, text="", width=80, height=24, fg_color="transparent", border_width=1, border_color="#333", text_color="#888", hover_color="#222", font=("Roboto", 11), command=self.clear_queue)
         self.btn_clear.pack(side="right")
         self.btn_remove = ctk.CTkButton(list_header, text="", width=110, height=24, fg_color=COLOR_DANGER, hover_color=COLOR_DANGER_HOVER, font=("Roboto", 11), command=self.remove_checked_files)
@@ -747,6 +794,9 @@ class NoireConverterApp(ctk.CTk, TkinterDnD.DnDWrapper):
         self.lbl_tree_preview.configure(text=T["lbl_tree_preview"])
         self.lbl_tree_info.configure(text=T["lbl_tree_info"])
         self.btn_tree_browse.configure(text=T["btn_tree_browse"])
+        self.lbl_text_title.configure(text=T["lbl_text_title"])
+        self.lbl_text_desc.configure(text=T["lbl_text_desc"])
+        self.lbl_text_info.configure(text=T["lbl_text_info_box"])
         self.switch_source.configure(text=T["sw_source"])
         self.btn_browse.configure(text=T["btn_browse"])
         self.lbl_queue.configure(text=T["lbl_queue"])
@@ -782,7 +832,10 @@ class NoireConverterApp(ctk.CTk, TkinterDnD.DnDWrapper):
         row1.pack(fill="x", pady=(0, 2))
         # Row 2
         row2 = ctk.CTkFrame(nav_frame, fg_color="transparent")
-        row2.pack(fill="x")
+        row2.pack(fill="x", pady=(0, 2))
+        # Row 3
+        row3 = ctk.CTkFrame(nav_frame, fg_color="transparent")
+        row3.pack(fill="x")
         
         self.tab_btns = {}
         
@@ -791,11 +844,12 @@ class NoireConverterApp(ctk.CTk, TkinterDnD.DnDWrapper):
             ("Convert", "Convert", row1),
             ("Resize", "Resize", row1),
             ("Optimizer", "Optimizer", row1),
-            ("GIF Studio", "GIF Studio", row1),
+            ("GIF Studio", "GIF Studio", row2),
             ("Doc Station", "Doc Station", row2),
             ("Renamer", "Renamer", row2),
-            ("Tree View", "Tree View", row2),
-            ("Translate", "Translate", row2)
+            ("Tree View", "Tree View", row3),
+            ("Translate", "Translate", row3),
+            ("Text Extract", "Text Extract", row3)
         ]
         
         for name, label, parent in tabs_def:
@@ -897,6 +951,31 @@ class NoireConverterApp(ctk.CTk, TkinterDnD.DnDWrapper):
             self.output_folder = folder
             self.lbl_path.configure(text=f".../{os.path.basename(folder)}")
 
+    def browse_folder_for_queue(self):
+        """Drop Media panelinden klasör seçip kuyruğa ekle"""
+        folder = filedialog.askdirectory()
+        if not folder:
+            return
+        
+        self.log(f"Scanning folder: {os.path.basename(folder)}", "info")
+        
+        # Klasördeki tüm dosyaları al
+        files = []
+        try:
+            for f in os.listdir(folder):
+                full_path = os.path.join(folder, f)
+                if os.path.isfile(full_path):
+                    files.append(full_path)
+        except Exception as e:
+            self.log(f"Error scanning folder: {str(e)}", "error")
+            return
+        
+        if files:
+            self.scan_and_add_files(files)
+            self.log(f"Added {len(files)} files to queue", "success")
+        else:
+            self.log("No files found in folder", "info")
+
     def select_tree_folder(self):
         folder = filedialog.askdirectory()
         if folder:
@@ -904,6 +983,176 @@ class NoireConverterApp(ctk.CTk, TkinterDnD.DnDWrapper):
             folder_name = os.path.basename(folder)
             self.lbl_tree_path.configure(text=folder_name)
             self.generate_tree_preview(folder)
+
+    def select_text_folder(self):
+        """Text Extract için klasör seçimi"""
+        folder = filedialog.askdirectory()
+        if folder:
+            self.text_folder_path = folder
+            folder_name = os.path.basename(folder)
+            self.lbl_text_path.configure(text=folder_name)
+            self.generate_text_preview(folder)
+
+    def generate_text_preview(self, folder_path, max_items=50):
+        """Klasördeki dosyaları listele ve önizleme kutusuna yaz"""
+        file_lines = []
+        file_lines.append(os.path.basename(folder_path) + "/")
+        
+        try:
+            items = sorted(os.listdir(folder_path))
+            # Gizli dosyaları filtrele
+            items = [item for item in items if not item.startswith('.')]
+        except (PermissionError, OSError):
+            file_lines.append("Error: Cannot access folder")
+            self.text_preview_box.configure(state="normal")
+            self.text_preview_box.delete("1.0", "end")
+            self.text_preview_box.insert("1.0", "\n".join(file_lines))
+            self.text_preview_box.configure(state="disabled")
+            return
+        
+        count = 0
+        for item in items:
+            if count >= max_items:
+                file_lines.append("...")
+                break
+            item_path = os.path.join(folder_path, item)
+            if os.path.isfile(item_path):
+                file_lines.append(f"📄 {item}")
+                count += 1
+            elif os.path.isdir(item_path):
+                file_lines.append(f"📁 {item}/")
+        
+        file_text = "\n".join(file_lines)
+        
+        self.text_preview_box.configure(state="normal")
+        self.text_preview_box.delete("1.0", "end")
+        self.text_preview_box.insert("1.0", file_text)
+        self.text_preview_box.configure(state="disabled")
+
+    def extract_text_to_txt(self):
+        """Klasördeki tüm dosyaların içeriğini oku ve .txt olarak kaydet"""
+        if not self.text_folder_path:
+            messagebox.showwarning("!", "Please select a folder first." if self.current_lang == "en" else "Lütfen önce bir klasör seçin.")
+            return
+        
+        self.log(self.current_lang["status_processing"] if self.current_lang["status_processing"] else "Processing...", "info")
+        threading.Thread(target=self._extract_text_worker, args=(self.text_folder_path,)).start()
+
+    def _extract_text_from_queue(self):
+        """Kuyruktaki seçili dosyaları .txt olarak kaydet"""
+        count = 0
+        errors = []
+        
+        # Seçili dosyaları al
+        selected_files = [item['path'] for item in self.file_items if item['var'].get()]
+        
+        if not selected_files:
+            self.after(0, lambda: messagebox.showwarning("!", "No files selected" if self.current_lang == "en" else "Dosya seçilmedi"))
+            self.after(0, lambda: self.btn_start.configure(state="normal", text=LANG[self.current_lang]["btn_start"]))
+            return
+        
+        for file_path in selected_files:
+            if not os.path.isfile(file_path):
+                continue
+            
+            # Zaten txt ise atla
+            if file_path.lower().endswith('.txt'):
+                continue
+            
+            # Kaydetme konumunu belirle
+            if self.use_source_var.get():
+                save_dir = os.path.dirname(file_path)
+            else:
+                save_dir = self.output_folder if self.output_folder else os.path.dirname(file_path)
+            
+            if not save_dir:
+                save_dir = os.path.dirname(file_path)
+            
+            basename = os.path.splitext(os.path.basename(file_path))[0]
+            output_file = os.path.join(save_dir, f"{basename}.txt")
+            
+            try:
+                with open(file_path, 'r', encoding='utf-8', errors='ignore') as f:
+                    content = f.read()
+                
+                with open(output_file, 'w', encoding='utf-8') as f:
+                    f.write(content)
+                
+                count += 1
+            except Exception as e:
+                errors.append(f"{os.path.basename(file_path)}: {str(e)}")
+        
+        # Sonucu raporla
+        self.after(0, lambda: self.btn_start.configure(state="normal", text=LANG[self.current_lang]["btn_start"]))
+        
+        if errors:
+            error_msg = "\n".join(errors[:5])
+            if len(errors) > 5:
+                error_msg += f"\n...and {len(errors) - 5} more errors"
+            self.after(0, lambda: self.log(f"Completed with errors: {count} files", "error"))
+            self.after(0, lambda: messagebox.showwarning("Errors", f"Processed {count} files.\nErrors:\n{error_msg}"))
+        else:
+            self.after(0, lambda: self.log(f"Completed: {count} files saved as .txt", "success"))
+            self.after(0, lambda: messagebox.showinfo("Success", f"{count} files extracted successfully!" if self.current_lang == "en" else f"{count} dosya başarıyla çıkarıldı!"))
+
+    def _extract_text_worker(self, folder_path):
+        """Arka planda çalışan dosya işleme fonksiyonu"""
+        count = 0
+        errors = []
+        
+        try:
+            items = os.listdir(folder_path)
+            items = [item for item in items if not item.startswith('.')]
+        except (PermissionError, OSError) as e:
+            errors.append(str(e))
+            self.after(0, lambda: self.log(f"Error: {str(e)}", "error"))
+            return
+        
+        for item in items:
+            item_path = os.path.join(folder_path, item)
+            
+            if not os.path.isfile(item_path):
+                continue
+            
+            # Zaten txt ise atla
+            if item.lower().endswith('.txt'):
+                continue
+            
+            # Kaydetme konumunu belirle
+            if self.use_source_var.get():
+                save_dir = os.path.dirname(item_path)
+            else:
+                save_dir = self.output_folder if self.output_folder else folder_path
+            
+            if not save_dir:
+                save_dir = folder_path
+            
+            basename = os.path.splitext(item)[0]
+            output_file = os.path.join(save_dir, f"{basename}.txt")
+            
+            try:
+                # Dosya içeriğini oku
+                with open(item_path, 'r', encoding='utf-8', errors='ignore') as f:
+                    content = f.read()
+                
+                # .txt olarak kaydet
+                with open(output_file, 'w', encoding='utf-8') as f:
+                    f.write(content)
+                
+                count += 1
+            except Exception as e:
+                errors.append(f"{item}: {str(e)}")
+        
+        # Sonucu raporla
+        if errors:
+            error_msg = "\n".join(errors[:5])
+            if len(errors) > 5:
+                error_msg += f"\n...and {len(errors) - 5} more errors"
+            self.after(0, lambda: self.log(f"Completed with errors: {count} files", "error"))
+            messagebox.showwarning("Errors", f"Processed {count} files.\nErrors:\n{error_msg}")
+        else:
+            self.after(0, lambda: self.log(f"Completed: {count} files saved as .txt", "success"))
+            self.after(0, lambda: messagebox.showinfo("Success", f"{count} files extracted successfully!" if self.current_lang == "en" else f"{count} dosya başarıyla çıkarıldı!"))
 
     def generate_tree_preview(self, folder_path, max_items=50):
         """Klasör ağacını oluştur ve önizleme kutusuna yaz"""
@@ -1051,6 +1300,7 @@ class NoireConverterApp(ctk.CTk, TkinterDnD.DnDWrapper):
         elif tab in ["Renamer", "Adlandır"]: threading.Thread(target=self.process_rename).start()
         elif tab in ["Tree View", "Ağaç Görünümü"]: threading.Thread(target=self.process_tree_export).start()
         elif tab == "Translate": threading.Thread(target=self.process_translation).start()
+        elif tab == "Text Extract": threading.Thread(target=self._extract_text_from_queue).start()
         else: threading.Thread(target=self.process_convert).start()
 
     # --- PROCESSORS ---

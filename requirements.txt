@@ -3,3 +3,4 @@ tkinterdnd2
 Pillow
 docx2pdf
 comtypes
+deep_translator

@@ -8,3 +8,14 @@ ffmpeg.exe
 ffmpeg
 .vscode/
 .idea/
+config.json
+
+# Local developer logs and plans
+Yapilan_Islemler.txt
+anlik-plan.md
+
+# PyInstaller build files
+build/
+
+# Temporary directories
+temp_workspace/

@@ -1,9 +1,17 @@
 # -*- mode: python ; coding: utf-8 -*-
 from PyInstaller.utils.hooks import collect_all
 
-datas = [('App.ico', '.')]
+datas = [
+    ('App.ico', '.'),
+    ('config.json', '.'),
+]
 binaries = []
-hiddenimports = []
+hiddenimports = [
+    'comtypes', 'comtypes.client', 'comtypes.stream',
+    'deep_translator', 'deep_translator.google',
+    'PIL', 'PIL.Image', 'PIL.ImageTk',
+]
+
 tmp_ret = collect_all('customtkinter')
 datas += tmp_ret[0]; binaries += tmp_ret[1]; hiddenimports += tmp_ret[2]
 tmp_ret = collect_all('tkinterdnd2')
@@ -19,7 +27,12 @@ a = Analysis(
     hookspath=[],
     hooksconfig={},
     runtime_hooks=[],
-    excludes=[],
+    excludes=[
+        'cv2', 'opencv', 'numpy', 'scipy', 'matplotlib',
+        'pandas', 'sklearn', 'torch', 'tensorflow',
+        'notebook', 'IPython', 'jupyter',
+        'pytest', 'unittest', 'setuptools',
+    ],
     noarchive=False,
     optimize=0,
 )
@@ -31,7 +44,7 @@ exe = EXE(
     a.binaries,
     a.datas,
     [],
-    name='noire_converter',
+    name='NoireConverter',
     debug=False,
     bootloader_ignore_signals=False,
     strip=False,

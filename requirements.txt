@@ -4,3 +4,8 @@ Pillow
 docx2pdf
 comtypes
 deep_translator
+fastapi
+uvicorn
+python-multipart
+pdf2docx
+pytesseract

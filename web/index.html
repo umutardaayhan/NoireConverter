@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html class="dark" lang="tr">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>NoireConverter | Editorial Media Console</title>
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com" rel="preconnect"/>
+    <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+    <link href="https://fonts.googleapis.com/css2?family=Epilogue:wght@400;500;700;800;900&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+    <!-- Material Symbols -->
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "on-primary-fixed": "#241a00", "secondary": "#dac58d", "on-primary-fixed-variant": "#574500", "secondary-fixed-dim": "#dac58d",
+                        "surface": "#131313", "on-primary-container": "#554300", "tertiary": "#bfcdff", "inverse-primary": "#735c00",
+                        "inverse-surface": "#e5e2e1", "surface-dim": "#131313", "on-tertiary-fixed-variant": "#27438a", "background": "#131313",
+                        "outline": "#99907c", "primary-fixed-dim": "#e9c349", "on-secondary-container": "#c8b37d", "surface-variant": "#353534",
+                        "surface-bright": "#3a3939", "surface-container-high": "#2a2a2a", "on-surface-variant": "#d0c5af",
+                        "on-secondary-fixed-variant": "#544519", "secondary-fixed": "#f7e1a6", "on-secondary": "#3c2f05", "outline-variant": "#4d4635",
+                        "on-background": "#e5e2e1", "error": "#ffb4ab", "surface-container-highest": "#353534", "on-error-container": "#ffdad6",
+                        "surface-container": "#201f1f", "surface-container-lowest": "#0e0e0e", "on-secondary-fixed": "#241a00",
+                        "surface-container-low": "#1c1b1b", "tertiary-fixed-dim": "#b4c5ff", "secondary-container": "#544519",
+                        "on-tertiary-container": "#254188", "on-surface": "#e5e2e1", "on-error": "#690005", "primary-container": "#d4af37",
+                        "on-tertiary": "#082b72", "error-container": "#93000a", "primary-fixed": "#ffe088", "on-primary": "#3c2f00",
+                        "on-tertiary-fixed": "#00174b", "surface-tint": "#e9c349", "tertiary-container": "#97b0ff", "inverse-on-surface": "#313030",
+                        "primary": "#f2ca50", "tertiary-fixed": "#dbe1ff"
+                    },
+                    fontFamily: { "headline": ["Epilogue"], "body": ["Inter"], "label": ["Inter"] },
+                    borderRadius: {"DEFAULT": "0.125rem", "lg": "0.25rem", "xl": "0.5rem", "full": "0.75rem"},
+                },
+            },
+        }
+    </script>
+    <style>
+        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 24; }
+        .glass-panel { background: rgba(32, 31, 31, 0.7); backdrop-filter: blur(20px); }
+        .gold-gradient-btn { background: linear-gradient(135deg, #f2ca50 0%, #d4af37 100%); }
+        .dash-border-hover:hover, .dash-border-hover.dragover { border-color: #f2ca50; box-shadow: inset 0 0 20px rgba(242, 202, 80, 0.05); }
+    </style>
+</head>
+<body class="bg-surface-container-lowest text-on-surface font-body selection:bg-primary selection:text-on-primary">
+<!-- SideNavBar -->
+<aside class="h-full w-64 fixed left-0 top-0 flex flex-col h-screen py-8 px-4 bg-[#131313] dark:bg-[#0E0E0E] shadow-[20px_0_50px_rgba(0,0,0,0.5)] z-50">
+    <div class="mb-12 px-4">
+        <h1 class="text-2xl font-black text-[#f2ca50] tracking-tighter font-headline">NOIRE</h1>
+        <p class="font-['Epilogue'] tracking-wider uppercase font-bold text-[10px] text-[#d4af37] opacity-80 mt-1">Editorial</p>
+    </div>
+    <nav class="flex-1 space-y-2" id="nav-menu">
+        <a class="nav-tab flex items-center gap-4 py-3 px-4 text-[#f2ca50] border-l-2 border-[#f2ca50] bg-[#2a2a2a] transition-all font-['Epilogue'] tracking-wider uppercase font-bold text-sm cursor-pointer" data-route="converter" data-title="Media Processor">
+            <span class="material-symbols-outlined" data-icon="sync_alt">sync_alt</span><span>Converter</span>
+        </a>
+        <a class="nav-tab flex items-center gap-4 py-3 px-4 text-[#d0c5af] opacity-60 hover:opacity-100 hover:bg-[#353534] transition-colors duration-300 font-['Epilogue'] tracking-wider uppercase font-bold text-sm cursor-pointer" data-route="doc_station" data-title="Doc Station">
+            <span class="material-symbols-outlined" data-icon="description">description</span><span>Doc Station</span>
+        </a>
+        <a class="nav-tab flex items-center gap-4 py-3 px-4 text-[#d0c5af] opacity-60 hover:opacity-100 hover:bg-[#353534] transition-colors duration-300 font-['Epilogue'] tracking-wider uppercase font-bold text-sm cursor-pointer" data-route="resizer" data-title="Asset Resizer">
+            <span class="material-symbols-outlined" data-icon="aspect_ratio">aspect_ratio</span><span>Resizer</span>
+        </a>
+        <a class="nav-tab flex items-center gap-4 py-3 px-4 text-[#d0c5af] opacity-60 hover:opacity-100 hover:bg-[#353534] transition-colors duration-300 font-['Epilogue'] tracking-wider uppercase font-bold text-sm cursor-pointer" data-route="optimizer" data-title="Media Optimizer">
+            <span class="material-symbols-outlined" data-icon="speed">speed</span><span>Optimizer</span>
+        </a>
+        <a class="nav-tab flex items-center gap-4 py-3 px-4 text-[#d0c5af] opacity-60 hover:opacity-100 hover:bg-[#353534] transition-colors duration-300 font-['Epilogue'] tracking-wider uppercase font-bold text-sm cursor-pointer" data-route="gif_studio" data-title="GIF Studio">
+            <span class="material-symbols-outlined" data-icon="gif_box">gif_box</span><span>GIF Studio</span>
+        </a>
+        <a class="nav-tab flex items-center gap-4 py-3 px-4 text-[#d0c5af] opacity-60 hover:opacity-100 hover:bg-[#353534] transition-colors duration-300 font-['Epilogue'] tracking-wider uppercase font-bold text-sm cursor-pointer" data-route="text_extract" data-title="Text Extractor">
+            <span class="material-symbols-outlined" data-icon="short_text">short_text</span><span>Text Extract</span>
+        </a>
+    </nav>
+    <div class="mt-auto px-4 pt-8 border-t border-outline-variant/10">
+        <div class="flex items-center gap-3 cursor-pointer hover:bg-surface-container-high p-2 -ml-2 rounded-lg transition-colors group" id="btn-profile">
+            <div class="w-10 h-10 rounded-full bg-surface-container-high group-hover:bg-primary/20 transition-colors flex items-center justify-center overflow-hidden border border-transparent group-hover:border-primary/50">
+                <span class="material-symbols-outlined text-on-surface opacity-50 group-hover:text-primary group-hover:opacity-100 transition-all">person</span>
+            </div>
+            <div>
+                <p class="text-xs font-bold text-on-surface group-hover:text-primary transition-colors">Alex Noire</p>
+                <p class="text-[10px] text-on-surface-variant uppercase tracking-widest">Pro Member</p>
+            </div>
+        </div>
+    </div>
+</aside>
+<!-- Main Content Canvas -->
+<main class="ml-64 min-h-screen relative flex flex-col">
+    <header class="fixed top-0 right-0 w-[calc(100%-16rem)] z-40 flex justify-between items-center px-10 py-6 bg-gradient-to-b from-[#0E0E0E] to-transparent backdrop-blur-xl">
+        <div class="flex items-center gap-4">
+            <span class="text-xl font-headline font-bold text-[#f2ca50]">NoireConverter</span>
+            <span class="h-4 w-[1px] bg-outline-variant/30"></span>
+            <span class="text-xs text-on-surface-variant uppercase tracking-[0.2em] font-medium">Session: v1.7</span>
+        </div>
+        <div class="flex items-center gap-6">
+            <button id="btn-help" class="text-[#d0c5af] hover:text-[#f2ca50] transition-opacity"><span class="material-symbols-outlined">help_outline</span></button>
+            <button id="btn-settings" class="text-[#d0c5af] hover:text-[#f2ca50] transition-opacity"><span class="material-symbols-outlined">settings</span></button>
+        </div>
+    </header>
+    
+    <div class="mt-24 px-10 flex-1 flex flex-col gap-10 pb-10">
+        
+        <!-- DYNAMIC PAGE CONTENT CONTAINER -->
+        <div id="page-content" class="w-full transition-opacity duration-300">
+            <!-- Pages will be injected here via JS -->
+        </div>
+        
+        <!-- Processing Queue (Global / Layout Component) -->
+        <section class="space-y-6">
+            <div class="flex justify-between items-center">
+                <h3 class="font-headline font-bold text-2xl">Processing Queue</h3>
+                <div class="flex gap-4">
+                    <button id="clear-queue" class="text-xs font-bold text-on-surface-variant uppercase tracking-widest hover:text-on-surface transition-colors flex items-center gap-2">
+                        <span class="material-symbols-outlined text-sm">delete_sweep</span> Clear Done
+                    </button>
+                </div>
+            </div>
+            <div class="space-y-4" id="queue-container">
+                <!-- Dynamically populated rows go here -->
+            </div>
+        </section>
+    </div>
+</main>
+
+<div class="fixed top-0 right-0 -z-10 w-full h-full pointer-events-none overflow-hidden opacity-20">
+    <div class="absolute -top-[20%] -right-[10%] w-[60%] h-[80%] rounded-full bg-primary/10 blur-[150px]"></div>
+    <div class="absolute bottom-[-10%] left-0 w-[40%] h-[50%] rounded-full bg-primary/5 blur-[120px]"></div>
+</div>
+
+<!-- Queue Item Template -->
+<template id="queue-item-template">
+    <div class="queue-item bg-surface-container rounded-xl p-5 grid grid-cols-12 items-center gap-6 group hover:bg-surface-container-high transition-colors">
+        <div class="col-span-1 flex justify-center">
+            <div class="status-icon-box w-10 h-10 rounded bg-surface-container-high flex items-center justify-center transition-colors">
+                <span class="status-icon material-symbols-outlined text-on-surface-variant">schedule</span>
+            </div>
+        </div>
+        <div class="col-span-4">
+            <p class="file-name font-bold text-on-surface truncate">filename</p>
+            <p class="file-size text-[10px] text-on-surface-variant uppercase tracking-widest">0 KB</p>
+        </div>
+        <div class="col-span-4 px-4">
+            <div class="h-1.5 w-full bg-surface-container-low rounded-full overflow-hidden">
+                <div class="progress-bar h-full bg-primary w-0 transition-all duration-300"></div>
+            </div>
+            <div class="flex justify-between mt-2">
+                <span class="status-text text-[10px] text-on-surface-variant uppercase font-bold tracking-widest">Waiting...</span>
+                <span class="progress-text text-[10px] text-on-surface-variant font-mono">0%</span>
+            </div>
+        </div>
+        <div class="col-span-2 text-right">
+            <span class="target-badge text-xs text-on-surface-variant font-medium">Format</span>
+        </div>
+        <div class="col-span-1 flex justify-end gap-3 opacity-0 group-hover:opacity-100 transition-opacity">
+            <button class="remove-btn text-on-surface-variant hover:text-error transition-colors"><span class="material-symbols-outlined text-lg">close</span></button>
+        </div>
+    </div>
+</template>
+
+</template>
+
+<!-- HELP MODAL -->
+<div id="help-modal" class="fixed inset-0 z-[100] hidden items-center justify-center">
+    <div class="absolute inset-0 bg-black/60 backdrop-blur-sm modal-backdrop"></div>
+    <div class="relative w-full max-w-2xl bg-surface-container rounded-2xl border border-outline-variant/30 shadow-2xl overflow-hidden transform scale-95 opacity-0 transition-all duration-300 modal-content">
+        <div class="px-8 py-6 border-b border-outline-variant/20 flex justify-between items-center bg-surface-container-high">
+            <h3 class="font-headline font-bold text-xl text-on-surface flex items-center gap-2"><span class="material-symbols-outlined text-primary">live_help</span> How to Use</h3>
+            <button class="modal-close text-on-surface-variant hover:text-error transition-colors"><span class="material-symbols-outlined">close</span></button>
+        </div>
+        <div class="p-8 space-y-6 max-h-[60vh] overflow-y-auto custom-scrollbar">
+            <div class="space-y-2">
+                <h4 class="text-primary font-bold">1. Media Processor</h4>
+                <p class="text-sm text-on-surface-variant leading-relaxed">Drag and drop your images, audio, or video files into the primary zone. Select your target format and quality from the right panel. FFMPEG and Neural nets will accurately convert your files locally without any cloud uploads.</p>
+            </div>
+            <div class="space-y-2">
+                <h4 class="text-primary font-bold">2. Settings & Modularity</h4>
+                <p class="text-sm text-on-surface-variant leading-relaxed">Every tool works independently through an advanced queue system. Switch tabs freely while heavy jobs are processing.</p>
+            </div>
+            <div class="space-y-2">
+                <h4 class="text-primary font-bold">3. Local File System & CORS</h4>
+                <p class="text-sm text-on-surface-variant leading-relaxed">Because NOIRE is built using a modern decoupled Single Page Application (SPA), it must be served by <code>uvicorn</code> or identical HTTP servers. Local `file:///` executions are strictly blocked by modern Chrome features.</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- SETTINGS MODAL -->
+<div id="settings-modal" class="fixed inset-0 z-[100] hidden items-center justify-center">
+    <div class="absolute inset-0 bg-black/60 backdrop-blur-sm modal-backdrop"></div>
+    <div class="relative w-full max-w-md bg-surface-container rounded-2xl border border-outline-variant/30 shadow-2xl overflow-hidden transform scale-95 opacity-0 transition-all duration-300 modal-content">
+        <div class="px-8 py-6 border-b border-outline-variant/20 flex justify-between items-center bg-surface-container-high">
+            <h3 class="font-headline font-bold text-xl text-on-surface flex items-center gap-2"><span class="material-symbols-outlined text-primary">admin_panel_settings</span> Preferences</h3>
+            <button class="modal-close text-on-surface-variant hover:text-error transition-colors"><span class="material-symbols-outlined">close</span></button>
+        </div>
+        <div class="p-8 space-y-8">
+            <div class="flex items-center justify-between">
+                <div>
+                    <h4 class="font-bold text-on-surface">Language</h4>
+                    <p class="text-xs text-on-surface-variant mt-1">Select logic/GUI dialect.</p>
+                </div>
+                <div class="bg-surface-container-lowest p-1 rounded-lg flex gap-1">
+                    <button class="px-4 py-1.5 rounded-md text-on-surface-variant hover:bg-surface-container hover:text-on-surface text-sm transition-colors">TR</button>
+                    <button class="px-4 py-1.5 rounded-md bg-surface-container-high text-primary font-bold text-sm">EN</button>
+                </div>
+            </div>
+            <div class="pt-6 border-t border-outline-variant/10">
+                <button class="w-full py-4 border border-outline-variant hover:border-error hover:bg-error/10 hover:text-error text-on-surface-variant transition-colors rounded-lg font-bold text-sm tracking-widest uppercase flex justify-center items-center gap-2">
+                    <span class="material-symbols-outlined text-lg">logout</span> Sign Out
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- PROFILE MODAL -->
+<div id="profile-modal" class="fixed inset-0 z-[100] hidden items-center justify-center">
+    <div class="absolute inset-0 bg-black/60 backdrop-blur-sm modal-backdrop"></div>
+    <div class="relative w-full max-w-md bg-surface-container rounded-2xl border border-outline-variant/30 shadow-2xl overflow-hidden transform scale-95 opacity-0 transition-all duration-300 modal-content">
+        <div class="px-8 py-6 flex justify-between items-center absolute top-0 w-full z-10">
+            <div></div>
+            <button class="modal-close text-on-surface-variant hover:text-error transition-colors"><span class="material-symbols-outlined">close</span></button>
+        </div>
+        
+        <div class="bg-surface-container-high pt-12 pb-6 px-8 flex flex-col items-center border-b border-outline-variant/10">
+            <div class="w-20 h-20 rounded-full bg-surface-container-lowest flex items-center justify-center overflow-hidden border border-primary/20 mb-4 shadow-[0_0_20px_rgba(242,202,80,0.1)]">
+                <span class="material-symbols-outlined text-on-surface opacity-80 text-4xl">face</span>
+            </div>
+            <h3 class="font-headline font-bold text-2xl text-on-surface">Alex Noire</h3>
+            <span class="bg-primary/10 text-primary text-[10px] font-bold px-3 py-1 rounded-full uppercase tracking-widest mt-2 border border-primary/20">Pro Member</span>
+        </div>
+        
+        <div class="p-8 space-y-5">
+            <div class="space-y-2">
+                <label class="text-[10px] font-bold text-on-surface-variant uppercase tracking-[0.2em]">Email Address</label>
+                <div class="relative">
+                    <input type="email" value="alex@noire.studio" readonly class="w-full bg-surface-container-lowest border-none py-3 px-4 rounded-lg text-on-surface opacity-70 outline-none">
+                    <span class="material-symbols-outlined absolute right-3 top-1/2 -translate-y-1/2 text-on-surface-variant opacity-50 text-sm">lock</span>
+                </div>
+            </div>
+            <div class="space-y-2">
+                <label class="text-[10px] font-bold text-on-surface-variant uppercase tracking-[0.2em]">Username</label>
+                <div class="relative">
+                    <input type="text" value="alexnoire" readonly class="w-full bg-surface-container-lowest border-none py-3 px-4 rounded-lg text-on-surface opacity-70 outline-none">
+                    <span class="material-symbols-outlined absolute right-3 top-1/2 -translate-y-1/2 text-on-surface-variant opacity-50 text-sm">edit</span>
+                </div>
+            </div>
+            <div class="space-y-2">
+                <label class="text-[10px] font-bold text-on-surface-variant uppercase tracking-[0.2em]">Password</label>
+                <div class="relative">
+                    <input type="password" value="secretpassword123" readonly class="w-full bg-surface-container-lowest border-none py-3 px-4 rounded-lg text-on-surface opacity-70 tracking-widest outline-none">
+                    <span class="material-symbols-outlined absolute right-3 top-1/2 -translate-y-1/2 text-on-surface-variant opacity-50 text-sm">edit</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="module" src="js/app.js"></script>
+</body>
+</html>

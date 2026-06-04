@@ -1,4 +1,4 @@
-# Noire Converter v1.6 🌑
+# Noire Converter v1.7 🌑
 
 [![Python](https://img.shields.io/badge/Python-3.x-blue?style=flat&logo=python)](https://www.python.org/)
 [![Platform](https://img.shields.io/badge/Platform-Windows-0078D6?style=flat&logo=windows)](https://www.microsoft.com/windows)
@@ -23,8 +23,8 @@
 * **Converter:** Convert between Image (.webp, .png, .jpg, .ico) and Audio (.mp3, .wav) formats instantly.
 * **Doc Station:** Convert Word/PowerPoint to PDF, or PDF/PowerPoint to Word documents. *(Requires MS Office)*.
 * **Renamer (v1.3):** Batch rename files by finding and replacing text. Perfect for cleaning asset tags (e.g., removing `_1500x1500` suffixes).
-* **Tree View (v1.5):** Export folder structure as a beautiful tree-view text file. Great for documentation and project overviews.
-* **Text Extract (v1.6 - NEW!):** Extract content from ANY file type (.py, .js, .java, .c, .cpp, etc.) and save as .txt. Perfect for code documentation and text extraction.
+* **Tree View (v1.7):** Export folder structure as a beautiful tree-view text file. Great for documentation and project overviews.
+* **Text Extract (v1.7 - NEW!):** Extract content from ANY file type (.py, .js, .java, .c, .cpp, etc.) and save as .txt. Perfect for code documentation and text extraction.
 * **Resizer:** High-quality image resizing using the Lanczos algorithm.
 * **Optimizer:** Compress assets by up to 80% without visible quality loss (Ideal for Unity/Godot/Web).
 * **GIF Studio:** Create optimized GIFs from videos. Includes a **Visual Crop Editor** to trim and crop specific areas easily.
@@ -32,6 +32,9 @@
 * **Dual Language:** Switch between English and Turkish interface instantly.
 
 ### 🛠️ Installation
+
+> [!TIP]
+> **Quick Start:** If you don't want to deal with installation, you can directly run the precompiled executable **`NoireConverter.exe`** under the `dist` directory!
 
 1. **Clone the repository:**
 ```
@@ -88,7 +91,7 @@
 * Click **START**.
 * Translated files are saved as `filename_lang.ext`.
 
-#### 9. Text Extract Tab (v1.6 - NEW!)
+#### 9. Text Extract Tab (v1.7 - NEW!)
 * **Drag & Drop** files or use **Browse Folder** in Drop Media panel.
 * Toggle **Source Folder** switch to choose save location.
 * Switch to **Text Extract** tab.
@@ -131,8 +134,8 @@ Run the application via terminal:
 * **Dönüştürücü (Converter):** Resim (.webp, .png, .jpg, .ico) ve Ses (.mp3, .wav) formatları arasında hızlı dönüşüm.
 * **Doc İstasyonu:** Word/PPT dosyalarını PDF'e, PDF/PPT dosyalarını Word'e çevirin. *(MS Office gerektirir)*.
 * **Adlandırıcı (Renamer - v1.3):** Dosya isimlerindeki belirli metinleri topluca bulun ve değiştirin. Asset temizliği (örn: `_kopya` yazılarını silmek) için idealdir.
-* **Ağaç Görünümü (Tree View - v1.5):** Klasör yapısını estetik ağaç görünümünde text dosyasına aktarın. Dokümantasyon ve proje özetleri için idealdir.
-* **Metin Çıkar (Text Extract - v1.6 - YENİ!):** HERHANGİ bir dosya türünün (.py, .js, .java, .c, .cpp, vb.) içeriğini çıkarır ve .txt olarak kaydeder. Kod dokümantasyonu ve metin çıkarma için mükemmel.
+* **Ağaç Görünümü (Tree View - v1.7):** Klasör yapısını estetik ağaç görünümünde text dosyasına aktarın. Dokümantasyon ve proje özetleri için idealdir.
+* **Metin Çıkar (Text Extract - v1.7 - YENİ!):** HERHANGİ bir dosya türünün (.py, .js, .java, .c, .cpp, vb.) içeriğini çıkarır ve .txt olarak kaydeder. Kod dokümantasyonu ve metin çıkarma için mükemmel.
 * **Boyutlandırıcı (Resizer):** Resimleri kalite kaybını minimize ederek (Lanczos algoritması) yeniden boyutlandırın.
 * **Optimizer:** Web ve Oyun projeleri (Unity/Godot assetleri) için dosya boyutunu %80'e kadar sıkıştırır.
 * **GIF Studio:** Videoları kırpın (Crop), süresini ayarlayın (Trim) ve optimize edilmiş GIF'lere dönüştürün. **Görsel Kırpma Editörü** dahildir.
@@ -140,6 +143,9 @@ Run the application via terminal:
 * **Çoklu Dil Desteği:** Tek tuşla Türkçe ve İngilizce arasında geçiş yapın.
 
 ### 🛠️ Kurulum
+
+> [!TIP]
+> **Hızlı Başlangıç:** Kurulumla uğraşmak istemeyenler direkt `dist` klasörü içerisindeki **`NoireConverter.exe`** dosyamızı indirip uygulamamızı çalıştırabilir!
 
 1. **Projeyi bilgisayarınıza klonlayın:**
 ```
@@ -196,7 +202,7 @@ Run the application via terminal:
 * **BAŞLAT**'a basın.
 * Çevrilen dosyalar `dosyaadi_dil.uzanti` şeklinde kaydedilir.
 
-#### 9. Metin Çıkar Sekmesi (Text Extract - v1.6 - YENİ!)
+#### 9. Metin Çıkar Sekmesi (Text Extract - v1.7 - YENİ!)
 * **Sürükle ve bırak** veya **Drop Media** panelindeki **Klasör Seç** butonunu kullanarak dosya ekleyin.
 * **Kaynak Klasör** anahtarını kullanarak kaydetme konumunu belirleyin.
 * **Metin Çıkar** sekmesine geçin.

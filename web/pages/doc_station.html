@@ -1,0 +1,58 @@
+<section class="max-w-4xl mb-8 mt-2">
+    <h2 id="main-title" class="text-5xl font-headline font-black tracking-tight text-on-surface mb-2">Doc Station</h2>
+    <p id="main-subtitle" class="text-on-surface-variant text-lg max-w-xl font-light">Seamlessly transform your documents between universal editorial formats.</p>
+</section>
+
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+    <!-- Dropzone -->
+    <div class="lg:col-span-2 group cursor-pointer" id="dropzone">
+        <div class="h-[450px] border-2 border-dashed border-outline-variant dash-border-hover rounded-xl transition-all duration-500 flex flex-col items-center justify-center bg-surface-container-low/30 relative overflow-hidden">
+            <div class="absolute -top-24 -left-24 w-64 h-64 bg-primary/5 rounded-full blur-[100px] pointer-events-none group-hover:bg-primary/10 transition-colors duration-700"></div>
+            <div class="relative z-10 text-center space-y-6 pointer-events-none">
+                <div class="w-24 h-24 bg-surface-container-high rounded-full flex items-center justify-center mx-auto shadow-2xl group-hover:scale-110 transition-transform duration-500">
+                    <span class="material-symbols-outlined text-primary text-4xl">description</span>
+                </div>
+                <div>
+                    <h3 class="text-2xl font-headline font-bold text-on-surface">Drop documents here</h3>
+                    <p class="text-on-surface-variant mt-2">or <span class="text-primary pointer-events-auto hover:underline" id="browse-btn">click to browse</span></p>
+                </div>
+                <div class="flex gap-4 justify-center">
+                    <span class="px-3 py-1 bg-surface-container-highest text-[10px] uppercase tracking-widest text-on-surface-variant font-bold rounded">DOCX</span>
+                    <span class="px-3 py-1 bg-surface-container-highest text-[10px] uppercase tracking-widest text-on-surface-variant font-bold rounded">PDF</span>
+                </div>
+            </div>
+            <input type="file" id="file-input" multiple class="hidden">
+        </div>
+    </div>
+    
+    <!-- Settings Panel -->
+    <div class="lg:col-span-1">
+        <div class="glass-panel h-full rounded-xl p-8 flex flex-col shadow-2xl">
+            <div class="flex items-center gap-3 mb-8">
+                <span class="material-symbols-outlined text-primary-fixed-dim">plagiarism</span>
+                <h4 class="font-headline font-bold text-xl uppercase tracking-wider">Export Format</h4>
+            </div>
+            <div class="space-y-8 flex-1">
+                <div class="space-y-3">
+                    <label class="text-[10px] font-bold text-on-surface-variant uppercase tracking-[0.2em]">Target Type</label>
+                    <div class="relative">
+                        <select id="target-format" class="w-full bg-surface-container-lowest border-none py-4 px-5 rounded-lg text-on-surface focus:ring-1 focus:ring-primary appearance-none cursor-pointer">
+                            <option value="pdf">TO PDF</option>
+                            <option value="docx">TO WORD</option>
+                        </select>
+                        <span class="material-symbols-outlined absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none opacity-50">expand_more</span>
+                    </div>
+                </div>
+                <div class="p-4 bg-primary/5 border border-primary/20 rounded-lg">
+                    <p class="text-xs text-on-surface-variant leading-relaxed">
+                        <b class="text-primary">Note:</b> OCR and advanced layout preservation will be applied automatically to maintain the strict editorial look.
+                    </p>
+                </div>
+            </div>
+            <button id="btn-start" class="gold-gradient-btn w-full py-5 rounded-lg text-on-primary font-headline font-extrabold text-lg uppercase tracking-widest shadow-[0_10px_30px_rgba(242,202,80,0.15)] hover:shadow-[0_15px_40px_rgba(242,202,80,0.3)] hover:-translate-y-1 transition-all active:scale-95 duration-200 mt-8 group flex items-center justify-center gap-3">
+                <span id="btn-text">CONVERT DOC</span>
+                <span class="material-symbols-outlined text-xl group-hover:translate-x-1 transition-transform" id="btn-icon">bolt</span>
+            </button>
+        </div>
+    </div>
+</div>

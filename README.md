@@ -1,4 +1,4 @@
-# Noire Converter v1.7 🌑
+# Noire Converter v1.8 🌑
 
 [![Python](https://img.shields.io/badge/Python-3.x-blue?style=flat&logo=python)](https://www.python.org/)
 [![Platform](https://img.shields.io/badge/Platform-Windows-0078D6?style=flat&logo=windows)](https://www.microsoft.com/windows)
@@ -24,7 +24,8 @@
 * **Doc Station:** Convert Word/PowerPoint to PDF, or PDF/PowerPoint to Word documents. *(Requires MS Office)*.
 * **Renamer (v1.3):** Batch rename files by finding and replacing text. Perfect for cleaning asset tags (e.g., removing `_1500x1500` suffixes).
 * **Tree View (v1.7):** Export folder structure as a beautiful tree-view text file. Great for documentation and project overviews.
-* **Text Extract (v1.7 - NEW!):** Extract content from ANY file type (.py, .js, .java, .c, .cpp, etc.) and save as .txt. Perfect for code documentation and text extraction.
+* **Text Extract (v1.7):** Extract content from ANY file type (.py, .js, .java, .c, .cpp, etc.) and save as .txt. Perfect for code documentation and text extraction.
+* **YouTube (v1.8 - NEW!):** Download YouTube videos or playlists as MP3 (128/192/320 kbps) or M4A. Paste a link or search by song name — results appear in the Queue, then hit START. Cover art and metadata are embedded automatically.
 * **Resizer:** High-quality image resizing using the Lanczos algorithm.
 * **Optimizer:** Compress assets by up to 80% without visible quality loss (Ideal for Unity/Godot/Web).
 * **GIF Studio:** Create optimized GIFs from videos. Includes a **Visual Crop Editor** to trim and crop specific areas easily.
@@ -99,6 +100,31 @@
 * All selected files will be extracted as `.txt` files.
 * Supports: .py, .js, .ts, .cs, .java, .c, .cpp, .h, .hpp, and any text-based file!
 
+#### 10. YouTube Tab (v1.8 - NEW!)
+* Paste a YouTube **link** (video or playlist) or type a **song name** and click **Fetch**.
+* Search results appear in a dropdown; each selection is added to the **Queue** on the right.
+* Pick quality: **128 / 192 / 320 kbps MP3** or **M4A** (original audio, no re-encoding).
+* Click **DOWNLOAD** (or **START**) — all checked YouTube items in the queue are downloaded in order.
+* Files are saved to the output folder (or `~/Downloads` if none is selected), with embedded cover art and metadata.
+* Playlists are limited to 50 tracks for safety (Mix/radio lists can be endless).
+
+> [!NOTE]
+> YouTube protects its stream URLs with a JavaScript challenge. yt-dlp solves it automatically,
+> but it needs a JS runtime installed on your system: **Node.js** or **Deno**. If downloads fail with
+> *"Requested format is not available"*, install [Node.js](https://nodejs.org) and update yt-dlp:
+> `pip install -U "yt-dlp[default]"`.
+
+#### 🔞 Age-Restricted Videos ("Sign in to confirm your age")
+YouTube requires cookies from a signed-in account for age-restricted videos:
+
+1. Install the **"Get cookies.txt LOCALLY"** browser extension (free, open source).
+2. Go to youtube.com while signed in, click the extension → **Export**.
+3. Save the file as **`cookies.txt`** in the NoireConverter root folder and restart the app.
+
+> [!CAUTION]
+> `cookies.txt` contains your personal YouTube session. **Never commit or share it.**
+> It is already listed in `.gitignore`, so it will not be pushed to the repository.
+
 ### ⚠️ IMPORTANT: FFmpeg Setup
 This application requires the **FFmpeg engine** to process video and audio files. Since it is a large binary file, it is not included in this repository.
 
@@ -112,6 +138,8 @@ This application requires the **FFmpeg engine** to process video and audio files
     NoireConverter/
     ├── noire_converter.py
     ├── ffmpeg.exe        <-- IMPORTANT! Place it here.
+    ├── ffprobe.exe       <-- Recommended (used by the YouTube tab).
+    ├── cookies.txt       <-- Optional (age-restricted YouTube videos). NEVER commit!
     ├── App.ico
     ├── requirements.txt
     └── README.md
@@ -135,7 +163,8 @@ Run the application via terminal:
 * **Doc İstasyonu:** Word/PPT dosyalarını PDF'e, PDF/PPT dosyalarını Word'e çevirin. *(MS Office gerektirir)*.
 * **Adlandırıcı (Renamer - v1.3):** Dosya isimlerindeki belirli metinleri topluca bulun ve değiştirin. Asset temizliği (örn: `_kopya` yazılarını silmek) için idealdir.
 * **Ağaç Görünümü (Tree View - v1.7):** Klasör yapısını estetik ağaç görünümünde text dosyasına aktarın. Dokümantasyon ve proje özetleri için idealdir.
-* **Metin Çıkar (Text Extract - v1.7 - YENİ!):** HERHANGİ bir dosya türünün (.py, .js, .java, .c, .cpp, vb.) içeriğini çıkarır ve .txt olarak kaydeder. Kod dokümantasyonu ve metin çıkarma için mükemmel.
+* **Metin Çıkar (Text Extract - v1.7):** HERHANGİ bir dosya türünün (.py, .js, .java, .c, .cpp, vb.) içeriğini çıkarır ve .txt olarak kaydeder. Kod dokümantasyonu ve metin çıkarma için mükemmel.
+* **YouTube (v1.8 - YENİ!):** YouTube videolarını veya oynatma listelerini MP3 (128/192/320 kbps) ya da M4A olarak indirin. Link yapıştırın veya şarkı adıyla arayın — sonuçlar Kuyruğa (Queue) düşer, BAŞLAT'a basın. Kapak resmi ve metadata otomatik gömülür.
 * **Boyutlandırıcı (Resizer):** Resimleri kalite kaybını minimize ederek (Lanczos algoritması) yeniden boyutlandırın.
 * **Optimizer:** Web ve Oyun projeleri (Unity/Godot assetleri) için dosya boyutunu %80'e kadar sıkıştırır.
 * **GIF Studio:** Videoları kırpın (Crop), süresini ayarlayın (Trim) ve optimize edilmiş GIF'lere dönüştürün. **Görsel Kırpma Editörü** dahildir.
@@ -210,6 +239,31 @@ Run the application via terminal:
 * Tüm seçili dosyalar `.txt` dosyası olarak kaydedilir.
 * Desteklenen: .py, .js, .ts, .cs, .java, .c, .cpp, .h, .hpp ve herhangi bir metin tabanlı dosya!
 
+#### 10. YouTube Sekmesi (v1.8 - YENİ!)
+* YouTube **linki** (video veya playlist) yapıştırın ya da **şarkı adı** yazıp **Bul**'a basın.
+* Arama sonuçları açılır menüde listelenir; her seçim sağdaki **Kuyruğa** eklenir.
+* Kalite seçin: **128 / 192 / 320 kbps MP3** veya **M4A** (orijinal ses, yeniden kodlamasız).
+* **İNDİR**'e (veya **BAŞLAT**'a) basın — kuyruktaki işaretli tüm YouTube öğeleri sırayla indirilir.
+* Dosyalar çıktı klasörüne (seçilmemişse `~/Downloads`'a) kapak resmi ve metadata gömülü olarak kaydedilir.
+* Oynatma listeleri güvenlik için 50 parçayla sınırlıdır (Mix/radyo listeleri sonsuz olabilir).
+
+> [!NOTE]
+> YouTube, yayın adreslerini bir JavaScript bulmacasıyla korur. yt-dlp bunu otomatik çözer ancak
+> sistemde bir JS çalıştırıcısı gerekir: **Node.js** veya **Deno**. İndirmeler
+> *"Requested format is not available"* hatası verirse [Node.js](https://nodejs.org) kurun ve
+> yt-dlp'yi güncelleyin: `pip install -U "yt-dlp[default]"`.
+
+#### 🔞 Yaş Kısıtlamalı Videolar ("Sign in to confirm your age")
+YouTube, yaş kısıtlamalı videolar için oturum açmış bir hesabın çerezlerini ister:
+
+1. Tarayıcınıza **"Get cookies.txt LOCALLY"** uzantısını kurun (ücretsiz, açık kaynak).
+2. youtube.com'da oturum açıkken uzantıya tıklayın → **Export**.
+3. Dosyayı NoireConverter kök klasörüne **`cookies.txt`** adıyla kaydedin ve uygulamayı yeniden başlatın.
+
+> [!CAUTION]
+> `cookies.txt` kişisel YouTube oturumunuzu içerir. **Asla commit'lemeyin, kimseyle paylaşmayın.**
+> `.gitignore`'da zaten listelidir; depoya push edilmez.
+
 ### ⚠️ Önemli: FFmpeg Kurulumu
 Bu uygulama video ve ses işlemleri için **FFmpeg** motorunu kullanır.
 
@@ -223,6 +277,8 @@ Bu uygulama video ve ses işlemleri için **FFmpeg** motorunu kullanır.
     NoireConverter/
     ├── noire_converter.py
     ├── ffmpeg.exe        <-- BURADA OLMALI
+    ├── ffprobe.exe       <-- Önerilir (YouTube sekmesi kullanır)
+    ├── cookies.txt       <-- İsteğe bağlı (yaş kısıtlamalı videolar). ASLA commit'lemeyin!
     ├── App.ico
     ├── requirements.txt
     └── README.md

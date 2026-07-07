@@ -5,7 +5,11 @@ venv/
 env/
 .env
 ffmpeg.exe
+ffprobe.exe
 ffmpeg
+
+# YouTube oturum çerezleri — asla commit'leme
+cookies.txt
 .vscode/
 .idea/
 config.json

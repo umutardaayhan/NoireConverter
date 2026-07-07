@@ -15,6 +15,7 @@ import json
 from core.config import *
 from core.utils import resource_path, get_ffmpeg_path
 from core.file_ops import collect_files, prefix_rename
+from core import youtube
 from ui.components.crop_editor import CropEditor
 
 class NoireConverterApp(ctk.CTk, TkinterDnD.DnDWrapper):
@@ -23,7 +24,7 @@ class NoireConverterApp(ctk.CTk, TkinterDnD.DnDWrapper):
         self.TkdndVersion = TkinterDnD._require(self)
         ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID('com.noire.converter.v1_3')
         self.current_lang = "en"
-        self.title("Noire Converter v1.7")
+        self.title("Noire Converter v1.8")
         self.geometry("1180x800") 
         self.resizable(False, False)
         self.configure(fg_color=COLOR_BG)
@@ -76,7 +77,7 @@ class NoireConverterApp(ctk.CTk, TkinterDnD.DnDWrapper):
         self.header_frame.pack(anchor="w", fill="x", pady=(0, 15))
         ctk.CTkLabel(self.header_frame, text="NOIRE", font=FONT_HEADER, text_color=COLOR_ACCENT).pack(side="left")
         ctk.CTkLabel(self.header_frame, text=" CONVERTER", font=FONT_HEADER, text_color="white").pack(side="left")
-        ctk.CTkLabel(self.header_frame, text=" // v1.7", font=("Roboto", 12), text_color=COLOR_TEXT_DIM).pack(side="left", padx=(5,0), pady=(10,0))
+        ctk.CTkLabel(self.header_frame, text=" // v1.8", font=("Roboto", 12), text_color=COLOR_TEXT_DIM).pack(side="left", padx=(5,0), pady=(10,0))
         
         btn_box = ctk.CTkFrame(self.header_frame, fg_color="transparent")
         btn_box.pack(side="right")
@@ -121,7 +122,7 @@ class NoireConverterApp(ctk.CTk, TkinterDnD.DnDWrapper):
 
         # Tab Content Frames (Hidden by default)
         self.frames = {}
-        for name in ["Convert", "Resize", "Optimizer", "GIF Studio", "Doc Station", "Renamer", "Tree View", "Translate", "Text Extract", "Collector"]:
+        for name in ["Convert", "Resize", "Optimizer", "GIF Studio", "Doc Station", "Renamer", "Tree View", "Translate", "Text Extract", "Collector", "YouTube"]:
             f = ctk.CTkFrame(self.tab_container, fg_color="transparent")
             f.grid(row=0, column=0, sticky="nsew")
             self.frames[name] = f
@@ -140,6 +141,7 @@ class NoireConverterApp(ctk.CTk, TkinterDnD.DnDWrapper):
         self.tab_translate = self.frames["Translate"]
         self.tab_text = self.frames["Text Extract"]
         self.tab_collector = self.frames["Collector"]
+        self.tab_youtube = self.frames["YouTube"]
 
         # Navigation Buttons
         self.setup_custom_tabs()
@@ -375,7 +377,46 @@ class NoireConverterApp(ctk.CTk, TkinterDnD.DnDWrapper):
         self.lbl_text_info.pack(anchor="w", padx=10, pady=10)
         
         self.text_folder_path = ""
-        
+
+        # --- YOUTUBE TAB ---
+        self.yt_results = []
+        self.yt_selected = None
+
+        self.lbl_yt_input = ctk.CTkLabel(self.tab_youtube, text="", font=("Roboto", 11, "bold"), text_color=COLOR_TEXT_DIM)
+        self.lbl_yt_input.pack(anchor="w", pady=(10, 5))
+
+        yt_in_frame = ctk.CTkFrame(self.tab_youtube, fg_color="transparent")
+        yt_in_frame.pack(fill="x", pady=(0, 8))
+        self.entry_yt = ctk.CTkEntry(yt_in_frame, placeholder_text="https://youtube.com/... ", **entry_style)
+        self.entry_yt.pack(side="left", fill="x", expand=True, padx=(0, 8))
+        self.entry_yt.bind("<Return>", lambda e: self.yt_fetch_thread())
+        self.btn_yt_fetch = ctk.CTkButton(yt_in_frame, text="", width=90, height=35, corner_radius=8, fg_color=COLOR_ACCENT, hover_color=COLOR_ACCENT_HOVER, text_color="black", font=("Roboto", 12, "bold"), command=self.yt_fetch_thread)
+        self.btn_yt_fetch.pack(side="left")
+
+        yt_res_frame = ctk.CTkFrame(self.tab_youtube, fg_color="transparent")
+        yt_res_frame.pack(fill="x", pady=(0, 8))
+        self.lbl_yt_results = ctk.CTkLabel(yt_res_frame, text="", font=("Roboto", 11, "bold"), text_color=COLOR_TEXT_DIM)
+        self.lbl_yt_results.pack(side="left", padx=(0, 10))
+        self.yt_result_var = ctk.StringVar(value="—")
+        self.menu_yt_results = ctk.CTkOptionMenu(yt_res_frame, values=["—"], variable=self.yt_result_var, command=self.yt_select_result, height=30, fg_color="#111", button_color="#2a2a2a", button_hover_color=COLOR_ACCENT, dropdown_fg_color="#222", font=("Roboto", 11), dynamic_resizing=False)
+        self.menu_yt_results.pack(side="left", fill="x", expand=True)
+
+        self.lbl_yt_selected = ctk.CTkLabel(self.tab_youtube, text="", font=("Roboto", 11), text_color=COLOR_ACCENT, wraplength=440, justify="left", anchor="w")
+        self.lbl_yt_selected.pack(fill="x", pady=(0, 8))
+
+        yt_dl_frame = ctk.CTkFrame(self.tab_youtube, fg_color="transparent")
+        yt_dl_frame.pack(fill="x", pady=(0, 8))
+        self.lbl_yt_quality = ctk.CTkLabel(yt_dl_frame, text="", font=("Roboto", 11, "bold"), text_color=COLOR_TEXT_DIM)
+        self.lbl_yt_quality.pack(side="left", padx=(0, 10))
+        self.seg_yt_quality = ctk.CTkSegmentedButton(yt_dl_frame, values=["128", "192", "320", "M4A"], width=200, **seg_style)
+        self.seg_yt_quality.set("192")
+        self.seg_yt_quality.pack(side="left", padx=(0, 10))
+        self.btn_yt_download = ctk.CTkButton(yt_dl_frame, text="", width=110, height=35, corner_radius=8, fg_color=COLOR_ACCENT, hover_color=COLOR_ACCENT_HOVER, text_color="black", font=("Roboto", 12, "bold"), command=self.yt_download_thread)
+        self.btn_yt_download.pack(side="right")
+
+        self.lbl_yt_info = ctk.CTkLabel(self.tab_youtube, text="", font=("Roboto", 11), text_color="gray", justify="left", wraplength=440)
+        self.lbl_yt_info.pack(anchor="w", pady=(5, 0))
+
         # --- SOURCE FOLDER PANEL (Sol panelde) ---
         self.path_frame = ctk.CTkFrame(self.left_col, fg_color=COLOR_FRAME, corner_radius=12, height=50)
         self.path_frame.pack(fill="x", side="bottom", pady=(10, 0))
@@ -554,6 +595,15 @@ class NoireConverterApp(ctk.CTk, TkinterDnD.DnDWrapper):
             if current_view in ["List", "Liste"]: self.view_mode_var.set(v_list)
             else: self.view_mode_var.set(v_preview)
         
+        # YouTube tab UI
+        if "tab_youtube" in T:
+            self.lbl_yt_input.configure(text=T["yt_lbl_input"])
+            self.btn_yt_fetch.configure(text=T["yt_btn_fetch"])
+            self.lbl_yt_results.configure(text=T["yt_lbl_results"])
+            self.lbl_yt_quality.configure(text=T["yt_lbl_quality"])
+            self.btn_yt_download.configure(text=T["yt_btn_download"])
+            self.lbl_yt_info.configure(text=T["yt_lbl_info"])
+
         # Translation tab UI
         self.lbl_target_lang.configure(text=T["lbl_target_lang"])
 
@@ -593,7 +643,8 @@ class NoireConverterApp(ctk.CTk, TkinterDnD.DnDWrapper):
             ("Tree View", "Tree View", row3),
             ("Translate", "Translate", row3),
             ("Text Extract", "Text Extract", row3),
-            ("Collector", "Collector", row4)
+            ("Collector", "Collector", row4),
+            ("YouTube", "YouTube", row4)
         ]
         
         for name, label, parent in tabs_def:
@@ -1030,6 +1081,133 @@ class NoireConverterApp(ctk.CTk, TkinterDnD.DnDWrapper):
         self.tree_preview_box.insert("1.0", tree_text)
         self.tree_preview_box.configure(state="disabled")
 
+    # --- YOUTUBE TAB ---
+    def yt_output_dir(self):
+        if self.output_folder:
+            return self.output_folder
+        return os.path.join(os.path.expanduser("~"), "Downloads")
+
+    def yt_fetch_thread(self):
+        T = LANG[self.current_lang]
+        query = self.entry_yt.get().strip()
+        if not query:
+            self.log(T["yt_err_empty"], "error")
+            return
+        self.btn_yt_fetch.configure(state="disabled", text=T["yt_btn_fetching"])
+        threading.Thread(target=self._yt_fetch_worker, args=(query,), daemon=True).start()
+
+    def _yt_fetch_worker(self, query):
+        T = LANG[self.current_lang]
+        self.log(T["yt_status_fetching"])
+        try:
+            if youtube.is_youtube_url(query):
+                self.yt_selected = youtube.get_info(query)
+                self.yt_results = []
+                self.menu_yt_results.configure(values=["—"])
+                self.yt_result_var.set("—")
+                self._yt_show_selected()
+            else:
+                self.yt_results = youtube.search(query)
+                if not self.yt_results:
+                    self.log(T["yt_status_no_results"], "error")
+                    return
+                values = [f"{i + 1}. {r['title'][:70]}" for i, r in enumerate(self.yt_results)]
+                self.menu_yt_results.configure(values=values)
+                self.yt_result_var.set(values[0])
+                self.yt_select_result(values[0])
+            self.log(T["status_ready"])
+        except Exception as e:
+            self.log(youtube.friendly_error(e), "error")
+        finally:
+            self.btn_yt_fetch.configure(state="normal", text=T["yt_btn_fetch"])
+
+    def yt_select_result(self, choice):
+        if not self.yt_results or choice == "—":
+            return
+        idx = int(choice.split(".")[0]) - 1
+        self.yt_selected = self.yt_results[idx]
+        self._yt_show_selected()
+
+    def _yt_show_selected(self):
+        s = self.yt_selected
+        if not s:
+            self.lbl_yt_selected.configure(text="")
+            return
+        if s["type"] == "playlist":
+            meta = f"📃 {s['count']} video"
+        else:
+            dur = s.get("duration")
+            meta = f"{int(dur // 60)}:{int(dur % 60):02d}" if dur else ""
+        parts = [p for p in [s.get("channel"), meta] if p]
+        self.lbl_yt_selected.configure(text=f"♪ {s['title']}" + (f"  ({' · '.join(parts)})" if parts else ""))
+        self.yt_add_to_queue()
+
+    def yt_add_to_queue(self):
+        """Seçilen videoyu/listeyi sağdaki kuyruğa ekler (Result -> Queue)."""
+        s = self.yt_selected
+        if not s:
+            return
+        for item in self.file_items:
+            if item['path'] == s['url']:
+                return  # zaten kuyrukta
+        if len(self.file_items) >= int(self.queue_limit_var.get()):
+            return
+        var = ctk.BooleanVar(value=True)
+        self.file_items.append({'path': s['url'], 'widget': None, 'var': var, 'yt': dict(s)})
+        self.refresh_queue_view()
+
+    def yt_queue_items(self):
+        return [i for i in self.file_items if 'yt' in i and i['var'].get()]
+
+    def yt_download_thread(self):
+        T = LANG[self.current_lang]
+        if not self.yt_queue_items():
+            self.log(T["yt_err_select"], "error")
+            return
+        self.btn_yt_download.configure(state="disabled", text=T["status_processing"])
+        threading.Thread(target=self._yt_download_worker, daemon=True).start()
+
+    def _yt_download_worker(self):
+        """Kuyruktaki işaretli tüm YouTube öğelerini sırayla indirir."""
+        T = LANG[self.current_lang]
+        quality = self.seg_yt_quality.get().lower()  # "128"/"192"/"320"/"m4a"
+        out_dir = self.yt_output_dir()
+        items = self.yt_queue_items()
+
+        total_done, total_fail = 0, 0
+        try:
+            for n, item in enumerate(items, start=1):
+                title = item['yt']['title'][:40]
+                q_prefix = f"({n}/{len(items)}) " if len(items) > 1 else ""
+
+                def progress(p):
+                    pl_prefix = f"[{p['index']}/{p['total']}] " if p["total"] > 1 else ""
+                    if p["stage"] == "downloading":
+                        self.log(f"{q_prefix}{pl_prefix}{title} %{p['percent']}")
+                    else:
+                        self.log(f"{q_prefix}{pl_prefix}{title} → FFMPEG...")
+
+                try:
+                    results = youtube.download(item['path'], quality, out_dir, progress)
+                    done = sum(1 for r in results if "file" in r)
+                    failed = [r for r in results if "error" in r]
+                    total_done += done
+                    total_fail += len(failed)
+                    if not failed:
+                        self.file_items.remove(item)  # başarıyla inenler kuyruktan düşer
+                except Exception as e:
+                    total_fail += 1
+                    self.log(youtube.friendly_error(e), "error")
+
+            self.refresh_queue_view()
+            if total_fail:
+                self.log(f"{T['yt_status_done']}: {total_done} ✓ / {total_fail} ✗ → {out_dir}", "error")
+            else:
+                self.log(f"{T['yt_status_done']} ({total_done}) → {out_dir}", "success")
+        finally:
+            self.btn_yt_download.configure(state="normal", text=T["yt_btn_download"])
+            self.btn_start.configure(state="normal", text=T["btn_start"])
+
     def log(self, message, type="info"):
         color = COLOR_TEXT_DIM
         prefix = "•"
@@ -1090,6 +1268,15 @@ class NoireConverterApp(ctk.CTk, TkinterDnD.DnDWrapper):
         if ext in VIDEO_EXTS: return "🎬"
         if ext in DOC_EXTS: return "📄"
         return "📋"
+
+    def queue_display(self, item):
+        """Kuyruk öğesinin ikon ve görünen adını döndürür (yerel dosya veya YouTube)."""
+        if 'yt' in item:
+            info = item['yt']
+            if info["type"] == "playlist":
+                return "📃", f"{info['title']} ({info['count']} video)"
+            return "▶️", info['title']
+        return self.get_file_icon(item['path']), os.path.basename(item['path'])
 
     def _get_thumbnail(self, file_path, size=(80, 80)):
         """Generate a CTkImage thumbnail for image/video files. Returns None for non-previewable."""
@@ -1155,22 +1342,21 @@ class NoireConverterApp(ctk.CTk, TkinterDnD.DnDWrapper):
                 chk = ctk.CTkCheckBox(card, text="", variable=item['var'], width=20, height=20, fg_color=COLOR_ACCENT, hover_color=COLOR_ACCENT_HOVER, checkmark_color="black")
                 chk.pack(anchor="ne", padx=4, pady=4)
                 
-                thumb = self._get_thumbnail(item['path'], size=(90, 90))
+                thumb = None if 'yt' in item else self._get_thumbnail(item['path'], size=(90, 90))
+                icon, name = self.queue_display(item)
                 if thumb:
                     ctk.CTkLabel(card, text="", image=thumb).pack(pady=(0, 4))
                 else:
-                    icon = self.get_file_icon(item['path'])
                     ctk.CTkLabel(card, text=icon, font=("Segoe UI Emoji", 42)).pack(pady=(0, 4))
-                
-                name = os.path.basename(item['path'])
+
                 if len(name) > 23: name = name[:20] + "..."
                 ctk.CTkLabel(card, text=name, font=("Roboto", 10), wraplength=140).pack(pady=(0, 4))
                 item['widget'] = card
                 
         else:  # List mode (default)
             for item in self.file_items:
-                icon = self.get_file_icon(item['path'])
-                chk = ctk.CTkCheckBox(self.scroll_list, text=f" {icon} {os.path.basename(item['path'])}", variable=item['var'], font=("Roboto", 11), checkbox_width=20, checkbox_height=20, border_width=2, fg_color=COLOR_ACCENT, hover_color=COLOR_ACCENT_HOVER, checkmark_color="black")
+                icon, name = self.queue_display(item)
+                chk = ctk.CTkCheckBox(self.scroll_list, text=f" {icon} {name}", variable=item['var'], font=("Roboto", 11), checkbox_width=20, checkbox_height=20, border_width=2, fg_color=COLOR_ACCENT, hover_color=COLOR_ACCENT_HOVER, checkmark_color="black")
                 chk.pack(fill="x", pady=2, padx=8, anchor="w")
                 item['widget'] = chk
 
@@ -1231,6 +1417,7 @@ class NoireConverterApp(ctk.CTk, TkinterDnD.DnDWrapper):
         elif tab == "Translate": threading.Thread(target=self.process_translation).start()
         elif tab == "Text Extract": threading.Thread(target=self._extract_text_from_queue).start()
         elif tab in ["Collector", "Toplayıcı"]: threading.Thread(target=self.process_collect).start()
+        elif tab == "YouTube": threading.Thread(target=self._yt_download_worker, daemon=True).start()
         else: threading.Thread(target=self.process_convert).start()
 
     # --- PROCESSORS ---

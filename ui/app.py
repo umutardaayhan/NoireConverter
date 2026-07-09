@@ -24,7 +24,7 @@ class NoireConverterApp(ctk.CTk, TkinterDnD.DnDWrapper):
         self.TkdndVersion = TkinterDnD._require(self)
         ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID('com.noire.converter.v1_3')
         self.current_lang = "en"
-        self.title("Noire Converter v1.8")
+        self.title("Noire Converter v1.9")
         self.geometry("1180x800") 
         self.resizable(False, False)
         self.configure(fg_color=COLOR_BG)
@@ -77,7 +77,7 @@ class NoireConverterApp(ctk.CTk, TkinterDnD.DnDWrapper):
         self.header_frame.pack(anchor="w", fill="x", pady=(0, 15))
         ctk.CTkLabel(self.header_frame, text="NOIRE", font=FONT_HEADER, text_color=COLOR_ACCENT).pack(side="left")
         ctk.CTkLabel(self.header_frame, text=" CONVERTER", font=FONT_HEADER, text_color="white").pack(side="left")
-        ctk.CTkLabel(self.header_frame, text=" // v1.8", font=("Roboto", 12), text_color=COLOR_TEXT_DIM).pack(side="left", padx=(5,0), pady=(10,0))
+        ctk.CTkLabel(self.header_frame, text=" // v1.9", font=("Roboto", 12), text_color=COLOR_TEXT_DIM).pack(side="left", padx=(5,0), pady=(10,0))
         
         btn_box = ctk.CTkFrame(self.header_frame, fg_color="transparent")
         btn_box.pack(side="right")
@@ -404,6 +404,14 @@ class NoireConverterApp(ctk.CTk, TkinterDnD.DnDWrapper):
         self.lbl_yt_selected = ctk.CTkLabel(self.tab_youtube, text="", font=("Roboto", 11), text_color=COLOR_ACCENT, wraplength=440, justify="left", anchor="w")
         self.lbl_yt_selected.pack(fill="x", pady=(0, 8))
 
+        yt_fmt_frame = ctk.CTkFrame(self.tab_youtube, fg_color="transparent")
+        yt_fmt_frame.pack(fill="x", pady=(0, 8))
+        self.lbl_yt_format = ctk.CTkLabel(yt_fmt_frame, text="", font=("Roboto", 11, "bold"), text_color=COLOR_TEXT_DIM)
+        self.lbl_yt_format.pack(side="left", padx=(0, 10))
+        self.yt_format_var = ctk.StringVar(value="Audio")
+        self.seg_yt_format = ctk.CTkSegmentedButton(yt_fmt_frame, values=["Audio", "Video"], variable=self.yt_format_var, command=self.yt_toggle_format, width=160, **seg_style)
+        self.seg_yt_format.pack(side="left")
+
         yt_dl_frame = ctk.CTkFrame(self.tab_youtube, fg_color="transparent")
         yt_dl_frame.pack(fill="x", pady=(0, 8))
         self.lbl_yt_quality = ctk.CTkLabel(yt_dl_frame, text="", font=("Roboto", 11, "bold"), text_color=COLOR_TEXT_DIM)
@@ -411,6 +419,9 @@ class NoireConverterApp(ctk.CTk, TkinterDnD.DnDWrapper):
         self.seg_yt_quality = ctk.CTkSegmentedButton(yt_dl_frame, values=["128", "192", "320", "M4A"], width=200, **seg_style)
         self.seg_yt_quality.set("192")
         self.seg_yt_quality.pack(side="left", padx=(0, 10))
+        self.seg_yt_video_res = ctk.CTkSegmentedButton(yt_dl_frame, values=["480p", "720p", "1080p", "Best"], width=200, **seg_style)
+        self.seg_yt_video_res.set("1080p")
+        # Video moduna geçilince yt_toggle_format tarafından paketlenir
         self.btn_yt_download = ctk.CTkButton(yt_dl_frame, text="", width=110, height=35, corner_radius=8, fg_color=COLOR_ACCENT, hover_color=COLOR_ACCENT_HOVER, text_color="black", font=("Roboto", 12, "bold"), command=self.yt_download_thread)
         self.btn_yt_download.pack(side="right")
 
@@ -600,6 +611,7 @@ class NoireConverterApp(ctk.CTk, TkinterDnD.DnDWrapper):
             self.lbl_yt_input.configure(text=T["yt_lbl_input"])
             self.btn_yt_fetch.configure(text=T["yt_btn_fetch"])
             self.lbl_yt_results.configure(text=T["yt_lbl_results"])
+            self.lbl_yt_format.configure(text=T["yt_lbl_format"])
             self.lbl_yt_quality.configure(text=T["yt_lbl_quality"])
             self.btn_yt_download.configure(text=T["yt_btn_download"])
             self.lbl_yt_info.configure(text=T["yt_lbl_info"])
@@ -1156,6 +1168,19 @@ class NoireConverterApp(ctk.CTk, TkinterDnD.DnDWrapper):
         self.file_items.append({'path': s['url'], 'widget': None, 'var': var, 'yt': dict(s)})
         self.refresh_queue_view()
 
+    def yt_toggle_format(self, value):
+        if value == "Video":
+            self.seg_yt_quality.pack_forget()
+            self.seg_yt_video_res.pack(side="left", padx=(0, 10))
+        else:
+            self.seg_yt_video_res.pack_forget()
+            self.seg_yt_quality.pack(side="left", padx=(0, 10))
+
+    def yt_current_quality(self):
+        if self.yt_format_var.get() == "Video":
+            return self.seg_yt_video_res.get().lower()  # "480p"/"720p"/"1080p"/"best"
+        return self.seg_yt_quality.get().lower()  # "128"/"192"/"320"/"m4a"
+
     def yt_queue_items(self):
         return [i for i in self.file_items if 'yt' in i and i['var'].get()]
 
@@ -1170,7 +1195,7 @@ class NoireConverterApp(ctk.CTk, TkinterDnD.DnDWrapper):
     def _yt_download_worker(self):
         """Kuyruktaki işaretli tüm YouTube öğelerini sırayla indirir."""
         T = LANG[self.current_lang]
-        quality = self.seg_yt_quality.get().lower()  # "128"/"192"/"320"/"m4a"
+        quality = self.yt_current_quality()
         out_dir = self.yt_output_dir()
         items = self.yt_queue_items()
 

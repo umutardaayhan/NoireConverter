@@ -2,7 +2,7 @@
 
 LANG = {
     "en": {
-        "title": "Noire Converter v1.8",
+        "title": "Noire Converter v1.9",
         "drop_title": "DROP MEDIA",
         "drop_sub": "Files/Folders",
         "chk_img": "Img", "chk_aud": "Aud", "chk_vid": "Vid", "chk_doc": "Doc",
@@ -15,9 +15,10 @@ LANG = {
         "yt_btn_fetch": "Fetch",
         "yt_btn_fetching": "Searching...",
         "yt_lbl_results": "Result",
+        "yt_lbl_format": "Format",
         "yt_lbl_quality": "Quality",
         "yt_btn_download": "DOWNLOAD",
-        "yt_lbl_info": "ℹ️ Paste a YouTube link (video/playlist) or type a song name.",
+        "yt_lbl_info": "ℹ️ Paste a YouTube link (video/playlist) or type a song name. Audio saves as MP3/M4A, Video saves as MP4.",
         "yt_status_fetching": "Fetching info...",
         "yt_status_no_results": "No results found.",
         "yt_status_done": "Download complete",
@@ -150,7 +151,7 @@ LANG = {
 • 'ffmpeg.exe' must be in the same folder."""
     },
     "tr": {
-        "title": "Noire Converter v1.8",
+        "title": "Noire Converter v1.9",
         "drop_title": "MEDYA SÜRÜKLE",
         "drop_sub": "Dosya/Klasör",
         "chk_img": "Img", "chk_aud": "Aud", "chk_vid": "Vid", "chk_doc": "Doc",
@@ -163,9 +164,10 @@ LANG = {
         "yt_btn_fetch": "Bul",
         "yt_btn_fetching": "Aranıyor...",
         "yt_lbl_results": "Sonuç",
+        "yt_lbl_format": "Format",
         "yt_lbl_quality": "Kalite",
         "yt_btn_download": "İNDİR",
-        "yt_lbl_info": "ℹ️ YouTube linki (video/playlist) yapıştır ya da şarkı adı yaz.",
+        "yt_lbl_info": "ℹ️ YouTube linki (video/playlist) yapıştır ya da şarkı adı yaz. Ses MP3/M4A, Video MP4 olarak kaydedilir.",
         "yt_status_fetching": "Bilgi alınıyor...",
         "yt_status_no_results": "Sonuç bulunamadı.",
         "yt_status_done": "İndirme tamamlandı",

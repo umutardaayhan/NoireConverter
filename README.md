@@ -1,4 +1,4 @@
-# Noire Converter v1.8 🌑
+# Noire Converter v1.9 🌑
 
 [![Python](https://img.shields.io/badge/Python-3.x-blue?style=flat&logo=python)](https://www.python.org/)
 [![Platform](https://img.shields.io/badge/Platform-Windows-0078D6?style=flat&logo=windows)](https://www.microsoft.com/windows)
@@ -25,7 +25,7 @@
 * **Renamer (v1.3):** Batch rename files by finding and replacing text. Perfect for cleaning asset tags (e.g., removing `_1500x1500` suffixes).
 * **Tree View (v1.7):** Export folder structure as a beautiful tree-view text file. Great for documentation and project overviews.
 * **Text Extract (v1.7):** Extract content from ANY file type (.py, .js, .java, .c, .cpp, etc.) and save as .txt. Perfect for code documentation and text extraction.
-* **YouTube (v1.8 - NEW!):** Download YouTube videos or playlists as MP3 (128/192/320 kbps) or M4A. Paste a link or search by song name — results appear in the Queue, then hit START. Cover art and metadata are embedded automatically.
+* **YouTube (v1.8, MP4 in v1.9):** Download YouTube videos or playlists as **MP3** (128/192/320 kbps), **M4A**, or **MP4** (480p/720p/1080p/Best). Paste a link or search by song name — results appear in the Queue, then hit START. Cover art and metadata are embedded automatically for audio.
 * **Resizer:** High-quality image resizing using the Lanczos algorithm.
 * **Optimizer:** Compress assets by up to 80% without visible quality loss (Ideal for Unity/Godot/Web).
 * **GIF Studio:** Create optimized GIFs from videos. Includes a **Visual Crop Editor** to trim and crop specific areas easily.
@@ -100,10 +100,10 @@
 * All selected files will be extracted as `.txt` files.
 * Supports: .py, .js, .ts, .cs, .java, .c, .cpp, .h, .hpp, and any text-based file!
 
-#### 10. YouTube Tab (v1.8 - NEW!)
+#### 10. YouTube Tab (v1.8, MP4 in v1.9)
 * Paste a YouTube **link** (video or playlist) or type a **song name** and click **Fetch**.
 * Search results appear in a dropdown; each selection is added to the **Queue** on the right.
-* Pick quality: **128 / 192 / 320 kbps MP3** or **M4A** (original audio, no re-encoding).
+* Choose **Audio** or **Video** format. Audio: **128 / 192 / 320 kbps MP3** or **M4A** (original audio, no re-encoding). Video: **480p / 720p / 1080p / Best** MP4.
 * Click **DOWNLOAD** (or **START**) — all checked YouTube items in the queue are downloaded in order.
 * Files are saved to the output folder (or `~/Downloads` if none is selected), with embedded cover art and metadata.
 * Playlists are limited to 50 tracks for safety (Mix/radio lists can be endless).
@@ -164,7 +164,7 @@ Run the application via terminal:
 * **Adlandırıcı (Renamer - v1.3):** Dosya isimlerindeki belirli metinleri topluca bulun ve değiştirin. Asset temizliği (örn: `_kopya` yazılarını silmek) için idealdir.
 * **Ağaç Görünümü (Tree View - v1.7):** Klasör yapısını estetik ağaç görünümünde text dosyasına aktarın. Dokümantasyon ve proje özetleri için idealdir.
 * **Metin Çıkar (Text Extract - v1.7):** HERHANGİ bir dosya türünün (.py, .js, .java, .c, .cpp, vb.) içeriğini çıkarır ve .txt olarak kaydeder. Kod dokümantasyonu ve metin çıkarma için mükemmel.
-* **YouTube (v1.8 - YENİ!):** YouTube videolarını veya oynatma listelerini MP3 (128/192/320 kbps) ya da M4A olarak indirin. Link yapıştırın veya şarkı adıyla arayın — sonuçlar Kuyruğa (Queue) düşer, BAŞLAT'a basın. Kapak resmi ve metadata otomatik gömülür.
+* **YouTube (v1.8, MP4 desteği v1.9'da):** YouTube videolarını veya oynatma listelerini **MP3** (128/192/320 kbps), **M4A** ya da **MP4** (480p/720p/1080p/Best) olarak indirin. Link yapıştırın veya şarkı adıyla arayın — sonuçlar Kuyruğa (Queue) düşer, BAŞLAT'a basın. Kapak resmi ve metadata sesli indirmelerde otomatik gömülür.
 * **Boyutlandırıcı (Resizer):** Resimleri kalite kaybını minimize ederek (Lanczos algoritması) yeniden boyutlandırın.
 * **Optimizer:** Web ve Oyun projeleri (Unity/Godot assetleri) için dosya boyutunu %80'e kadar sıkıştırır.
 * **GIF Studio:** Videoları kırpın (Crop), süresini ayarlayın (Trim) ve optimize edilmiş GIF'lere dönüştürün. **Görsel Kırpma Editörü** dahildir.
@@ -239,10 +239,10 @@ Run the application via terminal:
 * Tüm seçili dosyalar `.txt` dosyası olarak kaydedilir.
 * Desteklenen: .py, .js, .ts, .cs, .java, .c, .cpp, .h, .hpp ve herhangi bir metin tabanlı dosya!
 
-#### 10. YouTube Sekmesi (v1.8 - YENİ!)
+#### 10. YouTube Sekmesi (v1.8, MP4 desteği v1.9'da)
 * YouTube **linki** (video veya playlist) yapıştırın ya da **şarkı adı** yazıp **Bul**'a basın.
 * Arama sonuçları açılır menüde listelenir; her seçim sağdaki **Kuyruğa** eklenir.
-* Kalite seçin: **128 / 192 / 320 kbps MP3** veya **M4A** (orijinal ses, yeniden kodlamasız).
+* **Ses** veya **Video** formatını seçin. Ses: **128 / 192 / 320 kbps MP3** veya **M4A** (orijinal ses, yeniden kodlamasız). Video: **480p / 720p / 1080p / Best** MP4.
 * **İNDİR**'e (veya **BAŞLAT**'a) basın — kuyruktaki işaretli tüm YouTube öğeleri sırayla indirilir.
 * Dosyalar çıktı klasörüne (seçilmemişse `~/Downloads`'a) kapak resmi ve metadata gömülü olarak kaydedilir.
 * Oynatma listeleri güvenlik için 50 parçayla sınırlıdır (Mix/radyo listeleri sonsuz olabilir).

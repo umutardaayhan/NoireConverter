@@ -1,4 +1,4 @@
-"""YouTube -> MP3/M4A indirme motoru (yt-dlp).
+"""YouTube -> MP3/M4A/MP4 indirme motoru (yt-dlp).
 
 Noire_Mp3 projesinden uyarlanmıştır. UI bu modülü arka plan thread'i
 içinden çağırır; ilerleme bilgisi progress_cb geri çağrısıyla iletilir.
@@ -15,6 +15,10 @@ from core.utils import get_ffmpeg_path
 BASE_DIR = Path(__file__).resolve().parent.parent
 # Yaş kısıtlamalı videolar için: tarayıcıdan dışa aktarılan cookies.txt proje köküne konur
 COOKIE_FILE = BASE_DIR / "cookies.txt"
+
+AUDIO_QUALITIES = {"128", "192", "320", "m4a"}
+VIDEO_QUALITIES = {"480p", "720p", "1080p", "best"}
+_VIDEO_HEIGHTS = {"480p": 480, "720p": 720, "1080p": 1080}
 
 MAX_PLAYLIST = 50  # Mix/radyo listeleri sonsuz olabilir; güvenli üst sınır
 PLAYLIST_RE = re.compile(r"[?&]list=|/playlist\b", re.IGNORECASE)
@@ -80,6 +84,28 @@ def _audio_opts(quality, output_dir, hook):
     return opts
 
 
+def _video_opts(quality, output_dir, hook):
+    opts = _base_opts() | {
+        "outtmpl": os.path.join(output_dir, "%(title)s.%(ext)s"),
+        "merge_output_format": "mp4",
+        "postprocessors": [{"key": "FFmpegMetadata"}],
+    }
+    if hook:
+        opts["progress_hooks"] = [hook]
+    ffmpeg = get_ffmpeg_path()
+    if os.path.isfile(ffmpeg):
+        opts["ffmpeg_location"] = ffmpeg
+    if quality == "best":
+        opts["format"] = "bestvideo[ext=mp4]+bestaudio[ext=m4a]/best[ext=mp4]/best"
+    else:
+        h = _VIDEO_HEIGHTS[quality]
+        opts["format"] = (
+            f"bestvideo[ext=mp4][height<={h}]+bestaudio[ext=m4a]"
+            f"/best[ext=mp4][height<={h}]/best[height<={h}]"
+        )
+    return opts
+
+
 def search(query, limit=10):
     """YouTube'da arar; başlık/kanal/süre/url listesi döner."""
     opts = _base_opts() | {"extract_flat": True}
@@ -137,17 +163,22 @@ def _download_one(url, quality, output_dir, progress_cb, index=1, total=1, title
         elif d["status"] == "finished":
             progress_cb({"stage": "converting", "index": index, "total": total, "title": title})
 
-    with YoutubeDL(_audio_opts(quality, output_dir, hook)) as ydl:
+    is_video = quality in VIDEO_QUALITIES
+    opts = _video_opts(quality, output_dir, hook) if is_video else _audio_opts(quality, output_dir, hook)
+    with YoutubeDL(opts) as ydl:
         info = ydl.extract_info(url, download=True)
         base = Path(ydl.prepare_filename(info))
-    ext = ".m4a" if quality == "m4a" else ".mp3"
+    if is_video:
+        ext = ".mp4"
+    else:
+        ext = ".m4a" if quality == "m4a" else ".mp3"
     return str(base.with_suffix(ext)), info.get("title", base.stem)
 
 
 def download(url, quality, output_dir, progress_cb=None):
     """Tek video ya da oynatma listesi indirir.
 
-    quality: "128" | "192" | "320" | "m4a"
+    quality: "128" | "192" | "320" | "m4a" (ses) ya da "480p" | "720p" | "1080p" | "best" (video)
     Dönüş: [{"file": yol, "title": başlık} | {"title": ..., "error": ...}]
     """
     os.makedirs(output_dir, exist_ok=True)

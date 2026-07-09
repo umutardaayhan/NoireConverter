@@ -1,4 +1,4 @@
-# Noire Converter v1.9 🌑
+# Noire Converter v2.0 🌑
 
 [![Python](https://img.shields.io/badge/Python-3.x-blue?style=flat&logo=python)](https://www.python.org/)
 [![Platform](https://img.shields.io/badge/Platform-Windows-0078D6?style=flat&logo=windows)](https://www.microsoft.com/windows)
@@ -20,6 +20,7 @@
 
 ### 🌟 Features
 
+* **Refreshed UI (v2.0 - NEW!):** Layered noir-gold palette, icon tabs, a live progress bar, and a fully centralized style system under the hood.
 * **Converter:** Convert between Image (.webp, .png, .jpg, .ico) and Audio (.mp3, .wav) formats instantly.
 * **Doc Station:** Convert Word/PowerPoint to PDF, or PDF/PowerPoint to Word documents. *(Requires MS Office)*.
 * **Renamer (v1.3):** Batch rename files by finding and replacing text. Perfect for cleaning asset tags (e.g., removing `_1500x1500` suffixes).
@@ -159,6 +160,7 @@ Run the application via terminal:
 
 ### 🌟 Özellikler
 
+* **Yenilenen Arayüz (v2.0 - YENİ!):** Katmanlı noir-altın palet, ikonlu sekmeler, canlı ilerleme çubuğu ve arka planda tamamen merkezileştirilmiş stil sistemi.
 * **Dönüştürücü (Converter):** Resim (.webp, .png, .jpg, .ico) ve Ses (.mp3, .wav) formatları arasında hızlı dönüşüm.
 * **Doc İstasyonu:** Word/PPT dosyalarını PDF'e, PDF/PPT dosyalarını Word'e çevirin. *(MS Office gerektirir)*.
 * **Adlandırıcı (Renamer - v1.3):** Dosya isimlerindeki belirli metinleri topluca bulun ve değiştirin. Asset temizliği (örn: `_kopya` yazılarını silmek) için idealdir.

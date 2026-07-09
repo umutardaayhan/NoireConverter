@@ -24,7 +24,7 @@ class NoireConverterApp(ctk.CTk, TkinterDnD.DnDWrapper):
         self.TkdndVersion = TkinterDnD._require(self)
         ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID('com.noire.converter.v1_3')
         self.current_lang = "en"
-        self.title("Noire Converter v1.9")
+        self.title("Noire Converter v2.0")
         self.geometry("1180x800") 
         self.resizable(False, False)
         self.configure(fg_color=COLOR_BG)
@@ -70,26 +70,26 @@ class NoireConverterApp(ctk.CTk, TkinterDnD.DnDWrapper):
         self.main_container.pack(fill="both", expand=True, padx=20, pady=20)
         
         # Sol paneli scrollable frame ile sarma
-        self.left_col = ctk.CTkScrollableFrame(self.main_container, fg_color="transparent", width=500, scrollbar_button_color="#222", scrollbar_button_hover_color=COLOR_ACCENT)
+        self.left_col = ctk.CTkScrollableFrame(self.main_container, fg_color="transparent", width=500, scrollbar_button_color=COLOR_FRAME_2, scrollbar_button_hover_color=COLOR_ACCENT)
         self.left_col.pack(side="left", fill="y", padx=(0, 20)) 
         
         self.header_frame = ctk.CTkFrame(self.left_col, fg_color="transparent")
         self.header_frame.pack(anchor="w", fill="x", pady=(0, 15))
         ctk.CTkLabel(self.header_frame, text="NOIRE", font=FONT_HEADER, text_color=COLOR_ACCENT).pack(side="left")
         ctk.CTkLabel(self.header_frame, text=" CONVERTER", font=FONT_HEADER, text_color="white").pack(side="left")
-        ctk.CTkLabel(self.header_frame, text=" // v1.9", font=("Roboto", 12), text_color=COLOR_TEXT_DIM).pack(side="left", padx=(5,0), pady=(10,0))
+        ctk.CTkLabel(self.header_frame, text="v2.0", font=("Roboto", 11, "bold"), text_color=COLOR_ACCENT, fg_color=COLOR_FRAME_2, corner_radius=10, width=48, height=22).pack(side="left", padx=(8, 0), pady=(10, 0))
         
         btn_box = ctk.CTkFrame(self.header_frame, fg_color="transparent")
         btn_box.pack(side="right")
-        self.btn_lang = ctk.CTkButton(btn_box, text="TR", width=42, height=28, fg_color="#222", hover_color=COLOR_ACCENT, text_color="#fff", corner_radius=6, font=("Roboto", 12, "bold"), command=self.toggle_language)
+        self.btn_lang = ctk.CTkButton(btn_box, text="TR", width=42, height=28, fg_color=COLOR_FRAME_2, hover_color=COLOR_HOVER, text_color=COLOR_TEXT, corner_radius=6, font=("Roboto", 12, "bold"), command=self.toggle_language)
         self.btn_lang.pack(side="left", padx=5)
-        self.btn_help = ctk.CTkButton(btn_box, text="?", width=32, height=28, fg_color="#222", hover_color=COLOR_ACCENT, text_color="#fff", corner_radius=6, font=("Roboto", 13, "bold"), command=self.open_help_window)
+        self.btn_help = ctk.CTkButton(btn_box, text="?", width=32, height=28, fg_color=COLOR_FRAME_2, hover_color=COLOR_HOVER, text_color=COLOR_TEXT, corner_radius=6, font=("Roboto", 13, "bold"), command=self.open_help_window)
         self.btn_help.pack(side="left")
         
         # Source Folder switch değişkeni
         self.use_source_var = ctk.BooleanVar(value=True)
         
-        self.drop_frame = ctk.CTkFrame(self.left_col, height=200, corner_radius=12, fg_color=COLOR_FRAME, border_width=2, border_color="#2a2a2a")
+        self.drop_frame = ctk.CTkFrame(self.left_col, height=200, corner_radius=12, fg_color=COLOR_FRAME, border_width=2, border_color=COLOR_BORDER)
         self.drop_frame.pack(fill="x", pady=(0, 15))
         self.drop_frame.pack_propagate(False)
         
@@ -100,7 +100,7 @@ class NoireConverterApp(ctk.CTk, TkinterDnD.DnDWrapper):
         
         self.filter_box = ctk.CTkFrame(self.drop_frame, fg_color="transparent")
         self.filter_box.place(relx=0.55, rely=0.65, anchor="center")
-        chk_style = {"checkbox_width": 20, "checkbox_height": 20, "corner_radius": 4, "border_width": 2, "font": ("Roboto", 12), "fg_color": COLOR_ACCENT, "hover_color": COLOR_ACCENT_HOVER, "checkmark_color": "black"}
+        chk_style = CHK_STYLE  # merkezi stil: core/config.py
         
         self.chk_img = ctk.CTkCheckBox(self.filter_box, text="Img", variable=self.filter_img_var, **chk_style)
         self.chk_img.grid(row=0, column=0, padx=15, pady=3, sticky="w")
@@ -112,7 +112,7 @@ class NoireConverterApp(ctk.CTk, TkinterDnD.DnDWrapper):
         self.chk_doc.grid(row=1, column=1, padx=15, pady=3, sticky="w")
         
         # Browse Folder Button for Drop Media
-        self.btn_drop_browse = ctk.CTkButton(self.drop_frame, text="Browse Folder", width=140, height=32, fg_color="#222", hover_color=COLOR_ACCENT, text_color="white", corner_radius=8, font=("Roboto", 12, "bold"), command=self.browse_folder_for_queue)
+        self.btn_drop_browse = ctk.CTkButton(self.drop_frame, text="Browse Folder", width=140, height=32, fg_color=COLOR_FRAME_2, hover_color=COLOR_HOVER, text_color=COLOR_TEXT, corner_radius=8, font=("Roboto", 12, "bold"), command=self.browse_folder_for_queue)
         self.btn_drop_browse.place(relx=0.5, rely=0.88, anchor="center")
 
         # Custom Tab Container
@@ -146,8 +146,8 @@ class NoireConverterApp(ctk.CTk, TkinterDnD.DnDWrapper):
         # Navigation Buttons
         self.setup_custom_tabs()
 
-        seg_style = {"fg_color": "#151515", "selected_color": "#2a2a2a", "selected_hover_color": "#333", "unselected_color": "#111", "unselected_hover_color": "#1a1a1a", "text_color": "#fff", "height": 32, "corner_radius": 8, "font": ("Roboto", 12, "bold")}
-        entry_style = {"height": 35, "fg_color": "#111", "border_color": "#222", "justify": "center", "corner_radius": 8, "font": ("Roboto", 13)}
+        seg_style = SEG_STYLE      # merkezi stiller: core/config.py
+        entry_style = ENTRY_STYLE
         
         # --- TAB İÇERİKLERİ ---
         self.lbl_target_img = ctk.CTkLabel(self.tab_convert, text="", font=("Roboto", 11, "bold"), text_color=COLOR_TEXT_DIM)
@@ -206,7 +206,7 @@ class NoireConverterApp(ctk.CTk, TkinterDnD.DnDWrapper):
         crop_frame.pack(fill="x", pady=(5, 5), padx=5)
         self.lbl_gif_crop = ctk.CTkLabel(crop_frame, text="", font=("Roboto", 12, "bold"), text_color=COLOR_ACCENT)
         self.lbl_gif_crop.pack(side="left", padx=(0,10))
-        self.btn_visual_crop = ctk.CTkButton(crop_frame, text="", width=90, height=32, corner_radius=8, fg_color="#222", hover_color=COLOR_ACCENT, font=("Roboto", 12, "bold"), command=self.open_visual_cropper)
+        self.btn_visual_crop = ctk.CTkButton(crop_frame, text="", width=90, height=32, corner_radius=8, fg_color=COLOR_FRAME_2, hover_color=COLOR_HOVER, font=("Roboto", 12, "bold"), command=self.open_visual_cropper)
         self.btn_visual_crop.pack(side="left", padx=(0, 10))
         self.entry_crop_w = ctk.CTkEntry(crop_frame, width=50, **entry_style)
         self.entry_crop_w.pack(side="left", padx=2)
@@ -269,7 +269,7 @@ class NoireConverterApp(ctk.CTk, TkinterDnD.DnDWrapper):
         self.lbl_prefix_info = ctk.CTkLabel(self.frame_ren_prefix, text="", font=("Roboto", 11), text_color="gray", justify="left")
         self.lbl_prefix_info.pack(pady=(5, 10), padx=10)
         
-        self.btn_prefix_folder = ctk.CTkButton(self.frame_ren_prefix, text="Select Parent Folder", width=200, height=36, corner_radius=8, fg_color=COLOR_ACCENT, hover_color=COLOR_ACCENT_HOVER, text_color="black", font=("Roboto", 12, "bold"), command=self.select_prefix_folder)
+        self.btn_prefix_folder = ctk.CTkButton(self.frame_ren_prefix, text="Select Parent Folder", width=200, height=36, **BTN_ACCENT, command=self.select_prefix_folder)
         self.btn_prefix_folder.pack(pady=(0, 10))
         self.lbl_prefix_path = ctk.CTkLabel(self.frame_ren_prefix, text="...", font=("Roboto", 10), text_color=COLOR_TEXT_DIM)
         self.lbl_prefix_path.pack(pady=(0, 10))
@@ -293,7 +293,7 @@ class NoireConverterApp(ctk.CTk, TkinterDnD.DnDWrapper):
         # Source Selection
         src_frame = ctk.CTkFrame(self.tab_collector, fg_color="transparent")
         src_frame.pack(fill="x", pady=5)
-        self.btn_collector_source = ctk.CTkButton(src_frame, text="", width=120, height=32, corner_radius=8, fg_color=COLOR_ACCENT, hover_color=COLOR_ACCENT_HOVER, text_color="black", font=("Roboto", 12, "bold"), command=self.select_collector_source)
+        self.btn_collector_source = ctk.CTkButton(src_frame, text="", width=120, height=32, **BTN_ACCENT, command=self.select_collector_source)
         self.btn_collector_source.pack(side="left", padx=(10, 10))
         self.lbl_collector_source_path = ctk.CTkLabel(src_frame, text="...", font=("Roboto", 10), text_color=COLOR_TEXT_DIM)
         self.lbl_collector_source_path.pack(side="left")
@@ -301,7 +301,7 @@ class NoireConverterApp(ctk.CTk, TkinterDnD.DnDWrapper):
         # Target Selection 
         tgt_frame = ctk.CTkFrame(self.tab_collector, fg_color="transparent")
         tgt_frame.pack(fill="x", pady=5)
-        self.btn_collector_target = ctk.CTkButton(tgt_frame, text="", width=120, height=32, corner_radius=8, fg_color=COLOR_ACCENT, hover_color=COLOR_ACCENT_HOVER, text_color="black", font=("Roboto", 12, "bold"), command=self.select_collector_target)
+        self.btn_collector_target = ctk.CTkButton(tgt_frame, text="", width=120, height=32, **BTN_ACCENT, command=self.select_collector_target)
         self.btn_collector_target.pack(side="left", padx=(10, 10))
         self.lbl_collector_target_path = ctk.CTkLabel(tgt_frame, text="...", font=("Roboto", 10), text_color=COLOR_TEXT_DIM)
         self.lbl_collector_target_path.pack(side="left")
@@ -337,7 +337,7 @@ class NoireConverterApp(ctk.CTk, TkinterDnD.DnDWrapper):
         tree_btn_frame = ctk.CTkFrame(self.tab_tree, fg_color="transparent")
         tree_btn_frame.pack(fill="x", pady=(0, 10))
         
-        self.btn_tree_browse = ctk.CTkButton(tree_btn_frame, text="", width=120, height=32, corner_radius=8, fg_color=COLOR_ACCENT, hover_color=COLOR_ACCENT_HOVER, text_color="black", font=("Roboto", 12, "bold"), command=self.select_tree_folder)
+        self.btn_tree_browse = ctk.CTkButton(tree_btn_frame, text="", width=120, height=32, **BTN_ACCENT, command=self.select_tree_folder)
         self.btn_tree_browse.pack(side="left", padx=(0, 10))
         
         self.lbl_tree_path = ctk.CTkLabel(tree_btn_frame, text="", font=("Roboto", 10), text_color=COLOR_TEXT_DIM)
@@ -347,7 +347,7 @@ class NoireConverterApp(ctk.CTk, TkinterDnD.DnDWrapper):
         self.lbl_tree_preview.pack(anchor="w", pady=(5, 5))
         
         # Reduced height for Tree View preview
-        self.tree_preview_box = ctk.CTkTextbox(self.tab_tree, width=460, height=80, fg_color="#111", border_color="#333", border_width=1, font=("Consolas", 9))
+        self.tree_preview_box = ctk.CTkTextbox(self.tab_tree, width=460, height=80, fg_color=COLOR_INPUT, border_color=COLOR_BORDER, border_width=1, font=("Consolas", 9))
         self.tree_preview_box.pack(fill="both", expand=True, pady=(0, 10))
         self.tree_preview_box.configure(state="disabled")
         
@@ -390,7 +390,7 @@ class NoireConverterApp(ctk.CTk, TkinterDnD.DnDWrapper):
         self.entry_yt = ctk.CTkEntry(yt_in_frame, placeholder_text="https://youtube.com/... ", **entry_style)
         self.entry_yt.pack(side="left", fill="x", expand=True, padx=(0, 8))
         self.entry_yt.bind("<Return>", lambda e: self.yt_fetch_thread())
-        self.btn_yt_fetch = ctk.CTkButton(yt_in_frame, text="", width=90, height=35, corner_radius=8, fg_color=COLOR_ACCENT, hover_color=COLOR_ACCENT_HOVER, text_color="black", font=("Roboto", 12, "bold"), command=self.yt_fetch_thread)
+        self.btn_yt_fetch = ctk.CTkButton(yt_in_frame, text="", width=90, height=35, **BTN_ACCENT, command=self.yt_fetch_thread)
         self.btn_yt_fetch.pack(side="left")
 
         yt_res_frame = ctk.CTkFrame(self.tab_youtube, fg_color="transparent")
@@ -398,7 +398,7 @@ class NoireConverterApp(ctk.CTk, TkinterDnD.DnDWrapper):
         self.lbl_yt_results = ctk.CTkLabel(yt_res_frame, text="", font=("Roboto", 11, "bold"), text_color=COLOR_TEXT_DIM)
         self.lbl_yt_results.pack(side="left", padx=(0, 10))
         self.yt_result_var = ctk.StringVar(value="—")
-        self.menu_yt_results = ctk.CTkOptionMenu(yt_res_frame, values=["—"], variable=self.yt_result_var, command=self.yt_select_result, height=30, fg_color="#111", button_color="#2a2a2a", button_hover_color=COLOR_ACCENT, dropdown_fg_color="#222", font=("Roboto", 11), dynamic_resizing=False)
+        self.menu_yt_results = ctk.CTkOptionMenu(yt_res_frame, values=["—"], variable=self.yt_result_var, command=self.yt_select_result, height=30, fg_color=COLOR_INPUT, button_color=COLOR_HOVER, button_hover_color=COLOR_ACCENT, dropdown_fg_color=COLOR_FRAME_2, font=("Roboto", 11), dynamic_resizing=False)
         self.menu_yt_results.pack(side="left", fill="x", expand=True)
 
         self.lbl_yt_selected = ctk.CTkLabel(self.tab_youtube, text="", font=("Roboto", 11), text_color=COLOR_ACCENT, wraplength=440, justify="left", anchor="w")
@@ -422,7 +422,7 @@ class NoireConverterApp(ctk.CTk, TkinterDnD.DnDWrapper):
         self.seg_yt_video_res = ctk.CTkSegmentedButton(yt_dl_frame, values=["480p", "720p", "1080p", "Best"], width=200, **seg_style)
         self.seg_yt_video_res.set("1080p")
         # Video moduna geçilince yt_toggle_format tarafından paketlenir
-        self.btn_yt_download = ctk.CTkButton(yt_dl_frame, text="", width=110, height=35, corner_radius=8, fg_color=COLOR_ACCENT, hover_color=COLOR_ACCENT_HOVER, text_color="black", font=("Roboto", 12, "bold"), command=self.yt_download_thread)
+        self.btn_yt_download = ctk.CTkButton(yt_dl_frame, text="", width=110, height=35, **BTN_ACCENT, command=self.yt_download_thread)
         self.btn_yt_download.pack(side="right")
 
         self.lbl_yt_info = ctk.CTkLabel(self.tab_youtube, text="", font=("Roboto", 11), text_color="gray", justify="left", wraplength=440)
@@ -434,7 +434,7 @@ class NoireConverterApp(ctk.CTk, TkinterDnD.DnDWrapper):
         self.path_frame.pack_propagate(False)
         self.switch_source = ctk.CTkSwitch(self.path_frame, text="", variable=self.use_source_var, command=self.toggle_path_selection, progress_color=COLOR_ACCENT, font=("Roboto", 12, "bold"))
         self.switch_source.pack(side="left", padx=15)
-        self.btn_browse = ctk.CTkButton(self.path_frame, text="", width=70, height=30, corner_radius=6, fg_color="#222", hover_color=COLOR_ACCENT, font=("Roboto", 12, "bold"), state="disabled", command=self.select_output_folder)
+        self.btn_browse = ctk.CTkButton(self.path_frame, text="", width=70, height=30, corner_radius=6, fg_color=COLOR_FRAME_2, hover_color=COLOR_HOVER, font=("Roboto", 12, "bold"), state="disabled", command=self.select_output_folder)
         self.btn_browse.pack(side="right", padx=10)
         self.lbl_path = ctk.CTkLabel(self.path_frame, text="", font=("Roboto", 10), text_color=COLOR_TEXT_DIM)
         self.lbl_path.pack(side="right", padx=5)
@@ -452,17 +452,15 @@ class NoireConverterApp(ctk.CTk, TkinterDnD.DnDWrapper):
         
         # DeepL target language codes
         deepl_langs = ["TR", "EN", "DE", "FR", "ES", "IT", "PT", "RU", "JA", "KO", "ZH", "NL", "PL", "CS", "EL", "HU", "RO", "SV", "DA", "FI"]
-        combo_style = {"fg_color": "#111", "text_color": "#fff", "height": 30, "dropdown_fg_color": "#222", "button_color": COLOR_ACCENT, "button_hover_color": COLOR_ACCENT_HOVER}
+        combo_style = COMBO_STYLE  # merkezi stil: core/config.py
         self.combo_target_lang = ctk.CTkComboBox(lang_frame, values=deepl_langs, variable=self.translate_target_lang, **combo_style)
-        self.combo_target_lang.pack(side="left", padx=(0, 20))
-        
         self.combo_target_lang.pack(side="left", padx=(0, 20))
         
         # Source Folder Button
         self.lbl_translate_preview = ctk.CTkLabel(self.tab_translate, text="", font=("Roboto", 11, "bold"), text_color=COLOR_TEXT_DIM)
         self.lbl_translate_preview.pack(anchor="w", pady=(5, 0))
         
-        self.btn_trans_add_folder = ctk.CTkButton(self.tab_translate, text="", width=200, height=36, corner_radius=8, fg_color=COLOR_ACCENT, hover_color=COLOR_ACCENT_HOVER, text_color="black", font=("Roboto", 12, "bold"), command=self.select_translate_source_folder)
+        self.btn_trans_add_folder = ctk.CTkButton(self.tab_translate, text="", width=200, height=36, **BTN_ACCENT, command=self.select_translate_source_folder)
         self.btn_trans_add_folder.pack(pady=(0, 5))
         
         self.lbl_translate_hint = ctk.CTkLabel(self.tab_translate, text="", font=("Roboto", 11), text_color="gray", justify="left")
@@ -480,23 +478,26 @@ class NoireConverterApp(ctk.CTk, TkinterDnD.DnDWrapper):
         self.lbl_queue.pack(side="left", padx=(0, 10))
         
         self.view_mode_var = ctk.StringVar(value="List")
-        self.seg_view_mode = ctk.CTkSegmentedButton(list_header, values=["List", "Preview"], variable=self.view_mode_var, command=self.refresh_queue_view, height=28, selected_color="#2a2a2a", unselected_color="#1a1a1a", selected_hover_color="#333", font=("Roboto", 11))
+        self.seg_view_mode = ctk.CTkSegmentedButton(list_header, values=["List", "Preview"], variable=self.view_mode_var, command=self.refresh_queue_view, height=28, selected_color="#3A311A", selected_hover_color="#463B20", unselected_color=COLOR_FRAME_2, unselected_hover_color=COLOR_HOVER, font=("Roboto", 11))
         self.seg_view_mode.pack(side="left", padx=5)
         
-        self.opt_queue_limit = ctk.CTkOptionMenu(list_header, values=["50", "100", "150", "250"], variable=self.queue_limit_var, width=65, height=28, fg_color="#1a1a1a", button_color="#2a2a2a", button_hover_color="#333", font=("Roboto", 11))
+        self.opt_queue_limit = ctk.CTkOptionMenu(list_header, values=["50", "100", "150", "250"], variable=self.queue_limit_var, width=65, height=28, fg_color=COLOR_FRAME_2, button_color=COLOR_HOVER, button_hover_color=COLOR_BORDER, font=("Roboto", 11))
         self.opt_queue_limit.pack(side="left", padx=(3, 0))
         
-        self.btn_clear = ctk.CTkButton(list_header, text="", width=60, height=28, corner_radius=6, fg_color="transparent", border_width=1, border_color="#333", text_color="#888", hover_color="#222", font=("Roboto", 12, "bold"), command=self.clear_queue)
+        self.btn_clear = ctk.CTkButton(list_header, text="", width=60, height=28, corner_radius=6, fg_color="transparent", border_width=1, border_color=COLOR_BORDER, text_color=COLOR_TEXT_DIM, hover_color=COLOR_FRAME_2, font=("Roboto", 12, "bold"), command=self.clear_queue)
         self.btn_clear.pack(side="right")
         self.btn_remove = ctk.CTkButton(list_header, text="", width=90, height=28, corner_radius=6, fg_color=COLOR_DANGER, hover_color=COLOR_DANGER_HOVER, font=("Roboto", 12, "bold"), command=self.remove_checked_files)
         self.btn_remove.pack(side="right", padx=(0,5))
         self.chk_select_all = ctk.CTkCheckBox(list_header, text="", width=60, variable=self.select_all_var, command=self.toggle_select_all, **chk_style)
         self.chk_select_all.pack(side="right", padx=(0,5))
 
-        self.scroll_list = ctk.CTkScrollableFrame(self.right_col, fg_color=COLOR_FRAME, corner_radius=12, scrollbar_button_color="#222", scrollbar_button_hover_color=COLOR_ACCENT)
+        self.scroll_list = ctk.CTkScrollableFrame(self.right_col, fg_color=COLOR_FRAME, corner_radius=12, scrollbar_button_color=COLOR_FRAME_2, scrollbar_button_hover_color=COLOR_ACCENT)
         self.scroll_list.pack(fill="both", expand=True, pady=(0, 15))
-        self.btn_start = ctk.CTkButton(self.right_col, text="", font=("Roboto", 18, "bold"), height=60, corner_radius=12, fg_color=COLOR_ACCENT, hover_color=COLOR_ACCENT_HOVER, text_color="black", command=self.start_process_thread)
+        self.btn_start = ctk.CTkButton(self.right_col, text="", font=("Roboto", 18, "bold"), height=60, corner_radius=12, fg_color=COLOR_ACCENT, hover_color=COLOR_ACCENT_HOVER, text_color=COLOR_ACCENT_TEXT, command=self.start_process_thread)
         self.btn_start.pack(fill="x", pady=(0, 10))
+        self.progress_bar = ctk.CTkProgressBar(self.right_col, height=6, corner_radius=99, progress_color=COLOR_ACCENT, fg_color=COLOR_FRAME_2)
+        self.progress_bar.set(0)
+        self.progress_bar.pack(fill="x", pady=(0, 6))
         self.log_lbl = ctk.CTkLabel(self.right_col, text="", font=FONT_LOG, text_color=COLOR_TEXT_DIM, anchor="w")
         self.log_lbl.pack(fill="x")
 
@@ -660,7 +661,8 @@ class NoireConverterApp(ctk.CTk, TkinterDnD.DnDWrapper):
         ]
         
         for name, label, parent in tabs_def:
-            btn = ctk.CTkButton(parent, text=label, width=110, height=32, corner_radius=8, fg_color="#1a1a1a", hover_color="#2a2a2a", border_width=1, border_color="#333", font=("Roboto", 12, "bold"), text_color="#aaa", command=lambda n=name: self.select_tab(n))
+            display = f"{TAB_ICONS[name]} {label}" if name in TAB_ICONS else label
+            btn = ctk.CTkButton(parent, text=display, width=110, height=32, corner_radius=8, fg_color=COLOR_FRAME_2, hover_color=COLOR_HOVER, border_width=1, border_color=COLOR_BORDER, font=("Roboto", 11, "bold"), text_color=COLOR_TEXT_DIM, command=lambda n=name: self.select_tab(n))
             btn.pack(side="left", padx=2, fill="x", expand=True)
             self.tab_btns[name] = btn
             
@@ -672,15 +674,11 @@ class NoireConverterApp(ctk.CTk, TkinterDnD.DnDWrapper):
         
         # Reset styles
         for n, btn in self.tab_btns.items():
-            btn.configure(fg_color="#1a1a1a", text_color="#888", border_color="#333")
+            btn.configure(fg_color=COLOR_FRAME_2, text_color=COLOR_TEXT_DIM, border_color=COLOR_BORDER)
             
         # Set active style
-        self.tab_btns[name].configure(fg_color=COLOR_ACCENT, hover_color=COLOR_ACCENT_HOVER, text_color="black", border_color=COLOR_ACCENT)
+        self.tab_btns[name].configure(fg_color=COLOR_ACCENT, hover_color=COLOR_ACCENT_HOVER, text_color=COLOR_ACCENT_TEXT, border_color=COLOR_ACCENT)
         self.frames[name].tkraise()
-        
-        # Collector is independent from queue items, so don't alter much, but 
-        if name == "Collector" or name == "Toplayıcı":
-            pass
 
     def toggle_renamer_mode(self, value):
         if value in ["Find & Replace", "Bul ve Değiştir"]:
@@ -835,7 +833,7 @@ class NoireConverterApp(ctk.CTk, TkinterDnD.DnDWrapper):
 
     def toggle_path_selection(self):
         if self.use_source_var.get():
-            self.btn_browse.configure(state="disabled", fg_color="#333")
+            self.btn_browse.configure(state="disabled", fg_color=COLOR_BORDER)
             self.lbl_path.configure(text="[SOURCE]" if self.current_lang=="en" else "[KAYNAK]")
         else:
             self.btn_browse.configure(state="normal", fg_color="#444")
@@ -1051,43 +1049,41 @@ class NoireConverterApp(ctk.CTk, TkinterDnD.DnDWrapper):
             self.after(0, lambda: self.log(f"Completed: {count} files saved as .txt", "success"))
             self.after(0, lambda: messagebox.showinfo("Success", f"{count} files extracted successfully!" if self.current_lang == "en" else f"{count} dosya başarıyla çıkarıldı!"))
 
-    def generate_tree_preview(self, folder_path, max_items=50):
-        """Klasör ağacını oluştur ve önizleme kutusuna yaz"""
-        tree_lines = []
-        tree_lines.append(os.path.basename(folder_path) + "/")
-        
-        def add_tree_items(path, prefix="", is_last=True, count=[0]):
-            if count[0] >= max_items:
+    def build_tree_text(self, folder_path, max_items=None):
+        """Klasör ağacını metin olarak üretir; max_items verilirse kısaltıp '...' ekler.
+
+        Hem önizleme (generate_tree_preview) hem dışa aktarma (generate_full_tree)
+        bu tek yapıcıyı kullanır.
+        """
+        tree_lines = [os.path.basename(folder_path) + "/"]
+        truncated = False
+
+        def walk(path, prefix=""):
+            nonlocal truncated
+            if truncated:
                 return
             try:
-                items = sorted(os.listdir(path))
-                # Gizli dosyaları filtrele
-                items = [item for item in items if not item.startswith('.')]
+                items = [i for i in sorted(os.listdir(path)) if not i.startswith('.')]
             except (PermissionError, OSError):
                 return
-            
             for i, item in enumerate(items):
-                if count[0] >= max_items:
+                if max_items is not None and len(tree_lines) > max_items:
+                    truncated = True
                     return
-                is_last_item = (i == len(items) - 1)
+                is_last = (i == len(items) - 1)
                 item_path = os.path.join(path, item)
-                
-                # Ağaç karakterleri
-                connector = "└── " if is_last_item else "├── "
-                tree_lines.append(prefix + connector + item)
-                count[0] += 1
-                
+                tree_lines.append(prefix + ("└── " if is_last else "├── ") + item)
                 if os.path.isdir(item_path):
-                    extension = "    " if is_last_item else "│   "
-                    add_tree_items(item_path, prefix + extension, is_last_item, count)
-        
-        add_tree_items(folder_path)
-        
-        if len(tree_lines) > max_items:
+                    walk(item_path, prefix + ("    " if is_last else "│   "))
+
+        walk(folder_path)
+        if truncated:
             tree_lines.append("...")
-        
-        tree_text = "\n".join(tree_lines)
-        
+        return "\n".join(tree_lines)
+
+    def generate_tree_preview(self, folder_path, max_items=50):
+        """Klasör ağacını oluştur ve önizleme kutusuna yaz"""
+        tree_text = self.build_tree_text(folder_path, max_items=max_items)
         self.tree_preview_box.configure(state="normal")
         self.tree_preview_box.delete("1.0", "end")
         self.tree_preview_box.insert("1.0", tree_text)
@@ -1205,8 +1201,11 @@ class NoireConverterApp(ctk.CTk, TkinterDnD.DnDWrapper):
                 title = item['yt']['title'][:40]
                 q_prefix = f"({n}/{len(items)}) " if len(items) > 1 else ""
 
-                def progress(p):
+                def progress(p, n=n):
                     pl_prefix = f"[{p['index']}/{p['total']}] " if p["total"] > 1 else ""
+                    pct = p.get("percent", 100)  # converting aşamasında parça tamamlanmış sayılır
+                    track = ((p["index"] - 1) + pct / 100) / p["total"]
+                    self.set_progress(((n - 1) + track) / len(items))
                     if p["stage"] == "downloading":
                         self.log(f"{q_prefix}{pl_prefix}{title} %{p['percent']}")
                     else:
@@ -1230,15 +1229,21 @@ class NoireConverterApp(ctk.CTk, TkinterDnD.DnDWrapper):
             else:
                 self.log(f"{T['yt_status_done']} ({total_done}) → {out_dir}", "success")
         finally:
+            self.set_progress(0)
             self.btn_yt_download.configure(state="normal", text=T["yt_btn_download"])
             self.btn_start.configure(state="normal", text=T["btn_start"])
 
     def log(self, message, type="info"):
         color = COLOR_TEXT_DIM
         prefix = "•"
-        if type == "error": color = "#ff5252"
-        if type == "success": color = "#69f0ae"
+        if type == "error": color = COLOR_ERROR
+        if type == "success": color = COLOR_SUCCESS
         self.log_lbl.configure(text=f"{prefix} {message}", text_color=color)
+        self.update_idletasks()
+
+    def set_progress(self, fraction):
+        """Alt paneldeki ince ilerleme çubuğunu günceller (0.0 - 1.0)."""
+        self.progress_bar.set(max(0.0, min(1.0, fraction)))
         self.update_idletasks()
 
     def drop_event(self, event):
@@ -1360,7 +1365,7 @@ class NoireConverterApp(ctk.CTk, TkinterDnD.DnDWrapper):
                     row_frame = ctk.CTkFrame(self.scroll_list, fg_color="transparent")
                     row_frame.pack(fill="x", pady=2, padx=2)
                 
-                card = ctk.CTkFrame(row_frame, fg_color="#1a1a1a", corner_radius=8, width=160, height=160)
+                card = ctk.CTkFrame(row_frame, fg_color=COLOR_FRAME_2, corner_radius=8, width=160, height=160)
                 card.pack(side="left", padx=3, pady=3, expand=True, fill="both")
                 card.pack_propagate(False)
                 
@@ -1540,8 +1545,9 @@ class NoireConverterApp(ctk.CTk, TkinterDnD.DnDWrapper):
     def process_convert(self):
         t_img = self.img_option.get().lower()
         t_aud = self.audio_option.get().lower()
-        for item in self.file_items:
-            if not item['var'].get(): continue
+        selected = [i for i in self.file_items if i['var'].get()]
+        for idx, item in enumerate(selected, start=1):
+            self.set_progress(idx / len(selected))
             path=item['path']
             ext=os.path.splitext(path)[1].lower()
             save = os.path.dirname(path) if self.use_source_var.get() else self.output_folder
@@ -1788,38 +1794,15 @@ class NoireConverterApp(ctk.CTk, TkinterDnD.DnDWrapper):
         self.finish_process()
 
     def finish_process(self):
+        self.set_progress(0)
         self.log(LANG[self.current_lang]["status_done"], "success")
         self.btn_start.configure(state="normal", text=LANG[self.current_lang]["btn_start"])
 
     def generate_full_tree(self, folder_path):
-        """Tam klasör ağacını text olarak döndür"""
-        tree_lines = []
-        folder_name = os.path.basename(folder_path)
-        tree_lines.append(folder_name + "/")
-        tree_lines.append("")
-        
-        def add_tree_items(path, prefix=""):
-            try:
-                items = sorted(os.listdir(path))
-                # Gizli dosyaları filtrele
-                items = [item for item in items if not item.startswith('.')]
-            except (PermissionError, OSError):
-                return
-            
-            for i, item in enumerate(items):
-                is_last = (i == len(items) - 1)
-                item_path = os.path.join(path, item)
-                
-                # Ağaç karakterleri
-                connector = "└── " if is_last else "├── "
-                tree_lines.append(prefix + connector + item)
-                
-                if os.path.isdir(item_path):
-                    extension = "    " if is_last else "│   "
-                    add_tree_items(item_path, prefix + extension)
-        
-        add_tree_items(folder_path)
-        return "\n".join(tree_lines)
+        """Tam klasör ağacını text olarak döndür (kök satırdan sonra boş satırla)"""
+        text = self.build_tree_text(folder_path)
+        first, _, rest = text.partition("\n")
+        return f"{first}\n\n{rest}" if rest else text
 
     def process_tree_export(self):
         """Tree View'i text dosyasına kaydet"""

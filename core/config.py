@@ -2,7 +2,7 @@
 
 LANG = {
     "en": {
-        "title": "Noire Converter v1.9",
+        "title": "Noire Converter v2.0",
         "drop_title": "DROP MEDIA",
         "drop_sub": "Files/Folders",
         "chk_img": "Img", "chk_aud": "Aud", "chk_vid": "Vid", "chk_doc": "Doc",
@@ -142,16 +142,26 @@ LANG = {
 • Auto-splits large files (>5000 chars).
 • Saves as separate files (e.g. file_tr.txt).
 
-6. COLLECTOR (New)
+6. COLLECTOR
 ---------------------------
 • Collect files from nested subfolders into one folder.
 
-7. SETUP
+7. YOUTUBE (New in v1.8-2.0)
 ---------------------------
-• 'ffmpeg.exe' must be in the same folder."""
+• Paste a link (video/playlist) or type a song name and hit Fetch.
+• Fetched items land in the Queue on the right; check the ones you want.
+• Format: Audio (128/192/320 kbps MP3 or M4A) | Video (480p/720p/1080p/Best MP4).
+• DOWNLOAD or START processes all checked YouTube items in order.
+• Live progress is shown on the bar under START.
+• Age-restricted videos need a cookies.txt in the app folder (see README).
+
+8. SETUP
+---------------------------
+• 'ffmpeg.exe' must be in the same folder (ffprobe.exe recommended).
+• YouTube tab also needs Node.js or Deno installed on the system."""
     },
     "tr": {
-        "title": "Noire Converter v1.9",
+        "title": "Noire Converter v2.0",
         "drop_title": "MEDYA SÜRÜKLE",
         "drop_sub": "Dosya/Klasör",
         "chk_img": "Img", "chk_aud": "Aud", "chk_vid": "Vid", "chk_doc": "Doc",
@@ -291,29 +301,87 @@ LANG = {
 • Uzun metinleri otomatik böler.
 • Ayrı dosya olarak kaydeder (örn: dosya_tr.txt).
 
-6. TOPLAYICI (Yeni)
+6. TOPLAYICI
 ---------------------------
 • Alt klasörlere dağılmış dosyaları tek bir hedefe toplar.
 
-7. KURULUM
+7. YOUTUBE (v1.8-2.0 Yeni)
 ---------------------------
-• 'ffmpeg.exe' aynı klasörde olmalıdır."""
+• Link (video/playlist) yapıştırın ya da şarkı adı yazıp Bul'a basın.
+• Getirilenler sağdaki Kuyruğa düşer; indirmek istediklerinizi işaretleyin.
+• Format: Ses (128/192/320 kbps MP3 veya M4A) | Video (480p/720p/1080p/Best MP4).
+• İNDİR veya BAŞLAT, kuyruktaki işaretli tüm YouTube öğelerini sırayla indirir.
+• Canlı ilerleme BAŞLAT altındaki çubukta gösterilir.
+• Yaş kısıtlamalı videolar için uygulama klasörüne cookies.txt gerekir (bkz. README).
+
+8. KURULUM
+---------------------------
+• 'ffmpeg.exe' aynı klasörde olmalıdır (ffprobe.exe önerilir).
+• YouTube sekmesi için sistemde Node.js veya Deno kurulu olmalıdır."""
     }
 }
 
 # --- AYARLAR ---
 ctk.set_appearance_mode("Dark")
-COLOR_BG = "#0F0F0F"
-COLOR_FRAME = "#181818"
+
+# Katmanlı noir paleti: zemin -> kart -> yükseltilmiş yüzey -> giriş alanı
+COLOR_BG = "#0B0B0D"
+COLOR_FRAME = "#141418"
+COLOR_FRAME_2 = "#1C1C21"      # yükseltilmiş yüzeyler: pasif sekme, chip, ghost buton
+COLOR_INPUT = "#121216"        # entry / textbox / combo zemini
+COLOR_BORDER = "#2A2A31"
+COLOR_HOVER = "#26262D"        # nötr hover
 COLOR_ACCENT = "#D4AF37"
-COLOR_ACCENT_HOVER = "#B8860B"
-COLOR_TEXT_DIM = "#888888"
-COLOR_DANGER = "#5D1010"
-COLOR_DANGER_HOVER = "#801B1B"
+COLOR_ACCENT_HOVER = "#E6C75A" # hover'da altın parlar
+COLOR_ACCENT_TEXT = "#141310"  # altın zemin üzerindeki metin
+COLOR_TEXT = "#ECE8DD"
+COLOR_TEXT_DIM = "#8F8B80"
+COLOR_DANGER = "#7A1E1E"
+COLOR_DANGER_HOVER = "#9C2B2B"
+COLOR_SUCCESS = "#69F0AE"
+COLOR_ERROR = "#FF5252"
 
 FONT_HEADER = ("Roboto", 24, "bold")
 FONT_SUBHEAD = ("Roboto", 14, "bold")
+FONT_BODY_BOLD = ("Roboto", 12, "bold")
 FONT_LOG = ("Consolas", 10)
+
+# --- ORTAK WIDGET STİLLERİ ---
+# Tek doğruluk kaynağı: ui/app.py bu sözlükleri **splat ederek kullanır.
+BTN_ACCENT = {
+    "fg_color": COLOR_ACCENT, "hover_color": COLOR_ACCENT_HOVER,
+    "text_color": COLOR_ACCENT_TEXT, "corner_radius": 8, "font": FONT_BODY_BOLD,
+}
+BTN_GHOST = {
+    "fg_color": COLOR_FRAME_2, "hover_color": COLOR_HOVER, "text_color": COLOR_TEXT,
+    "corner_radius": 8, "font": FONT_BODY_BOLD, "border_width": 1, "border_color": COLOR_BORDER,
+}
+SEG_STYLE = {
+    "fg_color": COLOR_INPUT, "selected_color": "#3A311A", "selected_hover_color": "#463B20",
+    "unselected_color": COLOR_FRAME_2, "unselected_hover_color": COLOR_HOVER,
+    "text_color": COLOR_TEXT, "height": 32, "corner_radius": 8, "font": FONT_BODY_BOLD,
+}
+ENTRY_STYLE = {
+    "height": 35, "fg_color": COLOR_INPUT, "border_color": COLOR_BORDER,
+    "justify": "center", "corner_radius": 8, "font": ("Roboto", 13),
+}
+CHK_STYLE = {
+    "checkbox_width": 20, "checkbox_height": 20, "corner_radius": 4, "border_width": 2,
+    "font": ("Roboto", 12), "fg_color": COLOR_ACCENT, "hover_color": COLOR_ACCENT_HOVER,
+    "checkmark_color": "black",
+}
+COMBO_STYLE = {
+    "fg_color": COLOR_INPUT, "text_color": COLOR_TEXT, "height": 30,
+    "dropdown_fg_color": COLOR_FRAME_2, "button_color": COLOR_ACCENT,
+    "button_hover_color": COLOR_ACCENT_HOVER,
+}
+
+# Sekme ikonları (setup_custom_tabs görünen etikete ekler)
+TAB_ICONS = {
+    "Convert": "🔄", "Resize": "📐", "Optimizer": "⚡", "GIF Studio": "🎞",
+    "Doc Station": "📄", "Renamer": "✏", "Tree View": "🌳", "Translate": "🌐",
+    "Text Extract": "📝", "Collector": "📦", "YouTube": "▶",
+}
 
 IMAGE_EXTS = ['.jpg', '.jpeg', '.png', '.webp', '.bmp', '.tiff', '.ico']
 AUDIO_EXTS = ['.mp3', '.wav', '.ogg', '.flac', '.m4a']

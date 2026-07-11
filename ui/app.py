@@ -24,7 +24,7 @@ class NoireConverterApp(ctk.CTk, TkinterDnD.DnDWrapper):
         self.TkdndVersion = TkinterDnD._require(self)
         ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID('com.noire.converter.v1_3')
         self.current_lang = "en"
-        self.title("Noire Converter v2.0")
+        self.title("Noire Converter v2.1")
         self.geometry("1180x800") 
         self.resizable(False, False)
         self.configure(fg_color=COLOR_BG)
@@ -77,7 +77,7 @@ class NoireConverterApp(ctk.CTk, TkinterDnD.DnDWrapper):
         self.header_frame.pack(anchor="w", fill="x", pady=(0, 15))
         ctk.CTkLabel(self.header_frame, text="NOIRE", font=FONT_HEADER, text_color=COLOR_ACCENT).pack(side="left")
         ctk.CTkLabel(self.header_frame, text=" CONVERTER", font=FONT_HEADER, text_color="white").pack(side="left")
-        ctk.CTkLabel(self.header_frame, text="v2.0", font=("Roboto", 11, "bold"), text_color=COLOR_ACCENT, fg_color=COLOR_FRAME_2, corner_radius=10, width=48, height=22).pack(side="left", padx=(8, 0), pady=(10, 0))
+        ctk.CTkLabel(self.header_frame, text="v2.1", font=("Roboto", 11, "bold"), text_color=COLOR_ACCENT, fg_color=COLOR_FRAME_2, corner_radius=10, width=48, height=22).pack(side="left", padx=(8, 0), pady=(10, 0))
         
         btn_box = ctk.CTkFrame(self.header_frame, fg_color="transparent")
         btn_box.pack(side="right")
@@ -387,7 +387,7 @@ class NoireConverterApp(ctk.CTk, TkinterDnD.DnDWrapper):
 
         yt_in_frame = ctk.CTkFrame(self.tab_youtube, fg_color="transparent")
         yt_in_frame.pack(fill="x", pady=(0, 8))
-        self.entry_yt = ctk.CTkEntry(yt_in_frame, placeholder_text="https://youtube.com/... ", **entry_style)
+        self.entry_yt = ctk.CTkEntry(yt_in_frame, placeholder_text="YouTube · Instagram · TikTok · X linki ya da arama", **entry_style)
         self.entry_yt.pack(side="left", fill="x", expand=True, padx=(0, 8))
         self.entry_yt.bind("<Return>", lambda e: self.yt_fetch_thread())
         self.btn_yt_fetch = ctk.CTkButton(yt_in_frame, text="", width=90, height=35, **BTN_ACCENT, command=self.yt_fetch_thread)
@@ -657,7 +657,7 @@ class NoireConverterApp(ctk.CTk, TkinterDnD.DnDWrapper):
             ("Translate", "Translate", row3),
             ("Text Extract", "Text Extract", row3),
             ("Collector", "Collector", row4),
-            ("YouTube", "YouTube", row4)
+            ("YouTube", "Media DL", row4)
         ]
         
         for name, label, parent in tabs_def:
@@ -1108,7 +1108,7 @@ class NoireConverterApp(ctk.CTk, TkinterDnD.DnDWrapper):
         T = LANG[self.current_lang]
         self.log(T["yt_status_fetching"])
         try:
-            if youtube.is_youtube_url(query):
+            if youtube.is_supported_url(query):
                 self.yt_selected = youtube.get_info(query)
                 self.yt_results = []
                 self.menu_yt_results.configure(values=["—"])
@@ -1146,8 +1146,9 @@ class NoireConverterApp(ctk.CTk, TkinterDnD.DnDWrapper):
         else:
             dur = s.get("duration")
             meta = f"{int(dur // 60)}:{int(dur % 60):02d}" if dur else ""
-        parts = [p for p in [s.get("channel"), meta] if p]
-        self.lbl_yt_selected.configure(text=f"♪ {s['title']}" + (f"  ({' · '.join(parts)})" if parts else ""))
+        parts = [p for p in [s.get("platform"), s.get("channel"), meta] if p]
+        icon = PLATFORM_ICONS.get(s.get("platform", "YouTube"), "♪")
+        self.lbl_yt_selected.configure(text=f"{icon} {s['title']}" + (f"  ({' · '.join(parts)})" if parts else ""))
         self.yt_add_to_queue()
 
     def yt_add_to_queue(self):
@@ -1300,12 +1301,12 @@ class NoireConverterApp(ctk.CTk, TkinterDnD.DnDWrapper):
         return "📋"
 
     def queue_display(self, item):
-        """Kuyruk öğesinin ikon ve görünen adını döndürür (yerel dosya veya YouTube)."""
+        """Kuyruk öğesinin ikon ve görünen adını döndürür (yerel dosya veya medya linki)."""
         if 'yt' in item:
             info = item['yt']
             if info["type"] == "playlist":
                 return "📃", f"{info['title']} ({info['count']} video)"
-            return "▶️", info['title']
+            return PLATFORM_ICONS.get(info.get("platform", "YouTube"), "▶️"), info['title']
         return self.get_file_icon(item['path']), os.path.basename(item['path'])
 
     def _get_thumbnail(self, file_path, size=(80, 80)):

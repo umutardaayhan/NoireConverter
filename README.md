@@ -1,4 +1,4 @@
-# Noire Converter v2.0 🌑
+# Noire Converter v2.1 🌑
 
 [![Python](https://img.shields.io/badge/Python-3.x-blue?style=flat&logo=python)](https://www.python.org/)
 [![Platform](https://img.shields.io/badge/Platform-Windows-0078D6?style=flat&logo=windows)](https://www.microsoft.com/windows)
@@ -26,7 +26,7 @@
 * **Renamer (v1.3):** Batch rename files by finding and replacing text. Perfect for cleaning asset tags (e.g., removing `_1500x1500` suffixes).
 * **Tree View (v1.7):** Export folder structure as a beautiful tree-view text file. Great for documentation and project overviews.
 * **Text Extract (v1.7):** Extract content from ANY file type (.py, .js, .java, .c, .cpp, etc.) and save as .txt. Perfect for code documentation and text extraction.
-* **YouTube (v1.8, MP4 in v1.9):** Download YouTube videos or playlists as **MP3** (128/192/320 kbps), **M4A**, or **MP4** (480p/720p/1080p/Best). Paste a link or search by song name — results appear in the Queue, then hit START. Cover art and metadata are embedded automatically for audio.
+* **Media DL (v2.1 - NEW: Instagram · TikTok · X!):** Download from **YouTube, Instagram, TikTok, and X (Twitter)** as **MP3** (128/192/320 kbps), **M4A**, or **MP4** (480p/720p/1080p/Best). Paste a link from any supported platform or search by song name (YouTube search) — results appear in the Queue with a platform badge, then hit START. Cover art and metadata are embedded automatically for audio.
 * **Resizer:** High-quality image resizing using the Lanczos algorithm.
 * **Optimizer:** Compress assets by up to 80% without visible quality loss (Ideal for Unity/Godot/Web).
 * **GIF Studio:** Create optimized GIFs from videos. Includes a **Visual Crop Editor** to trim and crop specific areas easily.
@@ -101,8 +101,9 @@
 * All selected files will be extracted as `.txt` files.
 * Supports: .py, .js, .ts, .cs, .java, .c, .cpp, .h, .hpp, and any text-based file!
 
-#### 10. YouTube Tab (v1.8, MP4 in v1.9)
-* Paste a YouTube **link** (video or playlist) or type a **song name** and click **Fetch**.
+#### 10. Media DL Tab (YouTube · Instagram · TikTok · X)
+* Paste a **link** from YouTube, Instagram, TikTok, or X (Twitter) — or type a **song name** (searches YouTube) — and click **Fetch**.
+* Instagram and some X content requires login — see the cookies.txt section below.
 * Search results appear in a dropdown; each selection is added to the **Queue** on the right.
 * Choose **Audio** or **Video** format. Audio: **128 / 192 / 320 kbps MP3** or **M4A** (original audio, no re-encoding). Video: **480p / 720p / 1080p / Best** MP4.
 * Click **DOWNLOAD** (or **START**) — all checked YouTube items in the queue are downloaded in order.
@@ -166,7 +167,7 @@ Run the application via terminal:
 * **Adlandırıcı (Renamer - v1.3):** Dosya isimlerindeki belirli metinleri topluca bulun ve değiştirin. Asset temizliği (örn: `_kopya` yazılarını silmek) için idealdir.
 * **Ağaç Görünümü (Tree View - v1.7):** Klasör yapısını estetik ağaç görünümünde text dosyasına aktarın. Dokümantasyon ve proje özetleri için idealdir.
 * **Metin Çıkar (Text Extract - v1.7):** HERHANGİ bir dosya türünün (.py, .js, .java, .c, .cpp, vb.) içeriğini çıkarır ve .txt olarak kaydeder. Kod dokümantasyonu ve metin çıkarma için mükemmel.
-* **YouTube (v1.8, MP4 desteği v1.9'da):** YouTube videolarını veya oynatma listelerini **MP3** (128/192/320 kbps), **M4A** ya da **MP4** (480p/720p/1080p/Best) olarak indirin. Link yapıştırın veya şarkı adıyla arayın — sonuçlar Kuyruğa (Queue) düşer, BAŞLAT'a basın. Kapak resmi ve metadata sesli indirmelerde otomatik gömülür.
+* **Media DL (v2.1 - YENİ: Instagram · TikTok · X!):** **YouTube, Instagram, TikTok ve X (Twitter)** içeriklerini **MP3** (128/192/320 kbps), **M4A** ya da **MP4** (480p/720p/1080p/Best) olarak indirin. Desteklenen platformlardan link yapıştırın veya şarkı adıyla arayın (YouTube araması) — sonuçlar platform rozetiyle Kuyruğa düşer, BAŞLAT'a basın. Kapak resmi ve metadata sesli indirmelerde otomatik gömülür.
 * **Boyutlandırıcı (Resizer):** Resimleri kalite kaybını minimize ederek (Lanczos algoritması) yeniden boyutlandırın.
 * **Optimizer:** Web ve Oyun projeleri (Unity/Godot assetleri) için dosya boyutunu %80'e kadar sıkıştırır.
 * **GIF Studio:** Videoları kırpın (Crop), süresini ayarlayın (Trim) ve optimize edilmiş GIF'lere dönüştürün. **Görsel Kırpma Editörü** dahildir.
@@ -241,8 +242,9 @@ Run the application via terminal:
 * Tüm seçili dosyalar `.txt` dosyası olarak kaydedilir.
 * Desteklenen: .py, .js, .ts, .cs, .java, .c, .cpp, .h, .hpp ve herhangi bir metin tabanlı dosya!
 
-#### 10. YouTube Sekmesi (v1.8, MP4 desteği v1.9'da)
-* YouTube **linki** (video veya playlist) yapıştırın ya da **şarkı adı** yazıp **Bul**'a basın.
+#### 10. Media DL Sekmesi (YouTube · Instagram · TikTok · X)
+* YouTube, Instagram, TikTok veya X (Twitter) **linki** yapıştırın — ya da **şarkı adı** yazıp (YouTube'da arar) **Bul**'a basın.
+* Instagram ve bazı X içerikleri oturum ister — aşağıdaki cookies.txt bölümüne bakın.
 * Arama sonuçları açılır menüde listelenir; her seçim sağdaki **Kuyruğa** eklenir.
 * **Ses** veya **Video** formatını seçin. Ses: **128 / 192 / 320 kbps MP3** veya **M4A** (orijinal ses, yeniden kodlamasız). Video: **480p / 720p / 1080p / Best** MP4.
 * **İNDİR**'e (veya **BAŞLAT**'a) basın — kuyruktaki işaretli tüm YouTube öğeleri sırayla indirilir.

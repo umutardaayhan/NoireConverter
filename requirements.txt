@@ -6,4 +6,4 @@ comtypes
 deep_translator
 pdf2docx
 pytesseract
-yt-dlp[default]
+yt-dlp[default,curl-cffi]

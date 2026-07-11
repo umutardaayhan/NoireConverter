@@ -2,7 +2,7 @@
 
 LANG = {
     "en": {
-        "title": "Noire Converter v2.0",
+        "title": "Noire Converter v2.1",
         "drop_title": "DROP MEDIA",
         "drop_sub": "Files/Folders",
         "chk_img": "Img", "chk_aud": "Aud", "chk_vid": "Vid", "chk_doc": "Doc",
@@ -18,7 +18,7 @@ LANG = {
         "yt_lbl_format": "Format",
         "yt_lbl_quality": "Quality",
         "yt_btn_download": "DOWNLOAD",
-        "yt_lbl_info": "ℹ️ Paste a YouTube link (video/playlist) or type a song name. Audio saves as MP3/M4A, Video saves as MP4.",
+        "yt_lbl_info": "ℹ️ Paste a YouTube / Instagram / TikTok / X link, or type a song name (searches YouTube). Audio → MP3/M4A, Video → MP4.",
         "yt_status_fetching": "Fetching info...",
         "yt_status_no_results": "No results found.",
         "yt_status_done": "Download complete",
@@ -146,14 +146,15 @@ LANG = {
 ---------------------------
 • Collect files from nested subfolders into one folder.
 
-7. YOUTUBE (New in v1.8-2.0)
+7. MEDIA DL (YouTube · Instagram · TikTok · X)
 ---------------------------
-• Paste a link (video/playlist) or type a song name and hit Fetch.
-• Fetched items land in the Queue on the right; check the ones you want.
+• Paste a link from any supported platform, or type a song name (searches YouTube).
+• Fetched items land in the Queue on the right with a platform badge; check the ones you want.
 • Format: Audio (128/192/320 kbps MP3 or M4A) | Video (480p/720p/1080p/Best MP4).
-• DOWNLOAD or START processes all checked YouTube items in order.
+• DOWNLOAD or START processes all checked media items in order.
 • Live progress is shown on the bar under START.
-• Age-restricted videos need a cookies.txt in the app folder (see README).
+• Age-restricted or login-gated content (common on Instagram/X) needs a
+  cookies.txt in the app folder (see README).
 
 8. SETUP
 ---------------------------
@@ -161,7 +162,7 @@ LANG = {
 • YouTube tab also needs Node.js or Deno installed on the system."""
     },
     "tr": {
-        "title": "Noire Converter v2.0",
+        "title": "Noire Converter v2.1",
         "drop_title": "MEDYA SÜRÜKLE",
         "drop_sub": "Dosya/Klasör",
         "chk_img": "Img", "chk_aud": "Aud", "chk_vid": "Vid", "chk_doc": "Doc",
@@ -177,7 +178,7 @@ LANG = {
         "yt_lbl_format": "Format",
         "yt_lbl_quality": "Kalite",
         "yt_btn_download": "İNDİR",
-        "yt_lbl_info": "ℹ️ YouTube linki (video/playlist) yapıştır ya da şarkı adı yaz. Ses MP3/M4A, Video MP4 olarak kaydedilir.",
+        "yt_lbl_info": "ℹ️ YouTube / Instagram / TikTok / X linki yapıştır ya da şarkı adı yaz (YouTube'da arar). Ses → MP3/M4A, Video → MP4.",
         "yt_status_fetching": "Bilgi alınıyor...",
         "yt_status_no_results": "Sonuç bulunamadı.",
         "yt_status_done": "İndirme tamamlandı",
@@ -305,14 +306,15 @@ LANG = {
 ---------------------------
 • Alt klasörlere dağılmış dosyaları tek bir hedefe toplar.
 
-7. YOUTUBE (v1.8-2.0 Yeni)
+7. MEDIA DL (YouTube · Instagram · TikTok · X)
 ---------------------------
-• Link (video/playlist) yapıştırın ya da şarkı adı yazıp Bul'a basın.
-• Getirilenler sağdaki Kuyruğa düşer; indirmek istediklerinizi işaretleyin.
+• Desteklenen platformlardan link yapıştırın ya da şarkı adı yazın (YouTube'da arar).
+• Getirilenler platform rozetiyle sağdaki Kuyruğa düşer; indirmek istediklerinizi işaretleyin.
 • Format: Ses (128/192/320 kbps MP3 veya M4A) | Video (480p/720p/1080p/Best MP4).
-• İNDİR veya BAŞLAT, kuyruktaki işaretli tüm YouTube öğelerini sırayla indirir.
+• İNDİR veya BAŞLAT, kuyruktaki işaretli tüm medya öğelerini sırayla indirir.
 • Canlı ilerleme BAŞLAT altındaki çubukta gösterilir.
-• Yaş kısıtlamalı videolar için uygulama klasörüne cookies.txt gerekir (bkz. README).
+• Yaş kısıtlamalı veya oturum isteyen içerikler (Instagram/X'te yaygın) için
+  uygulama klasörüne cookies.txt gerekir (bkz. README).
 
 8. KURULUM
 ---------------------------
@@ -382,6 +384,9 @@ TAB_ICONS = {
     "Doc Station": "📄", "Renamer": "✏", "Tree View": "🌳", "Translate": "🌐",
     "Text Extract": "📝", "Collector": "📦", "YouTube": "▶",
 }
+
+# Media DL sekmesi: kuyruk ve seçim etiketinde platform rozetleri
+PLATFORM_ICONS = {"YouTube": "▶️", "Instagram": "📷", "TikTok": "🎵", "X": "🐦"}
 
 IMAGE_EXTS = ['.jpg', '.jpeg', '.png', '.webp', '.bmp', '.tiff', '.ico']
 AUDIO_EXTS = ['.mp3', '.wav', '.ogg', '.flac', '.m4a']

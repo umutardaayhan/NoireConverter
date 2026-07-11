@@ -10,6 +10,9 @@ ffmpeg
 
 # YouTube oturum çerezleri — asla commit'leme
 cookies.txt
+
+# Kişisel indirme geçmişi
+history.json
 .vscode/
 .idea/
 config.json

@@ -1,4 +1,4 @@
-# Noire Converter v2.1 🌑
+# Noire Converter v2.2 🌑
 
 [![Python](https://img.shields.io/badge/Python-3.x-blue?style=flat&logo=python)](https://www.python.org/)
 [![Platform](https://img.shields.io/badge/Platform-Windows-0078D6?style=flat&logo=windows)](https://www.microsoft.com/windows)
@@ -20,7 +20,12 @@
 
 ### 🌟 Features
 
-* **Refreshed UI (v2.0 - NEW!):** Layered noir-gold palette, icon tabs, a live progress bar, and a fully centralized style system under the hood.
+* **Privacy (v2.2 - NEW!):** Strip ALL metadata (GPS, device, date) from images as _clean copies; edit or wipe ID3 tags of audio files.
+* **Video Studio (v2.2 - NEW!):** Cut videos without re-encoding and merge clips in queue order.
+* **PDF Tools (v2.2 - NEW!):** Merge PDFs, split into pages, or extract a page range.
+* **Settings (v2.2 - NEW!):** Startup language, default audio quality, default output folder, clipboard watcher — all persistent.
+* **Media DL Comfort (v2.2 - NEW!):** Clipboard watcher auto-catches copied media links, multi-link paste queues them all, and download history warns about repeats.
+* **Refreshed UI (v2.0):** Layered noir-gold palette, icon tabs, a live progress bar, and a fully centralized style system under the hood.
 * **Converter:** Convert between Image (.webp, .png, .jpg, .ico) and Audio (.mp3, .wav) formats instantly.
 * **Doc Station:** Convert Word/PowerPoint to PDF, or PDF/PowerPoint to Word documents. *(Requires MS Office)*.
 * **Renamer (v1.3):** Batch rename files by finding and replacing text. Perfect for cleaning asset tags (e.g., removing `_1500x1500` suffixes).
@@ -161,7 +166,12 @@ Run the application via terminal:
 
 ### 🌟 Özellikler
 
-* **Yenilenen Arayüz (v2.0 - YENİ!):** Katmanlı noir-altın palet, ikonlu sekmeler, canlı ilerleme çubuğu ve arka planda tamamen merkezileştirilmiş stil sistemi.
+* **Gizlilik (v2.2 - YENİ!):** Resimlerdeki TÜM metadata'yı (GPS, cihaz, tarih) _clean kopyalar olarak temizleyin; ses dosyalarının ID3 etiketlerini düzenleyin ya da silin.
+* **Video Stüdyo (v2.2 - YENİ!):** Videoları yeniden kodlamadan kesin, klipleri kuyruk sırasıyla birleştirin.
+* **PDF Araçları (v2.2 - YENİ!):** PDF birleştirin, sayfalara bölün ya da sayfa aralığı çıkarın.
+* **Ayarlar (v2.2 - YENİ!):** Açılış dili, varsayılan ses kalitesi, varsayılan çıktı klasörü, pano izleyici — hepsi kalıcı.
+* **Media DL Konforu (v2.2 - YENİ!):** Pano izleyici kopyalanan medya linklerini otomatik yakalar, çoklu link yapıştırma hepsini kuyruğa dizer, indirme geçmişi tekrarlarda uyarır.
+* **Yenilenen Arayüz (v2.0):** Katmanlı noir-altın palet, ikonlu sekmeler, canlı ilerleme çubuğu ve arka planda tamamen merkezileştirilmiş stil sistemi.
 * **Dönüştürücü (Converter):** Resim (.webp, .png, .jpg, .ico) ve Ses (.mp3, .wav) formatları arasında hızlı dönüşüm.
 * **Doc İstasyonu:** Word/PPT dosyalarını PDF'e, PDF/PPT dosyalarını Word'e çevirin. *(MS Office gerektirir)*.
 * **Adlandırıcı (Renamer - v1.3):** Dosya isimlerindeki belirli metinleri topluca bulun ve değiştirin. Asset temizliği (örn: `_kopya` yazılarını silmek) için idealdir.

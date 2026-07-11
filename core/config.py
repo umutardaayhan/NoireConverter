@@ -2,7 +2,7 @@
 
 LANG = {
     "en": {
-        "title": "Noire Converter v2.1",
+        "title": "Noire Converter v2.2",
         "drop_title": "DROP MEDIA",
         "drop_sub": "Files/Folders",
         "chk_img": "Img", "chk_aud": "Aud", "chk_vid": "Vid", "chk_doc": "Doc",
@@ -24,6 +24,33 @@ LANG = {
         "yt_status_done": "Download complete",
         "yt_err_empty": "Enter a link or search term first.",
         "yt_err_select": "Fetch a video first.",
+        "yt_dup": "⟳ downloaded before",
+        "yt_clip_caught": "📋 link(s) caught from clipboard",
+        # --- PRIVACY TAB ---
+        "lbl_priv_exif_info": "ℹ️ Strips ALL metadata (GPS, device, date) from checked images.\nSaves as a _clean copy; original is untouched.",
+        "btn_priv_preview": "Preview EXIF",
+        "lbl_priv_id3_info": "ℹ️ Edits tags of checked audio files in place. Empty fields are skipped.",
+        "plh_id3_title": "Title", "plh_id3_artist": "Artist", "plh_id3_album": "Album",
+        "chk_id3_clear": "Delete ALL tags (incl. cover)",
+        "msg_priv_no_img": "No image selected in the queue.",
+        # --- VIDEO STUDIO TAB ---
+        "lbl_vs_cut_info": "ℹ️ Cuts checked videos without re-encoding (snaps to keyframes).\nTimes: 00:01:05 or plain seconds.",
+        "lbl_vs_merge_info": "ℹ️ Merges checked videos in queue order.\nClips should share codec/resolution (e.g. cuts from the same source).",
+        "lbl_vs_time": "Range:",
+        # --- PDF TOOLS TAB ---
+        "lbl_pdf_info_merge": "ℹ️ Merges checked PDFs in queue order into one file.",
+        "lbl_pdf_info_split": "ℹ️ Saves every page of each checked PDF as a separate file.",
+        "lbl_pdf_info_range": "ℹ️ Extracts the given page range (inclusive) from each checked PDF.",
+        "lbl_pdf_range": "Pages:",
+        "msg_pdf_no_file": "No PDF selected in the queue.",
+        # --- SETTINGS TAB ---
+        "lbl_set_lang": "Startup Language",
+        "lbl_set_quality": "Default Audio Quality",
+        "lbl_set_folder": "Default Output Folder",
+        "btn_set_folder": "Choose",
+        "sw_set_clip": "Clipboard watcher (auto-catch media links)",
+        "btn_set_save": "SAVE SETTINGS",
+        "msg_set_saved": "Settings saved.",
         "lbl_target_img": "Target Image Format",
         "lbl_target_aud": "Target Audio Format",
         "lbl_target_doc": "Conversion Mode",
@@ -156,13 +183,38 @@ LANG = {
 • Age-restricted or login-gated content (common on Instagram/X) needs a
   cookies.txt in the app folder (see README).
 
-8. SETUP
+8. PRIVACY (New)
+---------------------------
+• EXIF: strips ALL metadata from checked images (saves _clean copy).
+• ID3: edits or wipes tags of checked audio files in place.
+
+9. VIDEO STUDIO (New)
+---------------------------
+• Cut: trims checked videos without re-encoding (keyframe-snapped).
+• Merge: joins checked videos in queue order (same codec required).
+
+10. PDF TOOLS (New)
+---------------------------
+• Merge checked PDFs, split into pages, or extract a page range.
+
+11. SETTINGS (New)
+---------------------------
+• Startup language, default audio quality, default output folder,
+  clipboard watcher on/off. Saved to config.json.
+
+12. MEDIA DL COMFORT
+---------------------------
+• Clipboard watcher: copied media links are auto-fetched into the Queue.
+• Paste multiple links at once - all of them are queued.
+• Download history warns when a link was downloaded before.
+
+13. SETUP
 ---------------------------
 • 'ffmpeg.exe' must be in the same folder (ffprobe.exe recommended).
-• YouTube tab also needs Node.js or Deno installed on the system."""
+• Media DL tab also needs Node.js or Deno installed on the system."""
     },
     "tr": {
-        "title": "Noire Converter v2.1",
+        "title": "Noire Converter v2.2",
         "drop_title": "MEDYA SÜRÜKLE",
         "drop_sub": "Dosya/Klasör",
         "chk_img": "Img", "chk_aud": "Aud", "chk_vid": "Vid", "chk_doc": "Doc",
@@ -184,6 +236,33 @@ LANG = {
         "yt_status_done": "İndirme tamamlandı",
         "yt_err_empty": "Önce bir link ya da arama terimi gir.",
         "yt_err_select": "Önce bir video getir.",
+        "yt_dup": "⟳ daha önce indirilmişti",
+        "yt_clip_caught": "📋 panodan link yakalandı",
+        # --- PRIVACY TAB ---
+        "lbl_priv_exif_info": "ℹ️ İşaretli resimlerdeki TÜM metadata'yı (GPS, cihaz, tarih) temizler.\n_clean kopya olarak kaydeder; orijinal dosyaya dokunmaz.",
+        "btn_priv_preview": "EXIF Önizle",
+        "lbl_priv_id3_info": "ℹ️ İşaretli ses dosyalarının etiketlerini yerinde düzenler. Boş alanlar atlanır.",
+        "plh_id3_title": "Başlık", "plh_id3_artist": "Sanatçı", "plh_id3_album": "Albüm",
+        "chk_id3_clear": "TÜM etiketleri sil (kapak dahil)",
+        "msg_priv_no_img": "Kuyrukta seçili resim yok.",
+        # --- VIDEO STUDIO TAB ---
+        "lbl_vs_cut_info": "ℹ️ İşaretli videoları yeniden kodlamadan keser (anahtar kareye yaslanır).\nSüre biçimi: 00:01:05 ya da düz saniye.",
+        "lbl_vs_merge_info": "ℹ️ İşaretli videoları kuyruk sırasıyla birleştirir.\nKlipler aynı codec/çözünürlükte olmalı (örn. aynı kaynaktan kesitler).",
+        "lbl_vs_time": "Aralık:",
+        # --- PDF TOOLS TAB ---
+        "lbl_pdf_info_merge": "ℹ️ İşaretli PDF'leri kuyruk sırasıyla tek dosyada birleştirir.",
+        "lbl_pdf_info_split": "ℹ️ İşaretli her PDF'in tüm sayfalarını ayrı dosyalar olarak kaydeder.",
+        "lbl_pdf_info_range": "ℹ️ İşaretli her PDF'ten verilen sayfa aralığını (uçlar dahil) çıkarır.",
+        "lbl_pdf_range": "Sayfalar:",
+        "msg_pdf_no_file": "Kuyrukta seçili PDF yok.",
+        # --- SETTINGS TAB ---
+        "lbl_set_lang": "Açılış Dili",
+        "lbl_set_quality": "Varsayılan Ses Kalitesi",
+        "lbl_set_folder": "Varsayılan Çıktı Klasörü",
+        "btn_set_folder": "Seç",
+        "sw_set_clip": "Pano izleyici (medya linklerini otomatik yakala)",
+        "btn_set_save": "AYARLARI KAYDET",
+        "msg_set_saved": "Ayarlar kaydedildi.",
         "lbl_target_img": "Hedef Resim Formatı",
         "lbl_target_aud": "Hedef Ses Formatı",
         "lbl_target_doc": "Dönüştürme Modu",
@@ -316,10 +395,35 @@ LANG = {
 • Yaş kısıtlamalı veya oturum isteyen içerikler (Instagram/X'te yaygın) için
   uygulama klasörüne cookies.txt gerekir (bkz. README).
 
-8. KURULUM
+8. GİZLİLİK (Yeni)
+---------------------------
+• EXIF: işaretli resimlerdeki TÜM metadata'yı temizler (_clean kopya).
+• ID3: işaretli ses dosyalarının etiketlerini düzenler ya da siler.
+
+9. VIDEO STÜDYO (Yeni)
+---------------------------
+• Kes: işaretli videoları yeniden kodlamadan kırpar (anahtar kareye yaslanır).
+• Birleştir: işaretli videoları kuyruk sırasıyla birleştirir (aynı codec gerekir).
+
+10. PDF ARAÇLARI (Yeni)
+---------------------------
+• İşaretli PDF'leri birleştir, sayfalara böl ya da sayfa aralığı çıkar.
+
+11. AYARLAR (Yeni)
+---------------------------
+• Açılış dili, varsayılan ses kalitesi, varsayılan çıktı klasörü,
+  pano izleyici aç/kapa. config.json'a kaydedilir.
+
+12. MEDIA DL KONFORU
+---------------------------
+• Pano izleyici: kopyalanan medya linkleri otomatik Kuyruğa getirilir.
+• Birden fazla linki tek seferde yapıştırın - hepsi kuyruğa dizilir.
+• İndirme geçmişi, daha önce indirilen linklerde uyarır.
+
+13. KURULUM
 ---------------------------
 • 'ffmpeg.exe' aynı klasörde olmalıdır (ffprobe.exe önerilir).
-• YouTube sekmesi için sistemde Node.js veya Deno kurulu olmalıdır."""
+• Media DL sekmesi için sistemde Node.js veya Deno kurulu olmalıdır."""
     }
 }
 
@@ -383,6 +487,7 @@ TAB_ICONS = {
     "Convert": "🔄", "Resize": "📐", "Optimizer": "⚡", "GIF Studio": "🎞",
     "Doc Station": "📄", "Renamer": "✏", "Tree View": "🌳", "Translate": "🌐",
     "Text Extract": "📝", "Collector": "📦", "YouTube": "▶",
+    "Privacy": "🕶", "Video Studio": "🎬", "PDF Tools": "📑", "Settings": "⚙",
 }
 
 # Media DL sekmesi: kuyruk ve seçim etiketinde platform rozetleri

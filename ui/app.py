@@ -15,7 +15,7 @@ import json
 from core.config import *
 from core.utils import resource_path, get_ffmpeg_path
 from core.file_ops import collect_files, prefix_rename
-from core import youtube
+from core import youtube, history, privacy, videotools, pdftools
 from ui.components.crop_editor import CropEditor
 
 class NoireConverterApp(ctk.CTk, TkinterDnD.DnDWrapper):
@@ -24,7 +24,7 @@ class NoireConverterApp(ctk.CTk, TkinterDnD.DnDWrapper):
         self.TkdndVersion = TkinterDnD._require(self)
         ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID('com.noire.converter.v1_3')
         self.current_lang = "en"
-        self.title("Noire Converter v2.1")
+        self.title("Noire Converter v2.2")
         self.geometry("1180x800") 
         self.resizable(False, False)
         self.configure(fg_color=COLOR_BG)
@@ -64,6 +64,15 @@ class NoireConverterApp(ctk.CTk, TkinterDnD.DnDWrapper):
         self.dnd_bind('<<Drop>>', self.drop_event)
         self.create_ui()
         self.update_ui_text()
+        self.apply_settings()
+
+        # Pano izleyici: açılıştaki pano içeriği tetiklenmesin diye taban değer alınır
+        self._last_clip = ""
+        try:
+            self._last_clip = self.clipboard_get()
+        except Exception:
+            pass
+        self.after(2000, self._clipboard_tick)
 
     def create_ui(self):
         self.main_container = ctk.CTkFrame(self, fg_color="transparent")
@@ -77,7 +86,7 @@ class NoireConverterApp(ctk.CTk, TkinterDnD.DnDWrapper):
         self.header_frame.pack(anchor="w", fill="x", pady=(0, 15))
         ctk.CTkLabel(self.header_frame, text="NOIRE", font=FONT_HEADER, text_color=COLOR_ACCENT).pack(side="left")
         ctk.CTkLabel(self.header_frame, text=" CONVERTER", font=FONT_HEADER, text_color="white").pack(side="left")
-        ctk.CTkLabel(self.header_frame, text="v2.1", font=("Roboto", 11, "bold"), text_color=COLOR_ACCENT, fg_color=COLOR_FRAME_2, corner_radius=10, width=48, height=22).pack(side="left", padx=(8, 0), pady=(10, 0))
+        ctk.CTkLabel(self.header_frame, text="v2.2", font=("Roboto", 11, "bold"), text_color=COLOR_ACCENT, fg_color=COLOR_FRAME_2, corner_radius=10, width=48, height=22).pack(side="left", padx=(8, 0), pady=(10, 0))
         
         btn_box = ctk.CTkFrame(self.header_frame, fg_color="transparent")
         btn_box.pack(side="right")
@@ -122,7 +131,7 @@ class NoireConverterApp(ctk.CTk, TkinterDnD.DnDWrapper):
 
         # Tab Content Frames (Hidden by default)
         self.frames = {}
-        for name in ["Convert", "Resize", "Optimizer", "GIF Studio", "Doc Station", "Renamer", "Tree View", "Translate", "Text Extract", "Collector", "YouTube"]:
+        for name in ["Convert", "Resize", "Optimizer", "GIF Studio", "Doc Station", "Renamer", "Tree View", "Translate", "Text Extract", "Collector", "YouTube", "Privacy", "Video Studio", "PDF Tools", "Settings"]:
             f = ctk.CTkFrame(self.tab_container, fg_color="transparent")
             f.grid(row=0, column=0, sticky="nsew")
             self.frames[name] = f
@@ -142,6 +151,10 @@ class NoireConverterApp(ctk.CTk, TkinterDnD.DnDWrapper):
         self.tab_text = self.frames["Text Extract"]
         self.tab_collector = self.frames["Collector"]
         self.tab_youtube = self.frames["YouTube"]
+        self.tab_privacy = self.frames["Privacy"]
+        self.tab_video_studio = self.frames["Video Studio"]
+        self.tab_pdf = self.frames["PDF Tools"]
+        self.tab_settings = self.frames["Settings"]
 
         # Navigation Buttons
         self.setup_custom_tabs()
@@ -428,6 +441,108 @@ class NoireConverterApp(ctk.CTk, TkinterDnD.DnDWrapper):
         self.lbl_yt_info = ctk.CTkLabel(self.tab_youtube, text="", font=("Roboto", 11), text_color="gray", justify="left", wraplength=440)
         self.lbl_yt_info.pack(anchor="w", pady=(5, 0))
 
+        # --- PRIVACY TAB ---
+        self.priv_mode_var = ctk.StringVar(value="EXIF")
+        self.seg_priv_mode = ctk.CTkSegmentedButton(self.tab_privacy, values=["EXIF", "ID3"], variable=self.priv_mode_var, command=self.toggle_privacy_mode, **seg_style)
+        self.seg_priv_mode.pack(fill="x", pady=(10, 10))
+
+        self.frame_priv_exif = ctk.CTkFrame(self.tab_privacy, fg_color="transparent")
+        self.frame_priv_exif.pack(fill="both", expand=True)
+        self.lbl_priv_exif_info = ctk.CTkLabel(self.frame_priv_exif, text="", font=("Roboto", 11), text_color="gray", justify="left", wraplength=440)
+        self.lbl_priv_exif_info.pack(anchor="w", pady=(0, 8))
+        self.btn_priv_preview = ctk.CTkButton(self.frame_priv_exif, text="", width=140, height=32, **BTN_GHOST, command=self.preview_exif)
+        self.btn_priv_preview.pack(anchor="w", pady=(0, 8))
+        self.priv_exif_box = ctk.CTkTextbox(self.frame_priv_exif, height=90, fg_color=COLOR_INPUT, border_color=COLOR_BORDER, border_width=1, font=("Consolas", 9))
+        self.priv_exif_box.pack(fill="both", expand=True)
+        self.priv_exif_box.configure(state="disabled")
+
+        self.frame_priv_id3 = ctk.CTkFrame(self.tab_privacy, fg_color="transparent")
+        self.lbl_priv_id3_info = ctk.CTkLabel(self.frame_priv_id3, text="", font=("Roboto", 11), text_color="gray", justify="left", wraplength=440)
+        self.lbl_priv_id3_info.pack(anchor="w", pady=(0, 8))
+        self.entry_id3_title = ctk.CTkEntry(self.frame_priv_id3, **entry_style)
+        self.entry_id3_title.pack(fill="x", pady=(0, 6))
+        self.entry_id3_artist = ctk.CTkEntry(self.frame_priv_id3, **entry_style)
+        self.entry_id3_artist.pack(fill="x", pady=(0, 6))
+        self.entry_id3_album = ctk.CTkEntry(self.frame_priv_id3, **entry_style)
+        self.entry_id3_album.pack(fill="x", pady=(0, 8))
+        self.id3_clear_var = ctk.BooleanVar(value=False)
+        self.chk_id3_clear = ctk.CTkCheckBox(self.frame_priv_id3, text="", variable=self.id3_clear_var, **chk_style)
+        self.chk_id3_clear.pack(anchor="w")
+
+        # --- VIDEO STUDIO TAB ---
+        self.vs_mode_var = ctk.StringVar(value="Cut")
+        self.seg_vs_mode = ctk.CTkSegmentedButton(self.tab_video_studio, values=["Cut", "Merge"], variable=self.vs_mode_var, command=self.toggle_vs_mode, **seg_style)
+        self.seg_vs_mode.pack(fill="x", pady=(10, 10))
+
+        self.frame_vs_cut = ctk.CTkFrame(self.tab_video_studio, fg_color="transparent")
+        self.frame_vs_cut.pack(fill="both", expand=True)
+        vs_time_frame = ctk.CTkFrame(self.frame_vs_cut, fg_color="transparent")
+        vs_time_frame.pack(fill="x", pady=(0, 8))
+        self.lbl_vs_time = ctk.CTkLabel(vs_time_frame, text="", font=("Roboto", 11, "bold"), text_color=COLOR_TEXT_DIM)
+        self.lbl_vs_time.pack(side="left", padx=(0, 10))
+        self.entry_vs_start = ctk.CTkEntry(vs_time_frame, width=100, placeholder_text="00:00:00", **entry_style)
+        self.entry_vs_start.pack(side="left", padx=(0, 5))
+        ctk.CTkLabel(vs_time_frame, text="→", font=("Roboto", 14), text_color=COLOR_TEXT_DIM).pack(side="left", padx=5)
+        self.entry_vs_end = ctk.CTkEntry(vs_time_frame, width=100, placeholder_text="00:00:10", **entry_style)
+        self.entry_vs_end.pack(side="left", padx=(5, 0))
+        self.lbl_vs_cut_info = ctk.CTkLabel(self.frame_vs_cut, text="", font=("Roboto", 11), text_color="gray", justify="left", wraplength=440)
+        self.lbl_vs_cut_info.pack(anchor="w", pady=(5, 0))
+
+        self.frame_vs_merge = ctk.CTkFrame(self.tab_video_studio, fg_color="transparent")
+        self.lbl_vs_merge_info = ctk.CTkLabel(self.frame_vs_merge, text="", font=("Roboto", 11), text_color="gray", justify="left", wraplength=440)
+        self.lbl_vs_merge_info.pack(anchor="w", pady=(5, 0))
+
+        # --- PDF TOOLS TAB ---
+        self.pdf_mode_var = ctk.StringVar(value="Merge")
+        self.seg_pdf_mode = ctk.CTkSegmentedButton(self.tab_pdf, values=["Merge", "Split", "Range"], variable=self.pdf_mode_var, command=self.toggle_pdf_mode, **seg_style)
+        self.seg_pdf_mode.pack(fill="x", pady=(10, 10))
+
+        pdf_range_frame = ctk.CTkFrame(self.tab_pdf, fg_color="transparent")
+        pdf_range_frame.pack(fill="x", pady=(0, 8))
+        self.lbl_pdf_range = ctk.CTkLabel(pdf_range_frame, text="", font=("Roboto", 11, "bold"), text_color=COLOR_TEXT_DIM)
+        self.lbl_pdf_range.pack(side="left", padx=(0, 10))
+        self.entry_pdf_first = ctk.CTkEntry(pdf_range_frame, width=70, placeholder_text="1", **entry_style)
+        self.entry_pdf_first.pack(side="left", padx=(0, 5))
+        ctk.CTkLabel(pdf_range_frame, text="→", font=("Roboto", 14), text_color=COLOR_TEXT_DIM).pack(side="left", padx=5)
+        self.entry_pdf_last = ctk.CTkEntry(pdf_range_frame, width=70, placeholder_text="5", **entry_style)
+        self.entry_pdf_last.pack(side="left", padx=(5, 0))
+
+        self.lbl_pdf_info = ctk.CTkLabel(self.tab_pdf, text="", font=("Roboto", 11), text_color="gray", justify="left", wraplength=440)
+        self.lbl_pdf_info.pack(anchor="w", pady=(5, 0))
+
+        # --- SETTINGS TAB ---
+        set_lang_frame = ctk.CTkFrame(self.tab_settings, fg_color="transparent")
+        set_lang_frame.pack(fill="x", pady=(10, 8))
+        self.lbl_set_lang = ctk.CTkLabel(set_lang_frame, text="", font=("Roboto", 11, "bold"), text_color=COLOR_TEXT_DIM)
+        self.lbl_set_lang.pack(side="left", padx=(0, 10))
+        self.set_lang_var = ctk.StringVar(value=self.settings.get("lang", "en").upper())
+        self.seg_set_lang = ctk.CTkSegmentedButton(set_lang_frame, values=["EN", "TR"], variable=self.set_lang_var, width=120, **seg_style)
+        self.seg_set_lang.pack(side="left")
+
+        set_q_frame = ctk.CTkFrame(self.tab_settings, fg_color="transparent")
+        set_q_frame.pack(fill="x", pady=(0, 8))
+        self.lbl_set_quality = ctk.CTkLabel(set_q_frame, text="", font=("Roboto", 11, "bold"), text_color=COLOR_TEXT_DIM)
+        self.lbl_set_quality.pack(side="left", padx=(0, 10))
+        self.seg_set_quality = ctk.CTkSegmentedButton(set_q_frame, values=["128", "192", "320", "M4A"], width=200, **seg_style)
+        self.seg_set_quality.set(self.settings.get("yt_quality", "192"))
+        self.seg_set_quality.pack(side="left")
+
+        set_dir_frame = ctk.CTkFrame(self.tab_settings, fg_color="transparent")
+        set_dir_frame.pack(fill="x", pady=(0, 8))
+        self.lbl_set_folder = ctk.CTkLabel(set_dir_frame, text="", font=("Roboto", 11, "bold"), text_color=COLOR_TEXT_DIM)
+        self.lbl_set_folder.pack(side="left", padx=(0, 10))
+        self.btn_set_folder = ctk.CTkButton(set_dir_frame, text="", width=80, height=30, **BTN_GHOST, command=self.select_default_folder)
+        self.btn_set_folder.pack(side="left", padx=(0, 10))
+        self.lbl_set_folder_path = ctk.CTkLabel(set_dir_frame, text=self.settings.get("default_output", "..."), font=("Roboto", 10), text_color=COLOR_TEXT_DIM)
+        self.lbl_set_folder_path.pack(side="left")
+
+        self.clip_watch_var = ctk.BooleanVar(value=self.settings.get("clipboard_watch", True))
+        self.sw_set_clip = ctk.CTkSwitch(self.tab_settings, text="", variable=self.clip_watch_var, progress_color=COLOR_ACCENT, font=("Roboto", 11))
+        self.sw_set_clip.pack(anchor="w", pady=(4, 10))
+
+        self.btn_set_save = ctk.CTkButton(self.tab_settings, text="", height=38, **BTN_ACCENT, command=self.save_settings)
+        self.btn_set_save.pack(fill="x", pady=(4, 0))
+
         # --- SOURCE FOLDER PANEL (Sol panelde) ---
         self.path_frame = ctk.CTkFrame(self.left_col, fg_color=COLOR_FRAME, corner_radius=12, height=50)
         self.path_frame.pack(fill="x", side="bottom", pady=(10, 0))
@@ -617,6 +732,27 @@ class NoireConverterApp(ctk.CTk, TkinterDnD.DnDWrapper):
             self.btn_yt_download.configure(text=T["yt_btn_download"])
             self.lbl_yt_info.configure(text=T["yt_lbl_info"])
 
+        # Privacy / Video Studio / PDF / Settings tabs
+        if "lbl_priv_exif_info" in T:
+            self.lbl_priv_exif_info.configure(text=T["lbl_priv_exif_info"])
+            self.btn_priv_preview.configure(text=T["btn_priv_preview"])
+            self.lbl_priv_id3_info.configure(text=T["lbl_priv_id3_info"])
+            self.entry_id3_title.configure(placeholder_text=T["plh_id3_title"])
+            self.entry_id3_artist.configure(placeholder_text=T["plh_id3_artist"])
+            self.entry_id3_album.configure(placeholder_text=T["plh_id3_album"])
+            self.chk_id3_clear.configure(text=T["chk_id3_clear"])
+            self.lbl_vs_time.configure(text=T["lbl_vs_time"])
+            self.lbl_vs_cut_info.configure(text=T["lbl_vs_cut_info"])
+            self.lbl_vs_merge_info.configure(text=T["lbl_vs_merge_info"])
+            self.lbl_pdf_range.configure(text=T["lbl_pdf_range"])
+            self.toggle_pdf_mode(self.pdf_mode_var.get())
+            self.lbl_set_lang.configure(text=T["lbl_set_lang"])
+            self.lbl_set_quality.configure(text=T["lbl_set_quality"])
+            self.lbl_set_folder.configure(text=T["lbl_set_folder"])
+            self.btn_set_folder.configure(text=T["btn_set_folder"])
+            self.sw_set_clip.configure(text=T["sw_set_clip"])
+            self.btn_set_save.configure(text=T["btn_set_save"])
+
         # Translation tab UI
         self.lbl_target_lang.configure(text=T["lbl_target_lang"])
 
@@ -650,14 +786,18 @@ class NoireConverterApp(ctk.CTk, TkinterDnD.DnDWrapper):
             ("Convert", "Convert", row1),
             ("Resize", "Resize", row1),
             ("Optimizer", "Optimizer", row1),
-            ("GIF Studio", "GIF Studio", row2),
+            ("GIF Studio", "GIF Studio", row1),
             ("Doc Station", "Doc Station", row2),
             ("Renamer", "Renamer", row2),
-            ("Tree View", "Tree View", row3),
-            ("Translate", "Translate", row3),
+            ("Tree View", "Tree View", row2),
+            ("Translate", "Translate", row2),
             ("Text Extract", "Text Extract", row3),
-            ("Collector", "Collector", row4),
-            ("YouTube", "Media DL", row4)
+            ("Collector", "Collector", row3),
+            ("YouTube", "Media DL", row3),
+            ("Privacy", "Privacy", row3),
+            ("Video Studio", "Video Studio", row4),
+            ("PDF Tools", "PDF Tools", row4),
+            ("Settings", "Settings", row4)
         ]
         
         for name, label, parent in tabs_def:
@@ -1108,8 +1248,13 @@ class NoireConverterApp(ctk.CTk, TkinterDnD.DnDWrapper):
         T = LANG[self.current_lang]
         self.log(T["yt_status_fetching"])
         try:
-            if youtube.is_supported_url(query):
-                self.yt_selected = youtube.get_info(query)
+            urls = [t for t in query.split() if youtube.is_supported_url(t)]
+            if len(urls) > 1:
+                # Toplu yapıştırma: tüm linkler sırayla kuyruğa
+                self._yt_fetch_urls(urls)
+                return
+            if urls:
+                self.yt_selected = youtube.get_info(urls[0])
                 self.yt_results = []
                 self.menu_yt_results.configure(values=["—"])
                 self.yt_result_var.set("—")
@@ -1147,6 +1292,8 @@ class NoireConverterApp(ctk.CTk, TkinterDnD.DnDWrapper):
             dur = s.get("duration")
             meta = f"{int(dur // 60)}:{int(dur % 60):02d}" if dur else ""
         parts = [p for p in [s.get("platform"), s.get("channel"), meta] if p]
+        if history.contains(s["url"]):
+            parts.append(LANG[self.current_lang]["yt_dup"])
         icon = PLATFORM_ICONS.get(s.get("platform", "YouTube"), "♪")
         self.lbl_yt_selected.configure(text=f"{icon} {s['title']}" + (f"  ({' · '.join(parts)})" if parts else ""))
         self.yt_add_to_queue()
@@ -1218,6 +1365,14 @@ class NoireConverterApp(ctk.CTk, TkinterDnD.DnDWrapper):
                     failed = [r for r in results if "error" in r]
                     total_done += done
                     total_fail += len(failed)
+                    if done:
+                        history.add(
+                            item['path'],
+                            title=item['yt']['title'],
+                            platform=item['yt'].get('platform', 'YouTube'),
+                            quality=quality,
+                            files=[r["file"] for r in results if "file" in r],
+                        )
                     if not failed:
                         self.file_items.remove(item)  # başarıyla inenler kuyruktan düşer
                 except Exception as e:
@@ -1233,6 +1388,203 @@ class NoireConverterApp(ctk.CTk, TkinterDnD.DnDWrapper):
             self.set_progress(0)
             self.btn_yt_download.configure(state="normal", text=T["yt_btn_download"])
             self.btn_start.configure(state="normal", text=T["btn_start"])
+
+    # --- PRIVACY TAB ---
+    def toggle_privacy_mode(self, value):
+        if value == "ID3":
+            self.frame_priv_exif.pack_forget()
+            self.frame_priv_id3.pack(fill="both", expand=True)
+        else:
+            self.frame_priv_id3.pack_forget()
+            self.frame_priv_exif.pack(fill="both", expand=True)
+
+    def _checked_paths(self, exts):
+        return [i['path'] for i in self.file_items
+                if i['var'].get() and 'yt' not in i and os.path.splitext(i['path'])[1].lower() in exts]
+
+    def preview_exif(self):
+        T = LANG[self.current_lang]
+        images = self._checked_paths(IMAGE_EXTS)
+        if not images:
+            self.log(T["msg_priv_no_img"], "error")
+            return
+        try:
+            exif = privacy.read_exif(images[0])
+            text = f"{os.path.basename(images[0])}\n" + ("-" * 40) + "\n"
+            text += "\n".join(f"{k}: {v}" for k, v in exif.items()) if exif else "(EXIF verisi yok / no EXIF data)"
+        except Exception as e:
+            text = f"Hata: {e}"
+        self.priv_exif_box.configure(state="normal")
+        self.priv_exif_box.delete("1.0", "end")
+        self.priv_exif_box.insert("1.0", text)
+        self.priv_exif_box.configure(state="disabled")
+
+    def process_privacy(self):
+        T = LANG[self.current_lang]
+        if self.priv_mode_var.get() == "EXIF":
+            images = self._checked_paths(IMAGE_EXTS)
+            if not images:
+                self.log(T["msg_priv_no_img"], "error")
+                self.finish_process()
+                return
+            for idx, path in enumerate(images, start=1):
+                self.set_progress(idx / len(images))
+                try:
+                    out = privacy.strip_exif(path, os.path.dirname(path) if self.use_source_var.get() else self.output_folder)
+                    self.log(f"OK: {os.path.basename(out)}", "success")
+                except Exception as e:
+                    self.log(f"Err: {os.path.basename(path)} - {e}", "error")
+        else:  # ID3
+            audios = self._checked_paths(AUDIO_EXTS)
+            if not audios:
+                self.log(T["msg_empty"], "error")
+                self.finish_process()
+                return
+            title = self.entry_id3_title.get().strip()
+            artist = self.entry_id3_artist.get().strip()
+            album = self.entry_id3_album.get().strip()
+            for idx, path in enumerate(audios, start=1):
+                self.set_progress(idx / len(audios))
+                try:
+                    if self.id3_clear_var.get():
+                        privacy.clear_audio_tags(path)
+                    else:
+                        privacy.edit_audio_tags(path, title, artist, album)
+                    self.log(f"OK: {os.path.basename(path)}", "success")
+                except Exception as e:
+                    self.log(f"Err: {os.path.basename(path)} - {e}", "error")
+        self.finish_process()
+
+    # --- VIDEO STUDIO TAB ---
+    def toggle_vs_mode(self, value):
+        if value == "Merge":
+            self.frame_vs_cut.pack_forget()
+            self.frame_vs_merge.pack(fill="both", expand=True)
+        else:
+            self.frame_vs_merge.pack_forget()
+            self.frame_vs_cut.pack(fill="both", expand=True)
+
+    def process_video_studio(self):
+        T = LANG[self.current_lang]
+        videos = self._checked_paths(VIDEO_EXTS)
+        if not videos:
+            self.log(T["msg_no_video"], "error")
+            self.finish_process()
+            return
+        try:
+            if self.vs_mode_var.get() == "Merge":
+                save = os.path.dirname(videos[0]) if self.use_source_var.get() else self.output_folder
+                out = videotools.merge_videos(videos, save)
+                self.log(f"OK: {os.path.basename(out)}", "success")
+            else:
+                start = self.entry_vs_start.get().strip() or "0"
+                end = self.entry_vs_end.get().strip()
+                if not end:
+                    self.log(T["plh_end"] + "?", "error")
+                    self.finish_process()
+                    return
+                for idx, path in enumerate(videos, start=1):
+                    self.set_progress(idx / len(videos))
+                    out = videotools.cut_video(path, start, end, os.path.dirname(path) if self.use_source_var.get() else self.output_folder)
+                    self.log(f"OK: {os.path.basename(out)}", "success")
+        except Exception as e:
+            self.log(f"Err: {e}", "error")
+        self.finish_process()
+
+    # --- PDF TOOLS TAB ---
+    def toggle_pdf_mode(self, value):
+        T = LANG[self.current_lang]
+        key = {"Merge": "lbl_pdf_info_merge", "Split": "lbl_pdf_info_split", "Range": "lbl_pdf_info_range"}[value]
+        self.lbl_pdf_info.configure(text=T[key])
+
+    def process_pdf(self):
+        T = LANG[self.current_lang]
+        pdfs = self._checked_paths(['.pdf'])
+        if not pdfs:
+            self.log(T["msg_pdf_no_file"], "error")
+            self.finish_process()
+            return
+        mode = self.pdf_mode_var.get()
+        try:
+            save = os.path.dirname(pdfs[0]) if self.use_source_var.get() else self.output_folder
+            if mode == "Merge":
+                out = pdftools.merge_pdfs(pdfs, save)
+                self.log(f"OK: {os.path.basename(out)}", "success")
+            elif mode == "Split":
+                for idx, path in enumerate(pdfs, start=1):
+                    self.set_progress(idx / len(pdfs))
+                    save = os.path.dirname(path) if self.use_source_var.get() else self.output_folder
+                    outs = pdftools.split_pdf(path, save)
+                    self.log(f"OK: {os.path.basename(path)} -> {len(outs)} sayfa/pages", "success")
+            else:  # Range
+                first = int(self.entry_pdf_first.get() or 1)
+                last = int(self.entry_pdf_last.get() or 1)
+                for idx, path in enumerate(pdfs, start=1):
+                    self.set_progress(idx / len(pdfs))
+                    save = os.path.dirname(path) if self.use_source_var.get() else self.output_folder
+                    out = pdftools.extract_range(path, first, last, save)
+                    self.log(f"OK: {os.path.basename(out)}", "success")
+        except Exception as e:
+            self.log(f"Err: {e}", "error")
+        self.finish_process()
+
+    # --- SETTINGS TAB ---
+    def select_default_folder(self):
+        folder = filedialog.askdirectory()
+        if folder:
+            self.settings["default_output"] = folder
+            self.lbl_set_folder_path.configure(text=folder)
+
+    def save_settings(self):
+        self.settings["lang"] = self.set_lang_var.get().lower()
+        self.settings["yt_quality"] = self.seg_set_quality.get()
+        self.settings["clipboard_watch"] = self.clip_watch_var.get()
+        self.save_config()
+        self.apply_settings()
+        self.log(LANG[self.current_lang]["msg_set_saved"], "success")
+
+    def apply_settings(self):
+        """Kaydedilmiş tercihleri çalışan arayüze uygular (açılışta ve kayıtta)."""
+        lang = self.settings.get("lang")
+        if lang in ("en", "tr") and lang != self.current_lang:
+            self.current_lang = lang
+            self.btn_lang.configure(text="TR" if lang == "en" else "EN")
+            self.update_ui_text()
+        self.seg_yt_quality.set(self.settings.get("yt_quality", "192"))
+        default_out = self.settings.get("default_output", "")
+        if default_out and os.path.isdir(default_out):
+            self.output_folder = default_out
+            self.use_source_var.set(False)
+            self.toggle_path_selection()
+
+    # --- PANO İZLEYİCİ (Media DL konforu) ---
+    def _clipboard_tick(self):
+        try:
+            if self.clip_watch_var.get():
+                try:
+                    text = self.clipboard_get()
+                except Exception:
+                    text = ""
+                if text and text != self._last_clip and len(text) < 4000:
+                    self._last_clip = text
+                    urls = [u for u in text.split() if youtube.is_supported_url(u)]
+                    new = [u for u in urls if not any(i['path'] == u for i in self.file_items)]
+                    if new:
+                        self.log(f"{LANG[self.current_lang]['yt_clip_caught']} ({len(new)})")
+                        threading.Thread(target=self._yt_fetch_urls, args=(new,), daemon=True).start()
+        finally:
+            self.after(1500, self._clipboard_tick)
+
+    def _yt_fetch_urls(self, urls):
+        """Birden fazla linki sırayla getirip kuyruğa ekler (toplu yapıştırma/pano)."""
+        T = LANG[self.current_lang]
+        for url in urls:
+            try:
+                self.yt_selected = youtube.get_info(url)
+                self._yt_show_selected()
+            except Exception as e:
+                self.log(youtube.friendly_error(e), "error")
+        self.log(T["status_ready"])
 
     def log(self, message, type="info"):
         color = COLOR_TEXT_DIM
@@ -1449,6 +1801,9 @@ class NoireConverterApp(ctk.CTk, TkinterDnD.DnDWrapper):
         elif tab == "Text Extract": threading.Thread(target=self._extract_text_from_queue).start()
         elif tab in ["Collector", "Toplayıcı"]: threading.Thread(target=self.process_collect).start()
         elif tab == "YouTube": threading.Thread(target=self._yt_download_worker, daemon=True).start()
+        elif tab == "Privacy": threading.Thread(target=self.process_privacy, daemon=True).start()
+        elif tab == "Video Studio": threading.Thread(target=self.process_video_studio, daemon=True).start()
+        elif tab == "PDF Tools": threading.Thread(target=self.process_pdf, daemon=True).start()
         else: threading.Thread(target=self.process_convert).start()
 
     # --- PROCESSORS ---
